@@ -422,7 +422,7 @@ Explicitly invoking those lemmas is tedious, so Mathlib provides tactics similar
 
 ## 2.3.  Using Theorems and Lemmas
 
-Rewriting is great for proving equations, but what about other sorts of theorems? For example, how can we prove an inequality, like the fact that  $a+e^{b}\leq a+e^{c}$ holds whenever $b\leq c$? We have already seen that theorems can be applied to arguments and hypotheses, and that the apply and exact tactics can be used to solve goals. In this section, we will make good use of these tools.
+Rewriting is great for proving equations, but what about other sorts of theorems? For example, how can we prove an inequality, like the fact that \(a+e^{b}\leq a+e^{c}\) holds whenever $b\leq c$? We have already seen that theorems can be applied to arguments and hypotheses, and that the apply and exact tactics can be used to solve goals. In this section, we will make good use of these tools.
 
 Consider the library theorems le_refl and le_trans:
 
