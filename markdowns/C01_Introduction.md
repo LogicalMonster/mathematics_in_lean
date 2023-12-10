@@ -1,5 +1,5 @@
-1. Introduction
-1.1. Getting Started
+# 1. Introduction
+# 1.1. Getting Started
 The goal of this book is to teach you to formalize mathematics using the Lean 4 interactive proof assistant. It assumes that you know some mathematics, but it does not require much. Although we will cover examples ranging from number theory to measure theory and analysis, we will focus on elementary aspects of those fields, in the hopes that if they are not familiar to you, you can pick them up as you go. We also don’t presuppose any background with formal methods. Formalization can be seen as a kind of computer programming: we will write mathematical definitions, theorems, and proofs in a regimented language, like a programming language, that Lean can understand. In return, Lean provides feedback and information, interprets expressions and guarantees that they are well-formed, and ultimately certifies the correctness of our proofs.
 
 You can learn more about Lean from the Lean project page and the Lean community web pages. This tutorial is based on Lean’s large and ever-growing library, Mathlib. We also strongly recommend joining the Lean Zulip online chat group if you haven’t already. You’ll find a lively and welcoming community of Lean enthusiasts there, happy to answer questions and offer moral support.
