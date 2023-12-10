@@ -16,9 +16,7 @@ Although you can read a pdf or html version of this book online, it designed to 
 At that point, you can open the textbook in a side panel in VS Code as follows:
 
   1. Type ctrl-shift-P (command-shift-P in macOS).
-
   2. Type Lean 4: Open Documentation View in the bar that appears, and then press return. (You can press return to select it as soon as it is highlighted in the menu.)
-
   3. In the window that opens, click on Open documentation of current project.
 
 Alternatively, you can run Lean and VS Code in the cloud, using [Gitpod](https://gitpod.io/). You can find instructions as to how to do that on the Mathematics in Lean [project page](https://github.com/leanprover-community/mathematics_in_lean) on Github. We still recommend working in a copy of the MIL folder, as described above.
@@ -42,30 +40,37 @@ Put simply, Lean is a tool for building complex expressions in a formal language
 Every expression has a *type*, and you can use the #check command to print it. Some expressions have types like ℕ or ℕ → ℕ. These are mathematical objects.
 
 ```
-  **#check** 2 + 2
-  - **def** f (x : ℕ) :=
+#check 2 + 2
+
+def f (x : ℕ) :=
   x + 3
-  - **#check** f
+
+#check f
 ```
 
 Some expressions have type Prop. These are mathematical statements.
 
 ```
-  **#check** 2 + 2 = 4
-  - **def** FermatLastTheorem :=
+#check 2 + 2 = 4
+
+def FermatLastTheorem :=
   ∀ x y z n : ℕ, n > 2 ∧ x * y * z ≠ 0 → x ^ n + y ^ n ≠ z ^ n
-  - **#check** FermatLastTheorem
+
+#check FermatLastTheorem
 ```
 
 Some expressions have a type, P, where P itself has type Prop. Such an expression is a proof of the proposition P.
 
 ```
-  **theorem** easy : 2 + 2 = 4 :=
+theorem easy : 2 + 2 = 4 :=
   rfl
-  - **#check** easy
-  - **theorem** hard : FermatLastTheorem :=
+
+#check easy
+
+theorem hard : FermatLastTheorem :=
   sorry
-  - **#check** hard
+
+#check hard
 ```
 
 If you manage to construct an expression of type FermatLastTheorem and Lean accepts it as a term of that type, you have done something very impressive. (Using sorry is cheating, and Lean knows it.) So now you know the game. All that is left to learn are the rules.
@@ -75,27 +80,27 @@ This book is complementary to a companion tutorial, [Theorem Proving in Lean](h
 Another thing that distinguishes *Mathematics in Lean* from *Theorem Proving in Lean* is that here we place a much greater emphasis on the use of *tactics*. Given that we are trying to build complex expressions, Lean offers two ways of going about it: we can write down the expressions themselves (that is, suitable text descriptions thereof), or we can provide Lean with *instructions* as to how to construct them. For example, the following expression represents a proof of the fact that if n is even then so is m * n:
 
 ```
-  **example** : ∀ m n : Nat, Even n → Even (m * n) := **fun** m n ⟨k, (hk : n = k + k)⟩ ↦
-  **have** hmn : m * n = m * k + m * k := **by** rw [hk, mul_add]
-  **show** ∃ l, m * n = l + l **from** ⟨_, hmn⟩
+example : ∀ m n : Nat, Even n → Even (m * n) := fun m n ⟨k, (hk : n = k + k)⟩ ↦
+  have hmn : m * n = m * k + m * k := by rw [hk, mul_add]
+  show ∃ l, m * n = l + l from ⟨_, hmn⟩
 ```
 
 The *proof term* can be compressed to a single line:
 
 ```
-  **example** : ∀ m n : Nat, Even n → Even (m * n) :=
-  **fun** m n ⟨k, hk⟩ ↦ ⟨m * k, **by** rw [hk, mul_add]⟩
+example : ∀ m n : Nat, Even n → Even (m * n) :=
+fun m n ⟨k, hk⟩ ↦ ⟨m * k, by rw [hk, mul_add]⟩
 ```
   The following is, instead, a *tactic-style* proof of the same theorem, where lines starting with -- are comments, hence ignored by Lean:  
 ```
-  **example** : ∀ m n : Nat, Even n → Even (m * n) := **by**
-  *-- Say m and n are natural numbers, and assume n=2*k.*
+example : ∀ m n : Nat, Even n → Even (m * n) := by
+  -- Say m and n are natural numbers, and assume n=2*k.
   rintro m n ⟨k, hk⟩
-  *-- We need to prove m*n is twice a natural number. Let's show it's twice m*k.*
+  -- We need to prove m*n is twice a natural number. Let's show it's twice m*k.
   use m * k
-  *-- Substitute for n,*
+  -- Substitute for n,
   rw [hk]
-  *-- and now it's obvious.*
+  -- and now it's obvious.
   ring
 ```
 
@@ -106,14 +111,14 @@ The ability to build a proof in small steps with incremental feedback is extreme
 In our example, the tactic proof can also be reduced to a one-liner:
 
 ```
-  **example** : ∀ m n : Nat, Even n → Even (m * n) := **by**
+example : ∀ m n : Nat, Even n → Even (m * n) := by
   rintro m n ⟨k, hk⟩; use m * k; rw [hk]; ring
 ```
 
 Here we have used tactics to carry out small proof steps. But they can also provide substantial automation, and justify longer calculations and bigger inferential steps. For example, we can invoke Lean’s simplifier with specific rules for simplifying statements about parity to prove our theorem automatically.
 
 ```
-  **example** : ∀ m n : Nat, Even n → Even (m * n) := **by**
+example : ∀ m n : Nat, Even n → Even (m * n) := by
   intros; simp [*, parity_simps]
 ```
 
