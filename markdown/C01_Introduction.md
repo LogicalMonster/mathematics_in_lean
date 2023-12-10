@@ -10,34 +10,34 @@ Although you can read a pdf or html version of this book online, it designed to 
 
   1. Install Lean 4 and VS Code following these [installation instructions](https://leanprover-community.github.io/get_started.html).
   2. Make sure you have [git](https://git-scm.com/) installed.
-  3. Follow these [instructions](https://leanprover-community.github.io/install/project.html#working-on-an-existing-project) to fetch the mathematics_in_lean repository and open it up in VS Code.
-  4. Each section in this book has an associated Lean file with examples and exercises. You can find them in the folder MIL, organized by chapter. We strongly recommend making a copy of that folder and experimenting and doing the exercises in that copy. This leaves the originals intact, and it also makes it easier to update the repository as it changes (see below). You can call the copy my_files or whatever you want and use it to create your own Lean files as well.
+  3. Follow these [instructions](https://leanprover-community.github.io/install/project.html#working-on-an-existing-project) to fetch the `mathematics_in_lean` repository and open it up in VS Code.
+  4. Each section in this book has an associated Lean file with examples and exercises. You can find them in the folder `MIL`, organized by chapter. We strongly recommend making a copy of that folder and experimenting and doing the exercises in that copy. This leaves the originals intact, and it also makes it easier to update the repository as it changes (see below). You can call the copy `my_files` or whatever you want and use it to create your own Lean files as well.
 
 At that point, you can open the textbook in a side panel in VS Code as follows:
 
-  1. Type ctrl-shift-P (command-shift-P in macOS).
-  2. Type Lean 4: Open Documentation View in the bar that appears, and then press return. (You can press return to select it as soon as it is highlighted in the menu.)
-  3. In the window that opens, click on Open documentation of current project.
+  1. Type `ctrl-shift-P` (`command-shift-P` in macOS).
+  2. Type `Lean 4: Open Documentation View` in the bar that appears, and then press return. (You can press return to select it as soon as it is highlighted in the menu.)
+  3. In the window that opens, click on `Open documentation of current project`.
 
 Alternatively, you can run Lean and VS Code in the cloud, using [Gitpod](https://gitpod.io/). You can find instructions as to how to do that on the Mathematics in Lean [project page](https://github.com/leanprover-community/mathematics_in_lean) on Github. We still recommend working in a copy of the MIL folder, as described above.
 
-This textbook and the associated repository are still a work in progress. You can update the repository by typing git pull followed by lake exe cache get inside the mathematics_in_lean folder. (This assumes that you have not changed the contents of the MIL folder, which is why we suggested making a copy.)
+This textbook and the associated repository are still a work in progress. You can update the repository by typing `git pull` followed by `lake exe cache get` inside the `mathematics_in_lean` folder. (This assumes that you have not changed the contents of the `MIL` folder, which is why we suggested making a copy.)
 
-We intend for you to work on the exercises in the MIL folder while reading the textbook, which contains explanations, instructions, and hints. The text will often include examples, like this one:
+We intend for you to work on the exercises in the `MIL` folder while reading the textbook, which contains explanations, instructions, and hints. The text will often include examples, like this one:
 
 ```
   #eval "Hello, World!"
 ```
 
-You should be able to find the corresponding example in the associated Lean file. If you click on the line, VS Code will show you Lean’s feedback in the Lean Goal window, and if you hover your cursor over the #eval command VS Code will show you Lean’s response to this command in a pop-up window. You are encouraged to edit the file and try examples of your own.
+You should be able to find the corresponding example in the associated Lean file. If you click on the line, VS Code will show you Lean’s feedback in the `Lean Goal` window, and if you hover your cursor over the `#eval` command VS Code will show you Lean’s response to this command in a pop-up window. You are encouraged to edit the file and try examples of your own.
 
-This book moreover provides lots of challenging exercises for you to try. Don’t rush past these! Lean is about *doing* mathematics interactively, not just reading about it. Working through the exercises is central to the experience. You don’t have to do all of them; when you feel comfortable that you have mastered the relevant skills, feel free to move on. You can always compare your solutions to the ones in the solutions folder associated with each section.
+This book moreover provides lots of challenging exercises for you to try. Don’t rush past these! Lean is about *doing* mathematics interactively, not just reading about it. Working through the exercises is central to the experience. You don’t have to do all of them; when you feel comfortable that you have mastered the relevant skills, feel free to move on. You can always compare your solutions to the ones in the `solutions` folder associated with each section.
 
 ## 1.2.  Overview
 
 Put simply, Lean is a tool for building complex expressions in a formal language known as *dependent type theory*.
 
-Every expression has a *type*, and you can use the #check command to print it. Some expressions have types like ℕ or ℕ → ℕ. These are mathematical objects.
+Every expression has a *type*, and you can use the #check command to print it. Some expressions have types like *ℕ* or *ℕ → ℕ*. These are mathematical objects.
 
 ```
 #check 2 + 2
@@ -59,7 +59,7 @@ def FermatLastTheorem :=
 #check FermatLastTheorem
 ```
 
-Some expressions have a type, P, where P itself has type Prop. Such an expression is a proof of the proposition P.
+Some expressions have a type, *P*, where *P* itself has type *Prop*. Such an expression is a proof of the proposition *P*.
 
 ```
 theorem easy : 2 + 2 = 4 :=
@@ -73,11 +73,11 @@ theorem hard : FermatLastTheorem :=
 #check hard
 ```
 
-If you manage to construct an expression of type FermatLastTheorem and Lean accepts it as a term of that type, you have done something very impressive. (Using sorry is cheating, and Lean knows it.) So now you know the game. All that is left to learn are the rules.
+If you manage to construct an expression of type `FermatLastTheorem` and Lean accepts it as a term of that type, you have done something very impressive. (Using `sorry` is cheating, and Lean knows it.) So now you know the game. All that is left to learn are the rules.
 
 This book is complementary to a companion tutorial, [Theorem Proving in Lean](https://leanprover.github.io/theorem_proving_in_lean4/), which provides a more thorough introduction to the underlying logical framework and core syntax of Lean. *Theorem Proving in Lean* is for people who prefer to read a user manual cover to cover before using a new dishwasher. If you are the kind of person who prefers to hit the *start* button and figure out how to activate the potscrubber feature later, it makes more sense to start here and refer back to *Theorem Proving in Lean* as necessary.
 
-Another thing that distinguishes *Mathematics in Lean* from *Theorem Proving in Lean* is that here we place a much greater emphasis on the use of *tactics*. Given that we are trying to build complex expressions, Lean offers two ways of going about it: we can write down the expressions themselves (that is, suitable text descriptions thereof), or we can provide Lean with *instructions* as to how to construct them. For example, the following expression represents a proof of the fact that if n is even then so is m * n:
+Another thing that distinguishes *Mathematics in Lean* from *Theorem Proving in Lean* is that here we place a much greater emphasis on the use of *tactics*. Given that we are trying to build complex expressions, Lean offers two ways of going about it: we can write down the expressions themselves (that is, suitable text descriptions thereof), or we can provide Lean with *instructions* as to how to construct them. For example, the following expression represents a proof of the fact that if `n` is even then so is `m * n`:
 
 ```
 example : ∀ m n : Nat, Even n → Even (m * n) := fun m n ⟨k, (hk : n = k + k)⟩ ↦
@@ -91,7 +91,7 @@ The *proof term* can be compressed to a single line:
 example : ∀ m n : Nat, Even n → Even (m * n) :=
 fun m n ⟨k, hk⟩ ↦ ⟨m * k, by rw [hk, mul_add]⟩
 ```
-  The following is, instead, a *tactic-style* proof of the same theorem, where lines starting with -- are comments, hence ignored by Lean:  
+  The following is, instead, a *tactic-style* proof of the same theorem, where lines starting with `--` are comments, hence ignored by Lean:  
 ```
 example : ∀ m n : Nat, Even n → Even (m * n) := by
   -- Say m and n are natural numbers, and assume n=2*k.
@@ -104,9 +104,9 @@ example : ∀ m n : Nat, Even n → Even (m * n) := by
   ring
 ```
 
-As you enter each line of such a proof in VS Code, Lean displays the *proof state* in a separate window, telling you what facts you have already established and what tasks remain to prove your theorem. You can replay the proof by stepping through the lines, since Lean will continue to show you the state of the proof at the point where the cursor is. In this example, you will then see that the first line of the proof introduces m and n (we could have renamed them at that point, if we wanted to), and also decomposes the hypothesis Even n to a k and the assumption that n = 2 * k. The second line, use m * k, declares that we are going to show that m * n is even by showing m * n = 2 * (m * k). The next line uses the rewrite tactic to replace n by 2 * k in the goal, and the ring tactic solves the resulting goal m * (2 * k) = 2 * (m * k).
+As you enter each line of such a proof in VS Code, Lean displays the *proof state* in a separate window, telling you what facts you have already established and what tasks remain to prove your theorem. You can replay the proof by stepping through the lines, since Lean will continue to show you the state of the proof at the point where the cursor is. In this example, you will then see that the first line of the proof introduces `m` and `n` (we could have renamed them at that point, if we wanted to), and also decomposes the hypothesis `Even n` to a `k` and the assumption that `n = 2 * k`. The second line, `use m * k`, declares that we are going to show that `m * n` is even by showing `m * n = 2 * (m * k)`. The next line uses the `rewrite` tactic to replace `n` by `2 * k` in the goal, and the `ring` tactic solves the resulting goal `m * (2 * k) = 2 * (m * k)`.
 
-The ability to build a proof in small steps with incremental feedback is extremely powerful. For that reason, tactic proofs are often easier and quicker to write than proof terms. There isn’t a sharp distinction between the two: tactic proofs can be inserted in proof terms, as we did with the phrase by rw [hk, mul_left_comm] in the example above. We will also see that, conversely, it is often useful to insert a short proof term in the middle of a tactic proof. That said, in this book, our emphasis will be on the use of tactics.
+The ability to build a proof in small steps with incremental feedback is extremely powerful. For that reason, tactic proofs are often easier and quicker to write than proof terms. There isn’t a sharp distinction between the two: tactic proofs can be inserted in proof terms, as we did with the phrase `by rw [hk, mul_left_comm]` in the example above. We will also see that, conversely, it is often useful to insert a short proof term in the middle of a tactic proof. That said, in this book, our emphasis will be on the use of tactics.
 
 In our example, the tactic proof can also be reduced to a one-liner:
 
