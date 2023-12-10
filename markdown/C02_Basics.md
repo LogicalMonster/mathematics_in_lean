@@ -218,10 +218,10 @@ example (a b c : ℕ) (h : a + b = c) : (a + b) * (a + b) = a * c + b * c := by
 
 ## 2.2.  Proving Identities in Algebraic Structures
 
-Mathematically, a ring consists of a collection of objects, $R$, operations $+$ $\times$, and constants $0$ and $1$, and an operation $x\mapsto -x$ such that:
+Mathematically, a ring consists of a collection of objects,  $R$ , operations  $+$   $\times$ , and constants  $0$  and  $1$ , and an operation  $x\mapsto -x$  such that:
 
-  - $R$ with $+$ is an *abelian group*, with $0$ as the additive identity and negation as inverse.
-  - Multiplication is associative with identity $1$, and multiplication distributes over addition.
+  - $R$ with  $+$  is an *abelian group*, with  $0$  as the additive identity and negation as inverse.
+  - Multiplication is associative with identity  $1$ , and multiplication distributes over addition.
 
 In Lean, the collection of objects is represented as a *type*, R. The ring axioms are as follows:
 
