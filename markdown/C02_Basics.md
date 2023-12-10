@@ -11,7 +11,7 @@ In Lean, stating a theorem is tantamount to stating a goal, namely, the goal of 
 Let’s try out rw.
 
 ```
-  **example** (a b c : ℝ) : a * b * c = b * (a * c) := **by**
+example (a b c : ℝ) : a * b * c = b * (a * c) := by
   rw [mul_comm a b]
   rw [mul_assoc b a c]
 ```
@@ -23,12 +23,12 @@ You are welcome to make changes to see what happens. You can type the ℝ char
 When a cursor is in the middle of a tactic proof, Lean reports on the current *proof state* in the *Lean infoview* window. As you move your cursor past each step of the proof, you can see the state change. A typical proof state in Lean might look as follows:
 
 ```
-  1 goal
-  x y : ℕ,
-  h₁ : Prime x,
-  h₂ : ¬Even x,
-  h₃ : y > x
-  ⊢ y ≥ 4
+1 goal
+x y : ℕ,
+h₁ : Prime x,
+h₂ : ¬Even x,
+h₃ : y > x
+⊢ y ≥ 4
 ```
 
 The lines before the one that begins with ⊢ denote the *context*: they are the objects and assumptions currently at play. In this example, these include two objects, x and y, each a natural number. They also include three assumptions, labelled h₁, h₂, and h₃. In Lean, everything in a context is labelled with an identifier. You can type these subscripted labels as h\1, h\2, and h\3, but any legal identifiers would do: you can use h1, h2, h3 instead, or foo, bar, and baz. The last line represents the *goal*, that is, the fact to be proved. Sometimes people use *target* for the fact to be proved, and *goal* for the combination of the context and the target. In practice, the intended meaning is usually clear.
@@ -226,16 +226,17 @@ Mathematically, a ring consists of a collection of objects,  $R$ , operations 
 In Lean, the collection of objects is represented as a *type*, R. The ring axioms are as follows:
 
 ```
-  **variable** (R : Type*) [Ring R]
-  - **#check** (add_assoc : ∀ a b c : R, a + b + c = a + (b + c))
-  **#check** (add_comm : ∀ a b : R, a + b = b + a)
-  **#check** (zero_add : ∀ a : R, 0 + a = a)
-  **#check** (add_left_neg : ∀ a : R, -a + a = 0)
-  **#check** (mul_assoc : ∀ a b c : R, a * b * c = a * (b * c))
-  **#check** (mul_one : ∀ a : R, a * 1 = a)
-  **#check** (one_mul : ∀ a : R, 1 * a = a)
-  **#check** (mul_add : ∀ a b c : R, a * (b + c) = a * b + a * c)
-  **#check** (add_mul : ∀ a b c : R, (a + b) * c = a * c + b * c)
+variable (R : Type*) [Ring R]
+
+#check (add_assoc : ∀ a b c : R, a + b + c = a + (b + c))
+#check (add_comm : ∀ a b : R, a + b = b + a)
+#check (zero_add : ∀ a : R, 0 + a = a)
+#check (add_left_neg : ∀ a : R, -a + a = 0)
+#check (mul_assoc : ∀ a b c : R, a * b * c = a * (b * c))
+#check (mul_one : ∀ a : R, a * 1 = a)
+#check (one_mul : ∀ a : R, 1 * a = a)
+#check (mul_add : ∀ a b c : R, a * (b + c) = a * b + a * c)
+#check (add_mul : ∀ a b c : R, (a + b) * c = a * c + b * c)
 ```
 
 You will learn more about the square brackets in the first line later, but for the time being, suffice it to say that the declaration gives us a type, R, and a ring structure on R. Lean then allows us to use generic ring notation with elements of R, and to make use of a library of theorems about rings.
@@ -245,12 +246,16 @@ The names of some of the theorems should look familiar: they are exactly the one
 Not all important properties of the real numbers hold in an arbitrary ring, however. For example, multiplication on the real numbers is commutative, but that does not hold in general. If you have taken a course in linear algebra, you will recognize that, for every  $n$ , the  $n$  by  $n$  matrices of real numbers form a ring in which commutativity usually fails. If we declare R to be a *commutative* ring, in fact, all the theorems in the last section continue to hold when we replace ℝ by R.
 
 ```
-  **variable** (R : Type*) [CommRing R]
-  **variable** (a b c d : R)
-  - **example** : c * b * a = b * (a * c) := **by** ring
-  - **example** : (a + b) * (a + b) = a * a + 2 * (a * b) + b * b := **by** ring
-  **example** : (a + b) * (a - b) = a ^ 2 - b ^ 2 := **by** ring
-  - **example** (hyp : c = d * a + b) (hyp' : b = a * d) : c = 2 * a * d := **by**
+variable (R : Type*) [CommRing R]
+variable (a b c d : R)
+
+example : c * b * a = b * (a * c) := by ring
+
+example : (a + b) * (a + b) = a * a + 2 * (a * b) + b * b := by ring
+
+example : (a + b) * (a - b) = a ^ 2 - b ^ 2 := by ring
+
+example (hyp : c = d * a + b) (hyp' : b = a * d) : c = 2 * a * d := by
   rw [hyp, hyp']
   ring
 ```
@@ -264,13 +269,17 @@ Lean provides an organizational mechanism similar to those used in programming l
 The next example shows that we do not need add_zero or add_right_neg as ring axioms, because they follow from the other axioms.
 
 ```
-  **namespace** MyRing
-  **variable** {R : Type*} [Ring R]
-  - **theorem** add_zero (a : R) : a + 0 = a := **by** rw [add_comm, zero_add]
-  - **theorem** add_right_neg (a : R) : a + -a = 0 := **by** rw [add_comm, add_left_neg]
-  - **#check** MyRing.add_zero
-  **#check** add_zero
-  - **end** MyRing
+namespace MyRing
+variable {R : Type*} [Ring R]
+
+theorem add_zero (a : R) : a + 0 = a := by rw [add_comm, zero_add]
+
+theorem add_right_neg (a : R) : a + -a = 0 := by rw [add_comm, add_left_neg]
+
+#check MyRing.add_zero
+#check add_zero
+
+end MyRing
 ```
 
 The net effect is that we can temporarily reprove a theorem in the library, and then go on using the library version after that. But don’t cheat! In the exercises that follow, take care to use only the general facts about rings that we have proved earlier in this section.
@@ -280,23 +289,24 @@ The net effect is that we can temporarily reprove a theorem in the library, and 
 Here is a useful theorem:
 
 ```
-  **theorem** neg_add_cancel_left (a b : R) : -a + (a + b) = b := **by**
+theorem neg_add_cancel_left (a b : R) : -a + (a + b) = b := by
   rw [← add_assoc, add_left_neg, zero_add]
 ```
 
 Prove the companion version:
 
 ```
-  **theorem** add_neg_cancel_right (a b : R) : a + b + -b = a := **by**
+theorem add_neg_cancel_right (a b : R) : a + b + -b = a := by
   sorry
 ```
 
 Use these to prove the following:
 
 ```
-  **theorem** add_left_cancel {a b c : R} (h : a + b = a + c) : b = c := **by**
+theorem add_left_cancel {a b c : R} (h : a + b = a + c) : b = c := by
   sorry
-  - **theorem** add_right_cancel {a b c : R} (h : a + b = c + b) : a = c := **by**
+
+theorem add_right_cancel {a b c : R} (h : a + b = c + b) : a = c := by
   sorry
 ```
 
@@ -307,8 +317,8 @@ We will now explain the use of the curly braces. Imagine you are in a situation 
 To illustrate, let us show that a * 0 = 0 follows from the ring axioms.
 
 ```
-  **theorem** mul_zero (a : R) : a * 0 = 0 := **by**
-  **have** h : a * 0 + a * 0 = a * 0 + 0 := **by**
+theorem mul_zero (a : R) : a * 0 = 0 := by
+  have h : a * 0 + a * 0 = a * 0 + 0 := by
     rw [← mul_add, add_zero, add_zero]
   rw [add_left_cancel h]
 ```
@@ -320,21 +330,24 @@ We could equally well have closed the proof with apply add_left_cancel h or�
 Remember that multiplication is not assumed to be commutative, so the following theorem also requires some work.
 
 ```
-  **theorem** zero_mul (a : R) : 0 * a = 0 := **by**
+theorem zero_mul (a : R) : 0 * a = 0 := by
   sorry
 ```
 
 By now, you should also be able replace each sorry in the next exercise with a proof, still using only facts about rings that we have established in this section.
 
 ```
-  **theorem** neg_eq_of_add_eq_zero {a b : R} (h : a + b = 0) : -a = b := **by**
+theorem neg_eq_of_add_eq_zero {a b : R} (h : a + b = 0) : -a = b := by
   sorry
-  - **theorem** eq_neg_of_add_eq_zero {a b : R} (h : a + b = 0) : a = -b := **by**
+
+theorem eq_neg_of_add_eq_zero {a b : R} (h : a + b = 0) : a = -b := by
   sorry
-  - **theorem** neg_zero : (-0 : R) = 0 := **by**
+
+theorem neg_zero : (-0 : R) = 0 := by
   apply neg_eq_of_add_eq_zero
   rw [add_zero]
-  **theorem** neg_neg (a : R) : - -a = a := **by**
+
+theorem neg_neg (a : R) : - -a = a := by
   sorry
 ```
 
@@ -342,20 +355,21 @@ We had to use the annotation (-0 : R) instead of 0 in the third theorem be
 
 In Lean, subtraction in a ring is provably equal to addition of the additive inverse.
 ```
-  **example** (a b : R) : a - b = a + -b :=
+example (a b : R) : a - b = a + -b :=
   sub_eq_add_neg a b
 ```
 
 On the real numbers, it is *defined* that way:
 ```
-  **example** (a b : ℝ) : a - b = a + -b :=
+example (a b : ℝ) : a - b = a + -b :=
   rfl
-  **example** (a b : ℝ) : a - b = a + -b := **by**
+
+example (a b : ℝ) : a - b = a + -b := by
   rfl
 ```
   The proof term rfl is short for “reflexivity”. Presenting it as a proof of a - b = a + -b forces Lean to unfold the definition and recognize both sides as being the same. The rfl tactic does the same. This is an instance of what is known as a *definitional equality* in Lean’s underlying logic. This means that not only can one rewrite with sub_eq_add_neg to replace a - b = a + -b, but in some contexts, when dealing with the real numbers, you can use the two sides of the equation interchangeably. For example, you now have enough information to prove the theorem self_sub from the last section:  
 ```
-  **theorem** self_sub (a : R) : a - a = 0 := **by**
+theorem self_sub (a : R) : a - a = 0 := by
   sorry
 ```
 
@@ -364,38 +378,43 @@ Show that you can prove this using rw, but if you replace the arbitrary ring R
 Lean knows that 1 + 1 = 2 holds in any ring. With a bit of effort, you can use that to prove the theorem two_mul from the last section:
 
 ```
-  **theorem** one_add_one_eq_two : 1 + 1 = (2 : R) := **by**
+theorem one_add_one_eq_two : 1 + 1 = (2 : R) := by
   norm_num
-  - **theorem** two_mul (a : R) : 2 * a = a + a := **by**
+
+theorem two_mul (a : R) : 2 * a = a + a := by
   sorry
 ```
 
 We close this section by noting that some of the facts about addition and negation that we established above do not need the full strength of the ring axioms, or even commutativity of addition. The weaker notion of a *group* can be axiomatized as follows:
 
 ```
-  **variable** (A : Type*) [AddGroup A]
-  - **#check** (add_assoc : ∀ a b c : A, a + b + c = a + (b + c))
-  **#check** (zero_add : ∀ a : A, 0 + a = a)
-  **#check** (add_left_neg : ∀ a : A, -a + a = 0)
+variable (A : Type*) [AddGroup A]
+
+#check (add_assoc : ∀ a b c : A, a + b + c = a + (b + c))
+#check (zero_add : ∀ a : A, 0 + a = a)
+#check (add_left_neg : ∀ a : A, -a + a = 0)
 ```
 
 It is conventional to use additive notation when the group operation is commutative, and multiplicative notation otherwise. So Lean defines a multiplicative version as well as the additive version (and also their abelian variants, AddCommGroup and CommGroup).
 
 ```
-  **variable** {G : Type*} [Group G]
-  - **#check** (mul_assoc : ∀ a b c : G, a * b * c = a * (b * c))
-  **#check** (one_mul : ∀ a : G, 1 * a = a)
-  **#check** (mul_left_inv : ∀ a : G, a⁻¹ * a = 1)
+variable {G : Type*} [Group G]
+
+#check (mul_assoc : ∀ a b c : G, a * b * c = a * (b * c))
+#check (one_mul : ∀ a : G, 1 * a = a)
+#check (mul_left_inv : ∀ a : G, a⁻¹ * a = 1)
 ```
 
 If you are feeling cocky, try proving the following facts about groups, using only these axioms. You will need to prove a number of helper lemmas along the way. The proofs we have carried out in this section provide some hints.
 
 ```
-  **theorem** mul_right_inv (a : G) : a * a⁻¹ = 1 := **by**
+theorem mul_right_inv (a : G) : a * a⁻¹ = 1 := by
   sorry
-  - **theorem** mul_one (a : G) : a * 1 = a := **by**
+
+theorem mul_one (a : G) : a * 1 = a := by
   sorry
-  - **theorem** mul_inv_rev (a b : G) : (a * b)⁻¹ = b⁻¹ * a⁻¹ := **by**
+
+theorem mul_inv_rev (a b : G) : (a * b)⁻¹ = b⁻¹ * a⁻¹ := by
   sorry
 ```
 
