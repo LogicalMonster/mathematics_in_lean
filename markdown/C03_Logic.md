@@ -939,7 +939,7 @@ Lean 也支持计算机科学家的析取的模式匹配语法。现在 `cases` 
 名字 `inl` 和 `inr` 是 “intro left” 和 “intro right”的简称。 使用 `case` 的优势是你可以按任意顺序证明案例；Lean 使用标记来找到相关的目标。如果你不关心那个，你可以使用 `next`，或者 `match`，甚至可以使用匹配模式的 `have`.
 
 ```
-示例 ：x < |y| → x < y ∨ x < -y := by
+example : x < |y| → x < y ∨ x < -y := by
   cases le_or_gt 0 y
   next h =>
     rw [abs_of_nonneg h]
@@ -949,7 +949,7 @@ Lean 也支持计算机科学家的析取的模式匹配语法。现在 `cases` 
     intro h; right; exact h
 
 
-示例 ：x < |y| → x < y ∨ x < -y := by
+example : x < |y| → x < y ∨ x < -y := by
   match le_or_gt 0 y with
     | Or.inl h =>
       rw [abs_of_nonneg h]
@@ -957,6 +957,7 @@ Lean 也支持计算机科学家的析取的模式匹配语法。现在 `cases` 
     | Or.inr h =>
       rw [abs_of_neg h]
       intro h; right; exact h
+```
 
 在`match`的情况下，我们需要使用原始方法证明一个析取的全名`Or.inl`和`Or.inr`。在这个教科书中，我们通常会使用`rcases`来对析取的情况进行分解。
 
