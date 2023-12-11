@@ -14,15 +14,6 @@ Although you can read a pdf or html version of this book online, it designed to 
 
 尽管你可以在线阅读这本书的pdf或html版本，但它是设计为在VS Code编辑器内部交互式运行Lean并进行阅读的。开始如下：
 
-1. Install Lean 4 and VS Code following these [installation instructions](https://leanprover-community.github.io/get_started.html).
-
-2. Make sure you have [git](https://git-scm.com/) installed.
-
-3. Follow these [instructions](https://leanprover-community.github.io/install/project.html#working-on-an-existing-project) to fetch the `mathematics_in_lean` repository and open it up in VS Code.
-
-4. Each section in this book has an associated Lean file with examples and exercises. You can find them in the folder `MIL`, organized by chapter. We strongly recommend making a copy of that folder and experimenting and doing the exercises in that copy. This leaves the originals intact, and it also makes it easier to update the repository as it changes (see below). You can call the copy `my_files` or whatever you want and use it to create your own Lean files as well.
-
-
 1. 按照这些[安装指南](https://leanprover-community.github.io/get_started.html)安装Lean 4和VS Code。
 
 2. 确保你已经安装了 [git](https://git-scm.com/)。
