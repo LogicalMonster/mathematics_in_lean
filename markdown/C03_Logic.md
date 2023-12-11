@@ -93,7 +93,7 @@ def FnLb (f : ℝ → ℝ) (a : ℝ) : Prop :=
 在下一个例子中，`fun x ↦ f x + g x` 是映射 `x` 到 `f x + g x` 的函数。从表达式 `f x + g x` 到此函数的过程在类型理论中称为 lambda 抽象。
 
 ```
-示例 (hfa : FnUb f a) (hgb : FnUb g b) : FnUb (fun x ↦ f x + g x) (a + b) := by
+example (hfa : FnUb f a) (hgb : FnUb g b) : FnUb (fun x ↦ f x + g x) (a + b) := by
   intro x
   dsimp
   apply add_le_add
@@ -106,28 +106,28 @@ def FnLb (f : ℝ → ℝ) (a : ℝ) : Prop :=
 证明的剩下部分是常规的。最后两个`apply`命令强制Lean展开假设中的`FnUb`的定义。试试进行这些的类似证明：
 
 ```
-示例 (hfa : FnLb f a) (hgb : FnLb g b) : FnLb (fun x ↦ f x + g x) (a + b) :=
-  抱歉
+example (hfa : FnLb f a) (hgb : FnLb g b) : FnLb (fun x ↦ f x + g x) (a + b) :=
+  sorry
 
-示例 (nnf : FnLb f 0) (nng : FnLb g 0) : FnLb (fun x ↦ f x * g x) 0 :=
-  抱歉
+example (nnf : FnLb f 0) (nng : FnLb g 0) : FnLb (fun x ↦ f x * g x) 0 :=
+  sorry
 
-示例 (hfa : FnUb f a) (hgb : FnUb g b) (nng : FnLb g 0) (nna : 0 ≤ a) :
+example (hfa : FnUb f a) (hgb : FnUb g b) (nng : FnLb g 0) (nna : 0 ≤ a) :
     FnUb (fun x ↦ f x * g x) (a * b) :=
-  抱歉
+  sorry
 ```
 
 即使我们已经为从实数到实数的函数定义了`FnUb`和`FnUb`，你应该知道这些定义和证明更加通用。这些定义对于任何两种类型之间的函数都是有意义的，只要在它们的值域上有一种序的概念。检查那个定理`add_le_add`的类型显示它适用于任何结构只要这是“有序加法交换幺半群”；现在不要关心这代表什么，但值得知道的是，自然数、整数、有理数和实数都是实例。所以如果我们在这个通用性水平上证明定理`fnUb_add`，那么这个定理将应用于所有这些实例。
 
 ```
-变量 {α : 类型*} {R : 类型*} [有序取消加交换幺半群 R]
+variable {α : Type*} {R : Type*} [OrderedCancelAddCommMonoid R]
 
-#检查 add_le_add
+#check add_le_add
 
-定义 FnUb' (f : α → R) (a : R) : 命题 :=
+def FnUb' (f : α → R) (a : R) : Prop :=
   ∀ x, f x ≤ a
 
-定理 fnUb_add {f g : α → R} {a b : R} (hfa : FnUb' f a) (hgb : FnUb' g b) :
+theorem fnUb_add {f g : α → R} {a b : R} (hfa : FnUb' f a) (hgb : FnUb' g b) :
     FnUb' (fun x ↦ f x + g x) (a + b) := fun x ↦ add_le_add (hfa x) (hgb x)
 ```
 
@@ -136,7 +136,7 @@ def FnLb (f : ℝ → ℝ) (a : ℝ) : Prop :=
 作为隐藏全局量词的另一个例子，Mathlib定义了一个谓词`Monotone`，标示一个函数在其参数中是非减的：
 
 ```
-示例 (f : ℝ → ℝ) (h : Monotone f) : ∀ {a b}, a ≤ b → f a ≤ f b :=
+example (f : ℝ → ℝ) (h : Monotone f) : ∀ {a b}, a ≤ b → f a ≤ f b :=
   @h
 ```
 
@@ -145,7 +145,7 @@ def FnLb (f : ℝ → ℝ) (a : ℝ) : Prop :=
 证明关于单调性的语句涉及到使用`intro`来引入两个变量，例如，`a`和`b`，以及假设`a ≤ b`。要*使用*单调性假设，你可以将其应用于合适的参数和假设，然后将生成的表达式应用于目标。或者你可以将其应用于目标并让Lean帮助你通过显示剩余的假设作为新的子目标来向后工作。
 
 ```
-示例 (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f x + g x := by
+example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f x + g x := by
   intro a b aleb
   apply add_le_add
   apply mf aleb
@@ -155,7 +155,7 @@ def FnLb (f : ℝ → ℝ) (a : ℝ) : Prop :=
 当证明这么短的时候，提供一个证明项通常会更方便。为描述一个临时引入对象`a`和`b`以及假设`aleb`的证明，Lean使用符号`fun a b aleb ↦ ...`。这与表达式`fun x ↦ x^2`这样以临时命名一个对象，`x`，然后用它来描述一个值的方式有类似性。所以在前面的证明中的`intro`命令对应于下一个证明项中的lambda抽象。然后`apply`命令对应于构建定理应用到它的参数。
 
 ```
-示例 (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f x + g x :=
+example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f x + g x :=
   fun a b aleb ↦ add_le_add (mf aleb) (mg aleb)
 ```
 
@@ -164,11 +164,11 @@ def FnLb (f : ℝ → ℝ) (a : ℝ) : Prop :=
 试着证明这些，使用策略或者证明项：
 
 ```
-示例 {c : ℝ} (mf : Monotone f) (nnc : 0 ≤ c) : Monotone fun x ↦ c * f x :=
-  抱歉
+example {c : ℝ} (mf : Monotone f) (nnc : 0 ≤ c) : Monotone fun x ↦ c * f x :=
+  sorry
 
-示例 (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f (g x) :=
-  抱歉
+example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f (g x) :=
+  sorry
 ```
 
 以下是一些更多的例子。如果一个从$\Bbb R$到$\Bbb R$的函数$f$满足$f(-x) = f(x)$对于每一个$x$都成立，那么我们说它是*偶数*；如果$f(-x) = -f(x)$对于每一个$x$都成立，那么我们说它是*奇数*。下面的例子正式定义了这两个概念，并建立了一个关于它们的事实。你可以完成其他的证明。
@@ -206,52 +206,52 @@ Mathlib包含了一个很好的用于操作集合的库。请记住，Lean不使
 如果`s`和`t`的类型是`Set α`，那么子集关系`s ⊆ t`被定义为`∀ {x : α}, x ∈ s → x ∈ t`。量词中的变量被标记为隐式的，使得给定`h : s ⊆ t`和`h' : x ∈ s`，我们可以写`h h'`作为`x ∈ t`的理由。下面的例子提供了一个战术证明和一个证明项，证明了子集关系的自反性，并要求你对传递性做同样的事。
 
 ```
-变量 {α : Type*} (r s t : Set α)
+variable {α : Type*} (r s t : Set α)
 
-例子：s ⊆ s := by
-  任意 x xs
-  明确的 xs
+example : s ⊆ s := by
+  intro x xs
+  exact xs
 
-定理 子集.refl : s ⊆ s := fun x xs ↦ xs
+theorem Subset.refl : s ⊆ s := fun x xs ↦ xs
 
-定理 子集.trans : r ⊆ s → s ⊆ t → r ⊆ t := by
-  对不起
+theorem Subset.trans : r ⊆ s → s ⊆ t → r ⊆ t := by
+  sorry
 ```
 
 正如我们为函数定义了`FnUb`，我们可以定义`SetUb s a`表示`a`是集合`s`的一个上界，假设`s`是一种与之相关的具有序的某种类型的元素的集合。在下一个例子中，我们要你证明，如果`a`是`s`的一个界，并且`a ≤ b`，那么`b`也是`s`的一个界。
 
 ```
-变量 {α : Type*} [PartialOrder α]
-变量 (s : Set α) (a b : α)
+variable {α : Type*} [PartialOrder α]
+variable (s : Set α) (a b : α)
 
 def SetUb (s : Set α) (a : α) :=
   ∀ x, x ∈ s → x ≤ a
 
-例子 (h : SetUb s a) (h' : a ≤ b) : SetUb s b :=
-  对不起
+example (h : SetUb s a) (h' : a ≤ b) : SetUb s b :=
+  sorry
 ```
 
 我们以一个最后的重要例子结束这一部分。如果对于每个$x_1$和$x_2$，如果$f(x_1) = f(x_2)$就有$x_1 = x_2$，那么我们就说函数$f$是*单射*。Mathlib用`x₁`和`x₂`隐式定义了`Function.Injective f`。下一个例子显示，在实数上，添加常数的任何函数都是单射的。然后，我们要求你证明，如果乘以一个非零常数，那么也是单射的，可以用例子中的引理名作为灵感来源。请记住，在猜测引理名的开头之后，你应该使用Ctrl-space补全。
 
 ```
-打开 Function
+open Function
 
-例子 (c : ℝ) : 喷射器 能 x ↦ x + c := by
-  介绍 x₁ x₂ h'
-  确切的 (add_left_inj c).mp h'
+example (c : ℝ) : Injective fun x ↦ x + c := by
+  intro x₁ x₂ h'
+  exact (add_left_inj c).mp h'
 
-例子{c : ℝ} (h : c ≠ 0) : 注射器 能 x ↦ c * x := by
-  对不起
+example {c : ℝ} (h : c ≠ 0) : Injective fun x ↦ c * x := by
+  sorry
 ```
 
 最后，证明两个单射函数的组合是单射的：
 
 ```
-变量 {α : Type*} {β : Type*} {γ : Type*}
-变量 {g : β → γ} {f : α → β}
+variable {α : Type*} {β : Type*} {γ : Type*}
+variable {g : β → γ} {f : α → β}
 
-例子 (injg : Injective g) (injf : Injective f) : Injective fun x ↦ g (f x) := by
-  对不起
+example (injg : Injective g) (injf : Injective f) : Injective fun x ↦ g (f x) := by
+  sorry
 ```
 
 ## 3.2. 存在量词
@@ -261,7 +261,7 @@ def SetUb (s : Set α) (a : α) :=
 我们可以通过几种方式将信息放在一起。给定一个以存在量词开始的目标，`use` 策略用于提供对象，留下证明属性的目标。
 
 ```
-例子 : ∃ x : ℝ, 2 < x ∧ x < 3 := by
+example : ∃ x : ℝ, 2 < x ∧ x < 3 := by
   use 5 / 2
   norm_num
 ```
@@ -269,7 +269,7 @@ def SetUb (s : Set α) (a : α) :=
 您可以给 `use` 策略提供证据以及数据：
 
 ```
-例子 : ∃ x : ℝ, 2 < x ∧ x < 3 := by
+example : ∃ x : ℝ, 2 < x ∧ x < 3 := by
   have h1 : 2 < (5 : ℝ) / 2 := by norm_num
   have h2 : (5 : ℝ) / 2 < 3 := by norm_num
   use 5 / 2, h1, h2
@@ -278,7 +278,7 @@ def SetUb (s : Set α) (a : α) :=
 实际上，`use` 策略会自动尝试使用可用的假设。
 
 ```
-例子 : ∃ x : ℝ, 2 < x ∧ x < 3 := by
+example : ∃ x : ℝ, 2 < x ∧ x < 3 := by
   have h : 2 < (5 : ℝ) / 2 ∧ (5 : ℝ) / 2 < 3 := by norm_num
   use 5 / 2
 ```
@@ -286,7 +286,7 @@ def SetUb (s : Set α) (a : α) :=
 或者，我们可以使用 Lean 的*匿名构造符*表示法来构造存在量词的证明。
 
 ```
-例子 : ∃ x : ℝ, 2 < x ∧ x < 3 :=
+example : ∃ x : ℝ, 2 < x ∧ x < 3 :=
   have h : 2 < (5 : ℝ) / 2 ∧ (5 : ℝ) / 2 < 3 := by norm_num
   ⟨5 / 2, h⟩
 ```
@@ -294,7 +294,7 @@ def SetUb (s : Set α) (a : α) :=
 注意这里没有 `by`；在这里我们给出了一个显式的证明项。左右角括号可以分别输入为 `\<` 和 `\>` ，它们告诉 Lean 使用适当的构造来整合给出的数据以适应当前的目标。我们可以在不先进入策略模式的情况下使用这个表示法：
 
 ```
-例子 : ∃ x : ℝ, 2 < x ∧ x < 3 :=
+example : ∃ x : ℝ, 2 < x ∧ x < 3 :=
   ⟨5 / 2, by norm_num⟩
 ```
 
@@ -317,9 +317,9 @@ def FnHasLb (f : ℝ → ℝ) :=
 我们可以使用上一节的定理 `FnUb_add` 来证明，如果 `f` 和 `g` 有上界，那么 `fun x ↦ f x + g x` 也有上界。
 
 ```
-变量 {f g : ℝ → ℝ}
+variable {f g : ℝ → ℝ}
 
-例子 (ubf : FnHasUb f) (ubg : FnHasUb g) : FnHasUb fun x ↦ f x + g x := by
+example (ubf : FnHasUb f) (ubg : FnHasUb g) : FnHasUb fun x ↦ f x + g x := by
   rcases ubf with ⟨a, ubfa⟩
   rcases ubg with ⟨b, ubgb⟩
   use a + b
@@ -331,17 +331,17 @@ def FnHasLb (f : ℝ → ℝ) :=
 尝试使用此方法来建立以下内容。你可能会发现，将上一节中的一些例子转化为命名定理（如我们所做的 `fn_ub_add`）或者可以直接将论点插入到证明中，将会很有帮助。
 
 ```
-例子 (lbf : FnHasLb f) (lbg : FnHasLb g) : FnHasLb fun x ↦ f x + g x := by
+example (lbf : FnHasLb f) (lbg : FnHasLb g) : FnHasLb fun x ↦ f x + g x := by
   sorry
 
-例子 {c : ℝ} (ubf : FnHasUb f) (h : c ≥ 0) : FnHasUb fun x ↦ c * f x := by
+example {c : ℝ} (ubf : FnHasUb f) (h : c ≥ 0) : FnHasUb fun x ↦ c * f x := by
   sorry
 ```
 
 `rcases` 中的 “r” 代表 “递归”，因为它允许我们使用任意复杂的模式来解析嵌套数据。`rintro` 策略是 `intro` 和 `rcases` 的组合：
 
 ```
-例子 : FnHasUb f → FnHasUb g → FnHasUb fun x ↦ f x + g x := by
+example : FnHasUb f → FnHasUb g → FnHasUb fun x ↦ f x + g x := by
   rintro ⟨a, ubfa⟩ ⟨b, ubgb⟩
   exact ⟨a + b, fnUb_add ubfa ubgb⟩
 ```
@@ -349,14 +349,14 @@ def FnHasLb (f : ℝ → ℝ) :=
 实际上，Lean 也支持在表达式和证明项中的模式匹配函数：
 
 ```
-例子 : FnHasUb f → FnHasUb g → FnHasUb fun x ↦ f x + g x :=
+example : FnHasUb f → FnHasUb g → FnHasUb fun x ↦ f x + g x :=
   fun ⟨a, ubfa⟩ ⟨b, ubgb⟩ ↦ ⟨a + b, fnUb_add ubfa ubgb⟩
 ```
 
 在假设中解包信息的任务如此重要，以至于Lean和Mathlib提供了多种方式来实现它。例如，`obtain`策略提供了建议语法：
 
 ```
-示例 (ubf : FnHasUb f) (ubg : FnHasUb g) : FnHasUb fun x ↦ f x + g x := by
+example (ubf : FnHasUb f) (ubg : FnHasUb g) : FnHasUb fun x ↦ f x + g x := by
   obtain ⟨a, ubfa⟩ := ubf
   obtain ⟨b, ubgb⟩ := ubg
   exact ⟨a + b, fnUb_add ubfa ubgb⟩
@@ -367,26 +367,26 @@ def FnHasLb (f : ℝ → ℝ) :=
 Lean还支持与其他函数式编程语言类似的语法：
 
 ```
-示例 (ubf : FnHasUb f) (ubg : FnHasUb g) : FnHasUb fun x ↦ f x + g x := by
+example (ubf : FnHasUb f) (ubg : FnHasUb g) : FnHasUb fun x ↦ f x + g x := by
   cases ubf
   case intro a ubfa =>
     cases ubg
     case intro b ubgb =>
       exact ⟨a + b, fnUb_add ubfa ubgb⟩
 
-示例 (ubf : FnHasUb f) (ubg : FnHasUb g) : FnHasUb fun x ↦ f x + g x := by
+example (ubf : FnHasUb f) (ubg : FnHasUb g) : FnHasUb fun x ↦ f x + g x := by
   cases ubf
   next a ubfa =>
     cases ubg
     next b ubgb =>
       exact ⟨a + b, fnUb_add ubfa ubgb⟩
 
-示例 (ubf : FnHasUb f) (ubg : FnHasUb g) : FnHasUb fun x ↦ f x + g x := by
+example (ubf : FnHasUb f) (ubg : FnHasUb g) : FnHasUb fun x ↦ f x + g x := by
   match ubf, ubg with
     | ⟨a, ubfa⟩, ⟨b, ubgb⟩ =>
       exact ⟨a + b, fnUb_add ubfa ubgb⟩
 
-示例 (ubf : FnHasUb f) (ubg : FnHasUb g) : FnHasUb fun x ↦ f x + g x :=
+example (ubf : FnHasUb f) (ubg : FnHasUb g) : FnHasUb fun x ↦ f x + g x :=
   match ubf, ubg with
     | ⟨a, ubfa⟩, ⟨b, ubgb⟩ =>
       ⟨a + b, fnUb_add ubfa ubgb⟩
@@ -399,12 +399,12 @@ Lean还支持与其他函数式编程语言类似的语法：
 为了说明 `rcases` 如何被使用，我们证明了一个古老的数学问题：如果两个整数 `x` 和 `y` 都可以被写成两个平方的和，那么它们的乘积 `x * y` 也可以。事实上，对于任何可交换的环，这个陈述都是正确的。在下一个例子中，`rcases` 一次解包两个存在性量词。然后我们将需要用来表示 `x * y` 为平方的和的魔法值作为列表提供给 `use` 语句，然后我们使用 `ring` 来验证它们是否有效。
 
 ```
-变量 {α : Type*} [CommRing α]
+variable {α : Type*} [CommRing α]
 
 def SumOfSquares (x : α) :=
   ∃ a b, x = a ^ 2 + b ^ 2
 
-定理 sumOfSquares_mul {x y : α} (sosx : SumOfSquares x) (sosy : SumOfSquares y) :
+theorem sumOfSquares_mul {x y : α} (sosx : SumOfSquares x) (sosy : SumOfSquares y) :
     SumOfSquares (x * y) := by
   rcases sosx with ⟨a, b, xeq⟩
   rcases sosy with ⟨c, d, yeq⟩
@@ -418,7 +418,7 @@ def SumOfSquares (x : α) :=
 在存在量词中解包一个方程，然后使用它来重写目标中的表达式的模式经常出现，甚至 `rcases` 策略提供了一个缩写：如果你在新的标识符位置使用关键字 `rfl`，`rcases` 将自动执行重写（这个技巧不能用于模式匹配的 lambda）。
 
 ```
-定理 sumOfSquares_mul' {x y : α} (sosx : SumOfSquares x) (sosy : SumOfSquares y) :
+theorem sumOfSquares_mul' {x y : α} (sosx : SumOfSquares x) (sosy : SumOfSquares y) :
     SumOfSquares (x * y) := by
   rcases sosx with ⟨a, b, rfl⟩
   rcases sosy with ⟨c, d, rfl⟩
@@ -429,7 +429,7 @@ def SumOfSquares (x : α) :=
 就像通用量词一样，如果你知道如何发现它们，你可以在各处找到存在量词。例如，可分性隐含了一个“存在”声明。
 
 ```
-示例 (divab : a ∣ b) (divbc : b ∣ c) : a ∣ c := by
+example (divab : a ∣ b) (divbc : b ∣ c) : a ∣ c := by
   rcases divab with ⟨d, beq⟩
   rcases divbc with ⟨e, ceq⟩
   rw [ceq, beq]
@@ -441,14 +441,14 @@ def SumOfSquares (x : α) :=
 然后尝试证明以下内容：
 
 ```
-示例 (divab : a ∣ b) (divac : a ∣ c) : a ∣ b + c := by
+example (divab : a ∣ b) (divac : a ∣ c) : a ∣ b + c := by
   sorry
 ```
 
 对于另一个重要的例子，如果对于函数 $f : \alpha \to \beta$，对于 codomain 中的每一个 $y$，$\beta$，在 domain，$\alpha$，中存在一个 $x$ 使得 $f(x) = y$，则称函数是 *surjective*。请注意，这个声明包括了万有和存在量，这解释了为什么接下来的例子为什么会使用 ‘intro’ 和 ‘use’。
 
 ```
-示例 {c : ℝ} : Surjective fun x ↦ x + c := by
+example {c : ℝ} : Surjective fun x ↦ x + c := by
   intro x
   use x - c
   dsimp; ring
@@ -457,14 +457,14 @@ def SumOfSquares (x : α) :=
 使用定理 `mul_div_cancel'` 尝试这个示例。
 
 ```
-示例 {c : ℝ} (h : c ≠ 0) : Surjective fun x ↦ c * x := by
+example {c : ℝ} (h : c ≠ 0) : Surjective fun x ↦ c * x := by
   sorry
 ```
 
 在此之后，值得一提的是存在一个策略，`field_simp`，它会以有用的方式清除分母。它可以与 `ring` 策略一起使用。
 
 ```
-示例 (x y : ℝ) (h : x - y ≠ 0) : (x ^ 2 - y ^ 2) / (x - y) = x + y := by
+example (x y : ℝ) (h : x - y ≠ 0) : (x ^ 2 - y ^ 2) / (x - y) = x + y := by
   field_simp [h]
   ring
 ```
@@ -472,7 +472,7 @@ def SumOfSquares (x : α) :=
 下一个示例通过将其应用于合适的值来使用 surjectivity 假设。请注意，你可以使用 `rcases` 与任何表达式，而不仅仅是假设。
 
 ```
-示例 {f : ℝ → ℝ} (h : Surjective f) : ∃ x, f x ^ 2 = 4 := by
+example {f : ℝ → ℝ} (h : Surjective f) : ∃ x, f x ^ 2 = 4 := by
   rcases h 2 with ⟨x, hx⟩
   use x
   rw [hx]
@@ -482,10 +482,10 @@ def SumOfSquares (x : α) :=
 看看你能否使用这些方法来证明 surjective 函数的构成是 surjective 的。
 
 ```
-变量 {α : Type*} {β : Type*} {γ : Type*}
-变量 {g : β → γ} {f : α → β}
+variable {α : Type*} {β : Type*} {γ : Type*}
+variable {g : β → γ} {f : α → β}
 
-示例 (surjg : Surjective g) (surjf : Surjective f) : Surjective fun x ↦ g (f x) := by
+example (surjg : Surjective g) (surjf : Surjective f) : Surjective fun x ↦ g (f x) := by
   sorry
 ```
 
@@ -496,7 +496,7 @@ def SumOfSquares (x : α) :=
 为了说明，考虑严格排序的不反射性原理 `lt_irrefl`，它说明我们对每一个 `a` 都有 `¬ a < a`。对称性原理 `lt_asymm` 说明我们有 `a < b → ¬ b < a`。让我们证明 `lt_asymm` 是由 `lt_irrefl` 而来的。
 
 ```
-示例 (h : a < b) : ¬b < a := by
+example (h : a < b) : ¬b < a := by
   intro h'
   have : a < a := lt_trans h h'
   apply lt_irrefl a this
@@ -507,7 +507,7 @@ def SumOfSquares (x : α) :=
 这是另一个示例，它使用了在最后一节中定义的谓语 `FnHasUb`，该谓语的意思是一个函数有一个上界。
 
 ```
-示例 (h : ∀ a, ∃ x, f x > a) : ¬FnHasUb f := by
+example (h : ∀ a, ∃ x, f x > a) : ¬FnHasUb f := by
   intro fnub
   rcases fnub with ⟨a, fnuba⟩
   rcases h a with ⟨x, hx⟩
@@ -520,10 +520,10 @@ def SumOfSquares (x : α) :=
 看看你能否用类似的方式证明这些：
 
 ```
-示例 (h : ∀ a, ∃ x, f x < a) : ¬FnHasLb f :=
+example (h : ∀ a, ∃ x, f x < a) : ¬FnHasLb f :=
   sorry
 
-示例 : ¬FnHasUb fun x ↦ x :=
+example : ¬FnHasUb fun x ↦ x :=
   sorry
 ```
 
@@ -540,10 +540,10 @@ Mathlib 提供了许多用于关联排列和否定的有用定理：
 
 ```
 example (h : Monotone f) (h' : f a < f b) : a < b := by
-  对不起
+  sorry
 
 example (h : a ≤ b) (h' : f b < f a) : ¬Monotone f := by
-  对不起
+  sorry
 ```
 
 我们可以看到如果我们用 `≤` 替换 `<`，那么最后的例子中的第一个例子将无法证明。注意，我们可以通过给出反例来证明泛化语句的否定。完成证明.
@@ -552,9 +552,9 @@ example (h : a ≤ b) (h' : f b < f a) : ¬Monotone f := by
 example : ¬∀ {f : ℝ → ℝ}, Monotone f → ∀ {a b}, f a ≤ f b → a ≤ b := by
   intro h
   let f := fun x : ℝ ↦ (0 : ℝ)
-  have monof : Monotone f := by 对不起
+  have monof : Monotone f := by sorry
   have h' : f 1 ≤ f 0 := le_refl _
-  对不起
+  sorry
 ```
 
 这个例子引入了 `let` 的策略，这增加了一个*局部定义*到上下文中。如果你把光标放在 `let` 命令后面，在目标窗口中你会看到定义 `f：ℝ→ℝ：= fun x ↦ 0` 已经添加到上下文中。Lean 在必要时会展开 `f` 的定义。特别的，当我们用`le_refl`证明 `f 1 ≤ f 0`时，Lean将 `f 1` 和 `f 0`简化为 `0`。
@@ -563,7 +563,7 @@ example : ¬∀ {f : ℝ → ℝ}, Monotone f → ∀ {a b}, f a ≤ f b → a �
 
 ```
 example (x : ℝ) (h : ∀ ε > 0, x < ε) : x ≤ 0 := by
-  对不起
+  sorry
 ```
 
 在我们刚做的许多证明中，一个隐含的事实是,如果 `P` 是任何属性，没有属性 `P` 的东西相同于所有东西都不具有属性 `P`，而不是所有东西都有属性 `P` 相当于有些东西不具有属性 `P`。换句话说，以下四个含义都是有效的 (但其中一个我们还不能用我们目前解释的内容证明)：
@@ -572,16 +572,16 @@ example (x : ℝ) (h : ∀ ε > 0, x < ε) : x ≤ 0 := by
 variable {α : Type*} (P : α → Prop) (Q : Prop)
 
 example (h : ¬∃ x, P x) : ∀ x, ¬P x := by
-  对不起
+  sorry
 
 example (h : ∀ x, ¬P x) : ¬∃ x, P x := by
-  对不起
+  sorry
 
 example (h : ¬∀ x, P x) : ∃ x, ¬P x := by
-  对不起
+  sorry
 
 example (h : ∃ x, ¬P x) : ¬∀ x, P x := by
-  对不起
+  sorry
 ```
 
 第一，第二和第四个可以直接用你已经看到的方法证明。我们建议你试试。然而，第三个更困难，因为它从一个对象的不存在是矛盾的事实中得出该对象的存在。这是*经典*数学推理的一个实例。我们可以使用反证法来证明第三个含义，如下所示。
@@ -600,17 +600,17 @@ example (h : ¬∀ x, P x) : ∃ x, ¬P x := by
 
 ```
 example (h : ¬¬Q) : Q := by
-  对不起
+  sorry
 
 example (h : Q) : ¬¬Q := by
-  对不起
+  sorry
 ```
 
 使用反证法来建立以下，这是我们以上证明的含义的一个逆命题。 (提示：先使用 `intro`。)
 
 ```
 example (h : ¬FnHasUb f) : ∀ a, ∃ x, f x > a := by
-  对不起
+  sorry
 ```
 
 使用包含否定的复合语句通常很繁琐，常见的数学模式是将这样的语句替换为等价形式，其中否定被推入内部。为了便于这样做，Mathlib 提供了一个 `push_neg` 策略，这种策略以这种方式重新声明目标。命令 `push_neg at h` 重新声明假设 `h`。
@@ -630,7 +630,7 @@ example (h : ¬FnHasUb f) : ∀ a, ∃ x, f x > a := by
 
 ```
 example (h : ¬Monotone f) : ∃ x y, x ≤ y ∧ f y < f x := by
-  对不起
+  sorry
 ```
 
 Mathlib 还有一个策略，`contrapose`，它将目标 `A → B` 转化为 `¬B → ¬A`。同样，给定从假设 `h：A` 推出 `B` 的目标，`contrapose h` 让你有一个从假设 `¬B` 推出 `¬A` 的目标。使用 `contrapose!` 而不是 `contrapose` 将 `push_neg` 应用于目标和相关假设。
@@ -653,16 +653,16 @@ example (x : ℝ) (h : ∀ ε > 0, x ≤ ε) : x ≤ 0 := by
 一旦达到矛盾，Lean提供了多种结束目标的方法。
 
 ```
-示例 (h : 0 < 0) : a > 37 :=
+example (h : 0 < 0) : a > 37 := by
   exfalso
-  应用 lt_irrefl 0 h
+  apply lt_irrefl 0 h
 
-示例 (h : 0 < 0) : a > 37 :=
+example (h : 0 < 0) : a > 37 :=
   absurd h (lt_irrefl 0)
 
-示例 (h : 0 < 0) : a > 37 :=
-  确定 h' : ¬0 < 0 := lt_irrefl 0
-  矛盾
+example (h : 0 < 0) : a > 37 := by
+  have h' : ¬0 < 0 := lt_irrefl 0
+  contradiction
 ```
 
 `exfalso`策略用证明`False`的目标替换当前的目标。给定`h : P`和`h' : ¬ P`，项`absurd h h'`可以确定任何命题。最后，`contradiction`策略试图通过在假设中找到矛盾来结束一个目标，例如形式`h : P`和`h' : ¬ P`的一对。当然，在这个例子中，`linarith`也同样有效。
@@ -672,75 +672,28 @@ example (x : ℝ) (h : ∀ ε > 0, x ≤ ε) : x ≤ 0 := by
 你已经看到了连接符号，`∧`，用于表示“以及”。`构造器`策略允许你证明`A ∧ B`形式的声明，方法是首先证明`A`然后证明`B`。
 
 ```
-示例 {x y : ℝ} (h₀ : x ≤ y) (h₁ : ¬y ≤ x) : x ≤ y ∧ x ≠ y :=
-  构造器
-  · 假设
-  引入 h
-  应用 h₁
+example {x y : ℝ} (h₀ : x ≤ y) (h₁ : ¬y ≤ x) : x ≤ y ∧ x ≠ y := by
+  constructor
+  · assumption
+  intro h
+  apply h₁
   rw [h]
 ```
 
 在此示例中，`假设`策略告诉Lean找一个可以解决目标的假设。注意最后的`rw`通过应用` ≤ `的反射来完成目标。以下是使用匿名构造函数的角括号来执行前面例子的替代方法。第一个是一个将在关键字`by`处进入策略模式的精炼的证明项版本。
 
 ```
-示例 {x y : ℝ} (h₀ : x ≤ y) (h₁ : ¬y ≤ x) : x ≤ y ∧ x ≠ y :=
+example {x y : ℝ} (h₀ : x ≤ y) (h₁ : ¬y ≤ x) : x ≤ y ∧ x ≠ y :=
   ⟨h₀, fun h ↦ h₁ (by rw [h])⟩
 
-示例 {x y : ℝ} (h₀ : x ≤ y) (h₁ : ¬y ≤ x) : x ≤ y ∧ x ≠ y :=
-  确定 h : x ≠ y := by
-    反推! h₁
+example {x y : ℝ} (h₀ : x ≤ y) (h₁ : ¬y ≤ x) : x ≤ y ∧ x ≠ y :=
+  have h : x ≠ y := by
+    contrapose! h₁
     rw [h₁]
   ⟨h₀, h⟩
 ```
 
 *使用*一个并行而不是证明一个并行涉及到解开两部分的证据。你可以使用`rcases`策略来实现，同样也可以使用`rintro`或模式匹配的`fun`，所有这些都与存在量词的使用方法类似。
-
-```
-示例 {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x :=
-  rcases h with ⟨h₀, h₁⟩
-  反推! h₁
-  确定 le_antisymm h₀ h₁
-
-示例 {x y : ℝ} : x ≤ y ∧ x ≠ y → ¬y ≤ x :=
-  rintro ⟨h₀, h₁⟩ h'
-  确定 h₁ (le_antisymm h₀ h')
-
-示例 {x y : ℝ} : x ≤ y ∧ x ≠ y → ¬y ≤ x :=
-  fun ⟨h₀, h₁⟩ h' ↦ h₁ (le_antisymm h₀ h')
-```
-
-与`obtain`策略类似，还有一个模式匹配的`have`：
-
-```
-示例 {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x :=
-  确定 ⟨h₀, h₁⟩ := h
-  反推! h₁
-  确定 le_antisymm h₀ h₁
-```
-
-与`rcases`相比，这里的`have`策略在上下文中保留了`h`。尽管我们不会使用它们，但我们再次得到了计算机科学家的模式匹配语法：
-
-```
-示例 {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x :=
-  分类 h
-  案例 简单 h₀ h₁ =>
-    反推! h₁
-    确定 le_antisymm h₀ h₁
-
-示例 {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x :=
-  分类 h
-  下一个 h₀ h₁ =>
-    反推! h₁
-    确定 le_antisymm h₀ h₁
-
-示例 {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x :=
-  匹配 h with
-    | ⟨h₀, h₁⟩ =>
-        反推! h₁
-        确定 le_antisymm h₀ h₁
-```
-
-与使用存在量化器相反，你可以通过写`h.left`和`h.right`或等价的`h.1`和`h.2`来提取假设`h : A ∧ B`的两个组件的证据。
 
 ```
 example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x := by
@@ -756,43 +709,86 @@ example {x y : ℝ} : x ≤ y ∧ x ≠ y → ¬y ≤ x :=
   fun ⟨h₀, h₁⟩ h' ↦ h₁ (le_antisymm h₀ h')
 ```
 
+与`obtain`策略类似，还有一个模式匹配的`have`：
+
+```
+example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x := by
+  have ⟨h₀, h₁⟩ := h
+  contrapose! h₁
+  exact le_antisymm h₀ h₁
+```
+
+与`rcases`相比，这里的`have`策略在上下文中保留了`h`。尽管我们不会使用它们，但我们再次得到了计算机科学家的模式匹配语法：
+
+```
+example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x := by
+  cases h
+  case intro h₀ h₁ =>
+    contrapose! h₁
+    exact le_antisymm h₀ h₁
+
+example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x := by
+  cases h
+  next h₀ h₁ =>
+    contrapose! h₁
+    exact le_antisymm h₀ h₁
+
+example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x := by
+  match h with
+    | ⟨h₀, h₁⟩ =>
+        contrapose! h₁
+        exact le_antisymm h₀ h₁
+```
+
+与使用存在量化器相反，你可以通过写`h.left`和`h.right`或等价的`h.1`和`h.2`来提取假设`h : A ∧ B`的两个组件的证据。
+
+```
+example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x := by
+  intro h'
+  apply h.right
+  exact le_antisymm h.left h'
+
+example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x :=
+  fun h' ↦ h.right (le_antisymm h.left h')
+```
+
 尝试使用这些技巧来提出以下各种证明方法：
 
 ```
-例子{m n:ℕ} (h: m|n ∧ m ≠ n) : m|n ∧ ¬n|m :=
-  抱歉
+example {m n : ℕ} (h : m ∣ n ∧ m ≠ n) : m ∣ n ∧ ¬n ∣ m :=
+  sorry
 ```
 
 您可以使用 `∃` 和 `∧` 的匿名构造器，`rintro` 和 `rcases` 进行嵌套。
 
 ```
-例子： ∃ x: ℝ, 2 < x ∧ x < 4 :=
-  ⟨5/2, 通过 norm_num, 通过 norm_num⟩
+example : ∃ x : ℝ, 2 < x ∧ x < 4 :=
+  ⟨5 / 2, by norm_num, by norm_num⟩
 
-例子 (x y : ℝ) : (∃ z: ℝ, x < z ∧ z < y) → x < y := 通过
+example (x y : ℝ) : (∃ z : ℝ, x < z ∧ z < y) → x < y := by
   rintro ⟨z, xltz, zlty⟩
-  精确 lt_trans xltz zlty
+  exact lt_trans xltz zlty
 
-例子 (x y: ℝ) : (∃ z: ℝ, x < z ∧ z < y) → x < y :=
+example (x y : ℝ) : (∃ z : ℝ, x < z ∧ z < y) → x < y :=
   fun ⟨z, xltz, zlty⟩ ↦ lt_trans xltz zlty
 ```
 
 您也可以使用 `use` 策略：
 
 ```
-例子： ∃ x: ℝ, 2 < x ∧ x < 4 := 通过
-  使用 5/2
-  构造器 <;> norm_num
+example : ∃ x : ℝ, 2 < x ∧ x < 4 := by
+  use 5 / 2
+  constructor <;> norm_num
 
-例子： ∃ m n: ℕ, 4 < m ∧ m < n ∧ n < 10 ∧ Nat.Prime m ∧ Nat.Prime n := 通过
-  使用 5
-  使用 7
+example : ∃ m n : ℕ, 4 < m ∧ m < n ∧ n < 10 ∧ Nat.Prime m ∧ Nat.Prime n := by
+  use 5
+  use 7
   norm_num
 
-例子 {x y: ℝ} : x ≤ y ∧ x ≠ y → x ≤ y ∧ ¬y ≤ x := 通过
+example {x y : ℝ} : x ≤ y ∧ x ≠ y → x ≤ y ∧ ¬y ≤ x := by
   rintro ⟨h₀, h₁⟩
-  使用 h₀
-  精确 fun h' ↦ h₁ (le_antisymm h₀ h')
+  use h₀
+  exact fun h' ↦ h₁ (le_antisymm h₀ h')
 ```
 
 在第一个例子中，`构造器` 命令后的分号告诉 Lean 对结果的两个目标使用 `norm_num` 策略。
@@ -800,16 +796,16 @@ example {x y : ℝ} : x ≤ y ∧ x ≠ y → ¬y ≤ x :=
 在 Lean 中，`A ↔ B` *不* 被定义为 `(A → B) ∧ (B → A)`，但它可能是这样，并且大致以相同的方式运作。您已经看到，您可以为 `h: A ↔ B` 的两个方向写 `h.mp` 和 `h.mpr` 或 `h.1` 和 `h.2`。您也可以使用 `cases` 和朋友们。为了证明一个当且仅当的命题，您可以使用 `constructor` 或尖括号，就像您证明连词时那样。
 
 ```
-例子 {x y: ℝ} (h: x ≤ y) : ¬y ≤ x ↔ x ≠ y := 通过
-  构造器
+example {x y : ℝ} (h : x ≤ y) : ¬y ≤ x ↔ x ≠ y := by
+  constructor
   · contrapose!
     rintro rfl
     rfl
   contrapose!
-  精确 le_antisymm h
-  
-例子 {x y: ℝ} (h: x ≤ y) : ¬y ≤ x ↔ x ≠ y :=
-  ⟨fun h₀ h₁ ↦ h₀ (通过 rw [h₁]), fun h₀ h₁ ↦ h₀ (le_antisymm h h₁)⟩
+  exact le_antisymm h
+
+example {x y : ℝ} (h : x ≤ y) : ¬y ≤ x ↔ x ≠ y :=
+  ⟨fun h₀ h₁ ↦ h₀ (by rw [h₁]), fun h₀ h₁ ↦ h₀ (le_antisymm h h₁)⟩
 ```
 
 最后一个证明条目是深不可测的。记住，当您正在写一个像那样的表达式时，可以使用下划线来查看 Lean 的期望。
@@ -817,70 +813,70 @@ example {x y : ℝ} : x ≤ y ∧ x ≠ y → ¬y ≤ x :=
 尝试使用您刚刚看到的各种技巧和小玩意来证明以下命题：
 
 ```
-例子 {x y: ℝ} : x ≤ y ∧ ¬y ≤ x ↔ x ≤ y ∧ x ≠ y :=
-  抱歉
+example {x y : ℝ} : x ≤ y ∧ ¬y ≤ x ↔ x ≤ y ∧ x ≠ y :=
+  sorry
 ```
 
 对于一个更有趣的练习，展示对于任何两个实数 `x` 和 `y`，`x^2 + y^2 = 0` 当且仅当 `x = 0` 和 `y = 0`。我们建议使用 `linarith`，`pow_two_nonneg` 和 `pow_eq_zero` 来证明一个辅助引理。
 
 ```
-定理 aux {x y : ℝ } (h: x^2 + y^2 = 0) : x = 0 :=
-有 h': x^2 = 0 := 通过 抱歉
-pow_eq_zero h'
+theorem aux {x y : ℝ} (h : x ^ 2 + y ^ 2 = 0) : x = 0 :=
+  have h' : x ^ 2 = 0 := by sorry
+  pow_eq_zero h'
 
-例子 (x y: ℝ) : x^2 + y^2 = 0 ↔ x = 0 ∧ y = 0 :=
-抱歉
+example (x y : ℝ) : x ^ 2 + y ^ 2 = 0 ↔ x = 0 ∧ y = 0 :=
+  sorry
 ```
 
 在 Lean 中，双向蕴含引导一种双重生活。您可以像处理连接词一样来分开处理它的两个部分。但 Lean 也知道，它是命题之间的反射、对称和可传递的关系，您也可以与 `calc` 和 `rw` 一起使用它。经常方便地将一个声明重写为相等的声明。在下一个例子中，我们使用 `abs_lt` 将形式为 `|x| < y` 的表达式替换为等价的表达式 `- y < x ∧ x < y`，在之后的一个例子中我们使用 `Nat.dvd_gcd_iff` 将形式为 `m | Nat.gcd n k` 的表达式替换为等价的表达式 `m | n ∧ m | k`.
 
 ```
-例子 (x: ℝ) : |x + 3| < 5 → -8 < x ∧ x < 2 := 通过
+example (x : ℝ) : |x + 3| < 5 → -8 < x ∧ x < 2 := by
   rw [abs_lt]
-  介绍 h
-  构造器 <;> linarith
+  intro h
+  constructor <;> linarith
 
-例子： 3 ∣ Nat.gcd 6 15 := 通过
+example : 3 ∣ Nat.gcd 6 15 := by
   rw [Nat.dvd_gcd_iff]
-  构造器 <;> norm_num
+  constructor <;> norm_num
 ```
 
 看看你是否可以使用下面的定理 `rw` 提供一个简短的证据，证明否定是不是一个非递减的函数。(注意，`push_neg` 不会为你展开定义，所以定理的证明中需要 `rw [Monotone]`。)
 
 ```
-定理 not_monotone_iff {f : ℝ → ℝ} : ¬Monotone f ↔ ∃ x y, x ≤ y ∧ f x > f y := 由
-  重写 [Monotone]
+theorem not_monotone_iff {f : ℝ → ℝ} : ¬Monotone f ↔ ∃ x y, x ≤ y ∧ f x > f y := by
+  rw [Monotone]
   push_neg
   rfl
 
-示例 : ¬Monotone fun x : ℝ ↦ -x := 由
-  抱歉
+example : ¬Monotone fun x : ℝ ↦ -x := by
+  sorry
 ```
 
 本节剩余的练习旨在让你对合取和双向蕴含有更多的实践。记住，*部分排序*是一个二元关系，它是传递的，自反的，和反对称的。一个更弱的概念有时会出现：一个 *预排序* 仅仅是一个自反的，传递的关系。对任何预排序 `≤`，Lean 将关联的严格预排序通过 `a < b ↔ a ≤ b ∧ ¬ b ≤ a` 进行公理化。展示如果 `≤` 是一个部分排序，那么 `a < b` 等价于 `a ≤ b ∧ a ≠ b`：
 
 ```
-变量 {α : 类型*} [部分排序 α]
-变量 (a b : α)
+variable {α : Type*} [PartialOrder α]
+variable (a b : α)
 
-示例 : a < b ↔ a ≤ b ∧ a ≠ b := 由
-  重写 [lt_iff_le_not_le]
-  抱歉
+example : a < b ↔ a ≤ b ∧ a ≠ b := by
+  rw [lt_iff_le_not_le]
+  sorry
 ```
 
 除了逻辑操作，你不需要 `le_refl` 和 `le_trans` 以外的任何东西。即使在 `≤` 只被假定为预排序的情况下，我们也能证明严格顺序是不可反射的和传递的。在第二个示例中，为了方便，我们使用简化器而不是 `rw` 来表示 `<` 关于 `≤` 和 `¬` 的表达式。我们会在后面再回来讨论简化器，但在这里我们只依赖于它会不断使用指示的引理，即使它需要被实例化为不同的值。
 
 ```
-变量 {α : 类型*} [预排序 α]
-变量 (a b c : α)
+variable {α : Type*} [Preorder α]
+variable (a b c : α)
 
-示例 : ¬a < a := 通过
-  重写 [lt_iff_le_not_le]
-  抱歉
+example : ¬a < a := by
+  rw [lt_iff_le_not_le]
+  sorry
 
-示例 : a < b → b < c → a < c := 通过
-  仅简化 [lt_iff_le_not_le]
-  抱歉
+example : a < b → b < c → a < c := by
+  simp only [lt_iff_le_not_le]
+  sorry
 ```
 
 ## 3.5.  析取
@@ -888,35 +884,35 @@ pow_eq_zero h'
 证明析取 `A ∨ B` 的规范方法是证明 `A` 或 `B`。`左`策略选择 `A`，`右` 策略选择 `B`。
 
 ```
-变量 {x y : ℝ}
+variable {x y : ℝ}
 
-示例 (h : y > x ^ 2) : y > 0 ∨ y < -1 := 通过
-  左
+example (h : y > x ^ 2) : y > 0 ∨ y < -1 := by
+  left
   linarith [pow_two_nonneg x]
 
-示例 (h : -y > x ^ 2 + 1) : y > 0 ∨ y < -1 := 通过
-  右
+example (h : -y > x ^ 2 + 1) : y > 0 ∨ y < -1 := by
+  right
   linarith [pow_two_nonneg x]
 ```
 我们不能使用一个匿名构造器来构造一个“或”的证明，因为 Lean 必须猜测我们试图证明哪个析取。当我们写证明项时可以使用 `Or.inl` 和 `Or.inr` 来代替明确地做出选择。此处，`inl` 是“introduction left”的简写，而 `inr` 是“introduction right”的简写。
 
 ```
-示例 (h : y > 0) : y > 0 ∨ y < -1 :=
+example (h : y > 0) : y > 0 ∨ y < -1 :=
   Or.inl h
 
-示例 (h : y < -1) : y > 0 ∨ y < -1 :=
+example (h : y < -1) : y > 0 ∨ y < -1 :=
   Or.inr h
 ```
 
 证明一个隐含的或者显示的析取在假设和数据中通常取决于案例区分，可能变得有点奇怪。 `rcases` 策略允许我们使用形式为 `A ∨ B` 的假设。和使用 `rcases` 的联接或存在量词形成鲜明对比的是，这里的 `rcases` 策略会产生两个目标。两者都有相同的结论，但在第一种情况下，假设 `A` 为真，而在第二种情况下，假设 `B` 为真。换句话说，就像名字所暗示的，`rcases` 策略执行情况下的证明。通常情况下，我们可以告诉 Lean 使用的假设名称。在下一个例子中，我们告诉 Lean 在每一个分支上使用名称 `h`。
 
 ```
-示例 : x < |y| → x < y ∨ x < -y := 通过
-  带有 h | h 的 rcases le_or_gt 0 y中
-  · 重写 [abs_of_nonneg h]
-    引言 h; 左; 精确 h
-  . 重写 [abs_of_neg h]
-    引言 h; 右; 精确 h
+example : x < |y| → x < y ∨ x < -y := by
+  rcases le_or_gt 0 y with h | h
+  · rw [abs_of_nonneg h]
+    intro h; left; exact h
+  . rw [abs_of_neg h]
+    intro h; right; exact h
 ```
 
 注意模式从联结的`⟨h₀, h₁⟩`变成了析取的 `h₀ | h₁`。将第一个模式看作匹配包含 `h₀` 和 `h₁` 的两个数据，而第二个模式，带有一个条形的模式，匹配包含 `h₀` 或 `h₁` 的数据。在这种情况下，由于两个目标是独立的，我们选择在每个案例中使用相同的名称，`h`。
@@ -926,14 +922,14 @@ pow_eq_zero h'
 Lean 也支持计算机科学家的析取的模式匹配语法。现在 `cases` 策略更具吸引力，因为它让我们能够命名每一 `case`，并在引入假设用于何处时命名它。
 
 ```
-示例 : x < |y| → x < y ∨ x < -y := 通过
-  分开 le_or_gt 0 y
+example : x < |y| → x < y ∨ x < -y := by
+  cases le_or_gt 0 y
   case inl h =>
-    重写 [abs_of_nonneg h]
-    引言 h; 左; 精确 h
+    rw [abs_of_nonneg h]
+    intro h; left; exact h
   case inr h =>
-    重写 [abs_of_neg h]
-    引言 h; 右; 精确 h
+    rw [abs_of_neg h]
+    intro h; right; exact h
 ```
 
 名字 `inl` 和 `inr` 是 “intro left” 和 “intro right”的简称。 使用 `case` 的优势是你可以按任意顺序证明案例；Lean 使用标记来找到相关的目标。如果你不关心那个，你可以使用 `next`，或者 `match`，甚至可以使用匹配模式的 `have`.
@@ -989,7 +985,7 @@ theorem abs_lt : |x| < y ↔ -y < x ∧ x < y := by
 你也可以使用`rcases`和`rintro`来处理嵌套的析取。当这些导致一个真正的案例分解与多个目标时，每个新目标的模式都由一个垂直条分隔。
 
 ```
-示例 {x : ℝ} (h : x ≠ 0) : x < 0 ∨ x > 0 := by
+example {x : ℝ} (h : x ≠ 0) : x < 0 ∨ x > 0 := by
   rcases lt_trichotomy x 0 with xlt | xeq | xgt
   · left
     exact xlt
@@ -1000,7 +996,7 @@ theorem abs_lt : |x| < y ↔ -y < x ∧ x < y := by
 你仍然可以嵌套模式并使用`rfl`关键字来代替等式：
 
 ```
-示例 {m n k : ℕ} (h : m ∣ n ∨ m ∣ k) : m ∣ n * k := by
+example {m n k : ℕ} (h : m ∣ n ∨ m ∣ k) : m ∣ n * k := by
   rcases h with ⟨a, rfl⟩ | ⟨b, rfl⟩
   · rw [mul_assoc]
     apply dvd_mul_right
@@ -1011,17 +1007,17 @@ theorem abs_lt : |x| < y ↔ -y < x ∧ x < y := by
 看看你是否可以使用一条（很长的）线进行证明。使用`rcases`来解包假设并分解案例，并使用分号和`linarith`来解决每个分支。
 
 ```
-示例 {z : ℝ} (h : ∃ x y, z = x ^ 2 + y ^ 2 ∨ z = x ^ 2 + y ^ 2 + 1) : z ≥ 0 := by
+example {z : ℝ} (h : ∃ x y, z = x ^ 2 + y ^ 2 ∨ z = x ^ 2 + y ^ 2 + 1) : z ≥ 0 := by
   sorry
 ```
 
 对于实数，一个方程`x * y = 0`告诉我们`x = 0`或`y = 0`。在Mathlib中，这个事实被称为`eq_zero_or_eq_zero_of_mul_eq_zero`，它是如何产生一个析取的另一个很好的例子。看看你能否用它来证明以下的内容：
 
 ```
-示例 {x : ℝ} (h : x ^ 2 = 1) : x = 1 ∨ x = -1 := by
+example {x : ℝ} (h : x ^ 2 = 1) : x = 1 ∨ x = -1 := by
   sorry
 
-示例 {x y : ℝ} (h : x ^ 2 = y ^ 2) : x = y ∨ x = -y := by
+example {x y : ℝ} (h : x ^ 2 = y ^ 2) : x = y ∨ x = -y := by
   sorry
 ```
 
@@ -1033,10 +1029,10 @@ theorem abs_lt : |x| < y ↔ -y < x ∧ x < y := by
 variable {R : Type*} [CommRing R] [IsDomain R]
 variable (x y : R)
 
-示例 (h : x ^ 2 = 1) : x = 1 ∨ x = -1 := by
+example (h : x ^ 2 = 1) : x = 1 ∨ x = -1 := by
   sorry
 
-示例 (h : x ^ 2 = y ^ 2) : x = y ∨ x = -y := by
+example (h : x ^ 2 = y ^ 2) : x = y ∨ x = -y := by
   sorry
 ```
 
@@ -1045,28 +1041,28 @@ variable (x y : R)
 有时在证明中我们想要根据某些叙述是否为真来进行分情况处理。对于任何命题 `P`，我们可以使用 `em P : P ∨ ¬ P`。名称 `em` 是 “excluded middle” 的简写。
 
 ```
-例子 (P : Prop) : ¬¬P → P := 由
-  介绍 h
-  情况 em P
-  · 假设
-  . 悖论
+example (P : Prop) : ¬¬P → P := by
+  intro h
+  cases em P
+  · assumption
+  . contradiction
 ```
 
 或者，你可以使用 `by_cases` 策略。
 
 ```
-例子 (P : Prop) : ¬¬P → P := 由
-  介绍 h
-  按情况处理 h' : P
-  · 假设
-  悖论
+example (P : Prop) : ¬¬P → P := by
+  intro h
+  by_cases h' : P
+  · assumption
+  contradiction
 ```
 
 注意 `by_cases` 策略使你可以为每个分支中引入的假设指定一个标签，比如在这个案例中，`h' : P` 在一个分支中，`h' : ¬ P` 在另一个，如果你省略了标签，Lean 默认使用 `h`。试着证明下面的等价性，使用 `by_cases` 来建立一个方向。
 
 ```
-例子 (P Q : Prop) : P → Q ↔ ¬P ∨ Q := 由
-  抱歉
+example (P Q : Prop) : P → Q ↔ ¬P ∨ Q := by
+  sorry
 ```
 
 ## 3.6.  序列和收敛
@@ -1083,7 +1079,7 @@ def ConvergesTo (s : ℕ → ℝ) (a : ℝ) :=
 在本节中，我们将建立一些收敛的性质。但首先，我们会讨论一下与等式处理有关的三种策略，这将被证明是有用的。第一种，`ext`策略，为我们提供了证明两个函数相等的方法。让 $f(x) = x + 1$ 和 $g(x) = 1 + x$ 是从实数到实数的函数。那么，当然，$f = g$，因为它们返回的值对于每一个 $x$ 都是相同的。`ext` 策略使我们能够通过证明函数在所有参数的值上的值是相同的来证明函数之间的等式。
 
 ```
-例子 : (fun x y : ℝ ↦ (x + y) ^ 2) = fun x y : ℝ ↦ x ^ 2 + 2 * x * y + y ^ 2 := 由
+example : (fun x y : ℝ ↦ (x + y) ^ 2) = fun x y : ℝ ↦ x ^ 2 + 2 * x * y + y ^ 2 := by
   ext
   ring
 ```
@@ -1091,7 +1087,7 @@ def ConvergesTo (s : ℕ → ℝ) (a : ℝ) :=
 稍后我们会看到 `ext` 实际上更一般，也可以指定出现的变量的名称。例如，你可以尝试在上述证明中用 `ext u v` 替换 `ext`。第二种策略，`congr` 策略，允许我们通过调和不同的部分来证明两个表达式之间的等式：
 
 ```
-例子 (a b : ℝ) : |a| = |a - b + b| := 由
+example (a b : ℝ) : |a| = |a - b + b| := by
   congr
   ring
 ```
@@ -1101,10 +1097,10 @@ def ConvergesTo (s : ℕ → ℝ) (a : ℝ) :=
 最后，`convert` 策略被用来在定理的结论不完全匹配时将一个定理应用到目标上。例如，假设我们要从 `1 < a` 证明 `a < a * a`。一个在库中的定理，`mul_lt_mul_right`，会让我们证明 `1 * a < a * a`。一种可能性是反向工作并重新写目标，使其具有该形式。相反，`convert` 策略让我们可以原封不动地应用定理，并留下我们证明需要让目标匹配的等式的任务。
 
 ```
-例子 {a : ℝ} (h : 1 < a) : a < a * a := 由
-  转换 (mul_lt_mul_right _).2 h
-  · 重写 [one_mul]
-  明确 lt_trans zero_lt_one h
+example {a : ℝ} (h : 1 < a) : a < a * a := by
+  convert (mul_lt_mul_right _).2 h
+  · rw [one_mul]
+  exact lt_trans zero_lt_one h
 ```
 
 此例子举例说明了一个有用的技巧：当我们应用一个带下划线的表达式时，如果 Lean 不能自动为我们填充它，它就会将它留给我们作为另一个目标。
@@ -1112,12 +1108,12 @@ def ConvergesTo (s : ℕ → ℝ) (a : ℝ) :=
 以下证明任何常数序列 $a, a, a, \ldots$ 收敛。
 
 ```
-定理 convergesTo_const (a : ℝ) : ConvergesTo (fun x : ℕ ↦ a) a := 由
-  介绍 ε εpos
-  使用 0
-  介绍 n nge
-  重写 [sub_self, abs_zero]
-  应用 εpos
+theorem convergesTo_const (a : ℝ) : ConvergesTo (fun x : ℕ ↦ a) a := by
+  intro ε εpos
+  use 0
+  intro n nge
+  rw [sub_self, abs_zero]
+  apply εpos
 ```
 
 Lean 有一个策略，`simp`，它可以经常帮助你省去手动执行如 `rw [sub_self, abs_zero]` 这样的步骤。我们会尽快给你提供更多信息。
@@ -1142,26 +1138,26 @@ theorem convergesTo_add {s t : ℕ → ℝ} {a b : ℝ}
 使用乘法代替加法来证明相同的定理是有难度的。我们将首先证明一些辅助陈述。看看您是否也能完成接下来的证明，该证明显示如果 `s` 收敛于 `a`，那么 `fun n ↦ c * s n` 收敛于 `c * a`。根据 `c` 是否等于零分成不同的情况是有帮助的。我们已经处理了零的情况，留给您证明在 `c` 非零的额外假设下的结果。
 
 ```
-定理 convergesTo_mul_const {s : ℕ → ℝ} {a : ℝ} (c : ℝ) (cs : ConvergesTo s a) :
-    ConvergesTo (fun n ↦ c * s n) (c * a) := 通过
-  由于假设 h : c = 0
-  · 如果 convergesTo_const 0
+theorem convergesTo_mul_const {s : ℕ → ℝ} {a : ℝ} (c : ℝ) (cs : ConvergesTo s a) :
+    ConvergesTo (fun n ↦ c * s n) (c * a) := by
+  by_cases h : c = 0
+  · convert convergesTo_const 0
     · rw [h]
-      环
+      ring
     rw [h]
-    环
-  有 acpos : 0 < |c| := abs_pos.mpr h
-  抱歉
+    ring
+  have acpos : 0 < |c| := abs_pos.mpr h
+  sorry
 ```
 
 下一个定理也有独立的意思：它显示了一个收敛序列在绝对值上最终是有界的。我们已经开始了你的工作，看看你能不能完成它。
 
 ```
-定理 exists_abs_le_of_convergesTo {s : ℕ → ℝ} {a : ℝ} (cs : ConvergesTo s a) :
-    ∃ N b, ∀ n, N ≤ n → |s n| < b ：通过
-  上述 cs 1 zero_lt_one 获得 ⟨N, h⟩
-  使用 N， |a| + 1
-  抱歉
+theorem exists_abs_le_of_convergesTo {s : ℕ → ℝ} {a : ℝ} (cs : ConvergesTo s a) :
+    ∃ N b, ∀ n, N ≤ n → |s n| < b := by
+  rcases cs 1 zero_lt_one with ⟨N, h⟩
+  use N, |a| + 1
+  sorry
 ```
 
 事实上，定理可以被加强为断言有一个边界 `b` 适用于 `n` 的所有值。但是这个版本已经足够强大，可以满足我们的需要，我们将在这一部分的末尾看到，它更普遍地适用。
@@ -1169,58 +1165,58 @@ theorem convergesTo_add {s t : ℕ → ℝ} {a b : ℝ}
 下一个引理是辅助的：我们证明，如果 `s` 收敛至 `a`，且 `t` 收敛至 `0`，则 `fun n ↦ s n * t n` 收敛至 `0`。为此，我们使用前面的定理找到一个 `B`，该点超过某个点 `N₀`对 `s`进行界定。看看你能否理解我们提出的策略，并完成证明。
 
 ```
-定理 aux {s t : ℕ → ℝ} {a : ℝ} (cs : ConvergesTo s a) (ct : ConvergesTo t 0) :
-    ConvergesTo (fun n ↦ s n * t n) 0 := 通过
-  intrο ε εpos
+theorem aux {s t : ℕ → ℝ} {a : ℝ} (cs : ConvergesTo s a) (ct : ConvergesTo t 0) :
+    ConvergesTo (fun n ↦ s n * t n) 0 := by
+  intro ε εpos
   dsimp
-  上述 exists_abs_le_of_convergesTo cs 获得 ⟨N₀, B, h₀⟩
-  有 Bpos : 0 < B := lt_of_le_of_lt (abs_nonneg _) (h₀ N₀ (le_refl _))
-  有 pos₀ : ε / B > 0 := div_pos εpos Bpos
-  上述 ct _ pos₀ 获得 ⟨N₁, h₁⟩
-  抱歉
+  rcases exists_abs_le_of_convergesTo cs with ⟨N₀, B, h₀⟩
+  have Bpos : 0 < B := lt_of_le_of_lt (abs_nonneg _) (h₀ N₀ (le_refl _))
+  have pos₀ : ε / B > 0 := div_pos εpos Bpos
+  rcases ct _ pos₀ with ⟨N₁, h₁⟩
+  sorry
 ```
 
 如果你已经做到了这一步，恭喜！我们现在已经快要完成我们的定理了。下面的证明完成了它。
 
 ```
-定理 convergesTo_mul {s t : ℕ → ℝ} {a b : ℝ}
+theorem convergesTo_mul {s t : ℕ → ℝ} {a b : ℝ}
       (cs : ConvergesTo s a) (ct : ConvergesTo t b) :
-    ConvergesTo (fun n ↦ s n * t n) (a * b) := 通过
-  有 h₁ : ConvergesTo (fun n ↦ s n * (t n + -b)) 0 := 通过
-    应用 aux cs
-    转换 convergesTo_add ct (convergesTo_const (-b))
-    环
-  有 := convergesTo_add h₁ (convergesTo_mul_const b cs)
-  转换 convergesTo_add h₁ (convergesTo_mul_const b cs) 使用 1
-  · ext; 环
-  环
+    ConvergesTo (fun n ↦ s n * t n) (a * b) := by
+  have h₁ : ConvergesTo (fun n ↦ s n * (t n + -b)) 0 := by
+    apply aux cs
+    convert convergesTo_add ct (convergesTo_const (-b))
+    ring
+  have := convergesTo_add h₁ (convergesTo_mul_const b cs)
+  convert convergesTo_add h₁ (convergesTo_mul_const b cs) using 1
+  · ext; ring
+  ring
 ```
 
 对于另一个具有挑战性的练习，尝试填写以下证明极限是独特的证明概述。 (如果你感觉大胆，你可以删除证明草图并尝试从头开始证明。)
 
 ```
-定理 convergesTo_unique {s : ℕ → ℝ} {a b : ℝ}
+theorem convergesTo_unique {s : ℕ → ℝ} {a b : ℝ}
       (sa : ConvergesTo s a) (sb : ConvergesTo s b) :
-    a = b := 通过
-  通过反驳 abne
-  有：|a - b| > 0 := 通过 抱歉
-  设 ε := |a - b| / 2
-  有 εpos : ε > 0 := 通过
-    改变 |a - b| / 2 > 0
+    a = b := by
+  by_contra abne
+  have : |a - b| > 0 := by sorry
+  let ε := |a - b| / 2
+  have εpos : ε > 0 := by
+    change |a - b| / 2 > 0
     linarith
-  上述 sa ε εpos 获得 ⟨Na, hNa⟩
-  上述 sb ε εpos 获得 ⟨Nb, hNb⟩
-  设 N := max Na Nb
-  有 absa : |s N - a| < ε := 通过 抱歉
-  有 absb : |s N - b| < ε := 通过 抱歉
-  有：|a - b| < |a - b| := 通过 抱歉
-  确切的 lt_irrefl _ this
+  rcases sa ε εpos with ⟨Na, hNa⟩
+  rcases sb ε εpos with ⟨Nb, hNb⟩
+  let N := max Na Nb
+  have absa : |s N - a| < ε := by sorry
+  have absb : |s N - b| < ε := by sorry
+  have : |a - b| < |a - b| := by sorry
+  exact lt_irrefl _ this
 ```
 
 我们以观察我们的证明可以被一般化来结束这一部分。例如，我们使用的自然数的唯一属性是其结构具有 `min` 和 `max` 的偏序。您可以检查如果你用任何线性顺序 `α` 替换 `ℕ` ，一切仍然可行：
 
 ```
-变量 {α : Type*} [LinearOrder α]
+variable {α : Type*} [LinearOrder α]
 
 def ConvergesTo' (s : α → ℝ) (a : ℝ) :=
   ∀ ε > 0, ∃ N, ∀ n ≥ N, |s n - a| < ε
