@@ -1,6 +1,3 @@
-# GPT-Academic Report
-## 翻译 private_upload\default_user\2023-12-11-16-36-12\C02_Basics.md.part-0.md
-
 # 2. 基本内容
 
 本章旨在向您介绍 Lean 中的数学推理的基本要素: 计算，应用引理和定理，以及推理有关的通用结构。
