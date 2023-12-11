@@ -1,8 +1,8 @@
-# 3.  逻辑
+# 3.  Logic
 
 在上一章中，我们处理了等式，不等式和基本的数学声明，如“$x$除以$y$”。复杂的数学陈述是由这些简单的陈述以及使用逻辑术语如“和”，“或”，“非”，和 “如果...那么”，“每个”，和“一些”，构成的。在本章中，我们将展示如何处理以这种方式构建的声明。
 
-## 3.1.  蕴含和全称量词
+## 3.1.  Implication and the Universal Quantifier
 
 考虑在`#check`之后的声明：
 
@@ -254,7 +254,7 @@ example (injg : Injective g) (injf : Injective f) : Injective fun x ↦ g (f x) 
   sorry
 ```
 
-## 3.2. 存在量词
+## 3.2.  The Existential Quantifier
 
 存在量词，可以在 VS Code 中输入 `\ex` 来表示，它用于表示“存在”这一概念。在 Lean 中，形式表达式 `∃ x : ℝ, 2 < x ∧ x < 3` 表示存在一个介于 2 和 3 之间的实数。（我们将在[第3.4节](C03_Logic.md#34-Conjunction-and-Iff)中讨论连词符号 `∧`。）证明这样的命题的典型方法是指出一个实数并展示它具有所述的性质。数字 2.5，我们可以将其输入为 `5 / 2` 或 `(5 : ℝ) / 2` ，具有所需的性质，而 `norm_num` 策略可以证明它符合描述。
 
@@ -489,7 +489,7 @@ example (surjg : Surjective g) (surjf : Surjective f) : Surjective fun x ↦ g (
   sorry
 ```
 
-## 3.3.  否定
+## 3.3.  Negation
 
 符号 `¬` 用来表示否定，因此 `¬ x < y` 表示 `x` 不小于 `y`，`¬ x = y`（或者等价地 `x ≠ y`）表示 `x` 不等于 `y`，以及 `¬ ∃ z, x < z ∧ z < y` 表示没有（不存在）一个 `z` 严格处于 `x` 和 `y` 之间。在 Lean 中，符号 `¬ A` 缩写了 `A → False`，你可以将其理解为 `A` 导致矛盾。从实际意义上讲，这意味着你已经知道了一些如何处理否定的知识：你可以通过引入假设 `h : A` 并证明 `False` 来证明 `¬ A`，如果你有 `h : ¬ A` 和 `h' : A`，那么将 `h` 应用于 `h'` 将产生 `False`。
 
@@ -667,7 +667,7 @@ example (h : 0 < 0) : a > 37 := by
 
 `exfalso`策略用证明`False`的目标替换当前的目标。给定`h : P`和`h' : ¬ P`，项`absurd h h'`可以确定任何命题。最后，`contradiction`策略试图通过在假设中找到矛盾来结束一个目标，例如形式`h : P`和`h' : ¬ P`的一对。当然，在这个例子中，`linarith`也同样有效。
 
-## 3.4. 连接和Iff
+## 3.4.  Conjunction and Iff
 
 你已经看到了连接符号，`∧`，用于表示“以及”。`构造器`策略允许你证明`A ∧ B`形式的声明，方法是首先证明`A`然后证明`B`。
 
@@ -879,7 +879,7 @@ example : a < b → b < c → a < c := by
   sorry
 ```
 
-## 3.5.  析取
+## 3.5.  Disjunction
 
 证明析取 `A ∨ B` 的规范方法是证明 `A` 或 `B`。`左`策略选择 `A`，`右` 策略选择 `B`。
 
@@ -1065,7 +1065,7 @@ example (P Q : Prop) : P → Q ↔ ¬P ∨ Q := by
   sorry
 ```
 
-## 3.6.  序列和收敛
+## 3.6.  Sequences and Convergence
 
 现在我们已经掌握了足够的技能来做一些真实的数学工作。在 Lean 中，我们可以将实数序列 $s_0, s_1, s_2, \ldots$ 表示为函数 `s : ℕ → ℝ`。如果对于任何 $\varepsilon > 0$，存在一个点在该点之后序列保持在 $a$ 附近的 $\varepsilon$ 范围内，也就是存在一个数 $N$，对于任何 $n \ge N$，$| s_n - a | < \varepsilon$，那么这样的序列就称为向数 $a$ *收敛*。在 Lean 中，我们可以这样描述：
 
