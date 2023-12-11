@@ -218,11 +218,11 @@ example (a b c : ℕ) (h : a + b = c) : (a + b) * (a + b) = a * c + b * c := by
 
 ## 2.2.  Proving Identities in Algebraic Structures
 
-Mathematically, a ring consists of a collection of objects,  $R$ , operations  $+ \times$ , and constants  $0$  and  $1$ , and an operation  $x\mapsto −x$  such that:
+Mathematically, a ring consists of a collection of objects, $R$, operations $+ \times$, and constants $0$ and $1$, and an operation $x\mapsto −x$ such that:
 
-  - $R$  with  $+$  is an *abelian group*, with  $0$  as the additive identity and negation as inverse.
+  - $R$ with $+$ is an *abelian group*, with $0$ as the additive identity and negation as inverse.
 
-  - Multiplication is associative with identity  $1$ , and multiplication distributes over addition.
+  - Multiplication is associative with identity $1$, and multiplication distributes over addition.
 
 In Lean, the collection of objects is represented as a *type*, `R`. The ring axioms are as follows:
 
@@ -426,7 +426,7 @@ Explicitly invoking those lemmas is tedious, so Mathlib provides tactics similar
 
 ## 2.3.  Using Theorems and Lemmas
 
-Rewriting is great for proving equations, but what about other sorts of theorems? For example, how can we prove an inequality, like the fact that  $a+e^{b}\leq a+e^{c}$  holds whenever  $b\leq c$ ? We have already seen that theorems can be applied to arguments and hypotheses, and that the `apply` and `exact` tactics can be used to solve goals. In this section, we will make good use of these tools.
+Rewriting is great for proving equations, but what about other sorts of theorems? For example, how can we prove an inequality, like the fact that $a+e^{b}\leq a+e^{c}$ holds whenever  $b\leq c$? We have already seen that theorems can be applied to arguments and hypotheses, and that the `apply` and `exact` tactics can be used to solve goals. In this section, we will make good use of these tools.
 
 Consider the library theorems `le_refl` and `le_trans`:
 
