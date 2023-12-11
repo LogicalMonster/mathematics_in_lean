@@ -38,7 +38,7 @@ Try proving these identities, in each case replacing `sorry` by a tactic proof
 ```
 example (a b c : ℝ) : c * b * a = b * (a * c) := by
   sorry
-  
+
 example (a b c : ℝ) : a * (b * c) = b * (a * c) := by
   sorry
 ```
@@ -76,7 +76,7 @@ Try these, using the theorem `sub_self` for the second one:
 ```
 example (a b c d e f : ℝ) (h : b * c = e * f) : a * b * c * d = a * e * f * d := by
   sorry
-  
+
 example (a b c d : ℝ) (hyp : c = b * a - d) (hyp' : d = a * b) : c = 0 := by
   sorry
 ```
@@ -768,171 +768,163 @@ Hint: you can use `dvd_antisymm`, but if you do, Lean will complain that the ex
 
 ## 2.5.  Proving Facts about Algebraic Structures
 
-In [Section 2.2](C02_Basics.md#22-Proving-Identities-in-Algebraic-Structures), we saw that many common identities governing the real numbers hold in more general classes of algebraic structures, such as commutative rings. We can use any axioms we want to describe an algebraic structure, not just equations. For example, a *partial order* consists of a set with a binary relation that is reflexive and transitive, like ≤ on the real numbers. Lean knows about partial orders:
+In [Section 2.2](C02_Basics.md#22-Proving-Identities-in-Algebraic-Structures), we saw that many common identities governing the real numbers hold in more general classes of algebraic structures, such as commutative rings. We can use any axioms we want to describe an algebraic structure, not just equations. For example, a *partial order* consists of a set with a binary relation that is reflexive and transitive, like `≤` on the real numbers. Lean knows about partial orders:
 
 ```
-**variable** {α : Type*} [PartialOrder α]
-**variable** (x y z : α)
-- **#check** x ≤ y
-**#check** (le_refl x : x ≤ x)
-**#check** (le_trans : x ≤ y → y ≤ z → x ≤ z)
+variable {α : Type*} [PartialOrder α]
+variable (x y z : α)
+
+#check x ≤ y
+#check (le_refl x : x ≤ x)
+#check (le_trans : x ≤ y → y ≤ z → x ≤ z)
 ```
 
-Here we are adopting the Mathlib convention of using letters like α, β, and γ (entered as a, b, and g) for arbitrary types. The library often uses letters like R and G for the carries of algebraic structures like rings and groups, respectively, but in general Greek letters are used for types, especially when there is little or no structure associated with them.
+Here we are adopting the Mathlib convention of using letters like `α`, `β`, and `γ` (entered as `\a`, `\b`, and `\g`) for arbitrary types. The library often uses letters like `R` and `G` for the carries of algebraic structures like rings and groups, respectively, but in general Greek letters are used for types, especially when there is little or no structure associated with them.
 
-Associated to any partial order, ≤, there is also a *strict partial order*, <, which acts somewhat like < on the real numbers. Saying that x is less than y in this order is equivalent to saying that it is less-than-or-equal to y and not equal to y.
-
-```
-**#check** x < y
-**#check** (lt_irrefl x : ¬x < x)
-**#check** (lt_trans : x < y → y < z → x < z)
-**#check** (lt_of_le_of_lt : x ≤ y → y < z → x < z)
-**#check** (lt_of_lt_of_le : x < y → y ≤ z → x < z)
-- **example** : x < y ↔ x ≤ y ∧ x ≠ y :=
-lt_iff_le_and_ne
-```
-
-In this example, the symbol ∧ stands for “and,” the symbol ¬ stands for “not,” and x ≠ y abbreviates ¬ (x = y). In [Chapter 3](https://leanprover-community.github.io/mathematics_in_lean/C03_Logic.html#logic), you will learn how to use these logical connectives to *prove* that < has the properties indicated.
-
-A *lattice* is a structure that extends a partial order with operations ⊓ and ⊔ that are analogous to min and max on the real numbers:
+Associated to any partial order, `≤`, there is also a *strict partial order*, `<`, which acts somewhat like `<` on the real numbers. Saying that `x` is less than `y` in this order is equivalent to saying that it is less-than-or-equal to `y` and not equal to `y`.
 
 ```
-**variable** {α : Type*} [Lattice α]
-**variable** (x y z : α)
-- **#check** x ⊓ y
-**#check** (inf_le_left : x ⊓ y ≤ x)
-**#check** (inf_le_right : x ⊓ y ≤ y)
-**#check** (le_inf : z ≤ x → z ≤ y → z ≤ x ⊓ y)
-**#check** x ⊔ y
-**#check** (le_sup_left : x ≤ x ⊔ y)
-**#check** (le_sup_right : y ≤ x ⊔ y)
-**#check** (sup_le : x ≤ z → y ≤ z → x ⊔ y ≤ z)
+#check x < y
+#check (lt_irrefl x : ¬x < x)
+#check (lt_trans : x < y → y < z → x < z)
+#check (lt_of_le_of_lt : x ≤ y → y < z → x < z)
+#check (lt_of_lt_of_le : x < y → y ≤ z → x < z)
+
+example : x < y ↔ x ≤ y ∧ x ≠ y :=
+  lt_iff_le_and_ne
 ```
 
-The characterizations of ⊓ and ⊔ justify calling them the *greatest lower bound* and *least upper bound*, respectively. You can type them in VS code using glb and lub. The symbols are also often called then *infimum* and the *supremum*, and Mathlib refers to them as inf and sup in theorem names. To further complicate matters, they are also often called *meet* and *join*. Therefore, if you work with lattices, you have to keep the following dictionary in mind:
+In this example, the symbol `∧` stands for “and,” the symbol `¬` stands for “not,” and `x ≠ y` abbreviates `¬ (x = y)`. In [Chapter 3](C03_Logic.md#3-Logic), you will learn how to use these logical connectives to *prove* that `<` has the properties indicated.
 
--
+A *lattice* is a structure that extends a partial order with operations `⊓` and `⊔` that are analogous to `min` and `max` on the real numbers:
 
-⊓ is the *greatest lower bound*, *infimum*, or *meet*.
+```
+variable {α : Type*} [Lattice α]
+variable (x y z : α)
 
--
+#check x ⊓ y
+#check (inf_le_left : x ⊓ y ≤ x)
+#check (inf_le_right : x ⊓ y ≤ y)
+#check (le_inf : z ≤ x → z ≤ y → z ≤ x ⊓ y)
+#check x ⊔ y
+#check (le_sup_left : x ≤ x ⊔ y)
+#check (le_sup_right : y ≤ x ⊔ y)
+#check (sup_le : x ≤ z → y ≤ z → x ⊔ y ≤ z)
+```
 
-⊔ is the *least upper bound*, *supremum*, or *join*.
+The characterizations of `⊓` and `⊔` justify calling them the *greatest lower bound* and *least upper bound*, respectively. You can type them in VS code using `\glb` and `\lub`. The symbols are also often called then *infimum* and the *supremum*, and Mathlib refers to them as `inf` and `sup` in theorem names. To further complicate matters, they are also often called *meet* and *join*. Therefore, if you work with lattices, you have to keep the following dictionary in mind:
+
+- `⊓` is the *greatest lower bound*, *infimum*, or *meet*.
+- `⊔` is the *least upper bound*, *supremum*, or *join*.
 
 Some instances of lattices include:
 
--
+- `min` and `max` on any total order, such as the integers or real numbers with `≤`
+- `∩` and `∪` on the collection of subsets of some domain, with the ordering `⊆`
+- `∧` and `∨` on boolean truth values, with ordering `x ≤ y` if either `x` is false or `y` is true
+- `gcd` and `lcm` on the natural numbers (or positive natural numbers), with the divisibility ordering, `∣`
+- the collection of linear subspaces of a vector space, where the greatest lower bound is given by the intersection, the least upper bound is given by the sum of the two spaces, and the ordering is inclusion
+- the collection of topologies on a set (or, in Lean, a type), where the greatest lower bound of two topologies consists of the topology that is generated by their union, the least upper bound is their intersection, and the ordering is reverse inclusion
 
-min and max on any total order, such as the integers or real numbers with ≤
-
--
-
-∩ and ∪ on the collection of subsets of some domain, with the ordering ⊆
-
--
-
-∧ and ∨ on boolean truth values, with ordering x ≤ y if either x is false or y is true
-
--
-
-gcd and lcm on the natural numbers (or positive natural numbers), with the divisibility ordering, ∣
-
--
-
-the collection of linear subspaces of a vector space, where the greatest lower bound is given by the intersection, the least upper bound is given by the sum of the two spaces, and the ordering is inclusion
-
--
-
-the collection of topologies on a set (or, in Lean, a type), where the greatest lower bound of two topologies consists of the topology that is generated by their union, the least upper bound is their intersection, and the ordering is reverse inclusion
-
-You can check that, as with min / max and gcd / lcm, you can prove the commutativity and associativity of the infimum and supremum using only their characterizing axioms, together with le_refl and le_trans.
+You can check that, as with `min` / `max` and `gcd` / `lcm`, you can prove the commutativity and associativity of the infimum and supremum using only their characterizing axioms, together with `le_refl` and `le_trans`.
 
 ```
-**example** : x ⊓ y = y ⊓ x := **by**
-sorry
-- **example** : x ⊓ y ⊓ z = x ⊓ (y ⊓ z) := **by**
-sorry
-- **example** : x ⊔ y = y ⊔ x := **by**
-sorry
-- **example** : x ⊔ y ⊔ z = x ⊔ (y ⊔ z) := **by**
-sorry
+example : x ⊓ y = y ⊓ x := by
+  sorry
+
+example : x ⊓ y ⊓ z = x ⊓ (y ⊓ z) := by
+  sorry
+
+example : x ⊔ y = y ⊔ x := by
+  sorry
+
+example : x ⊔ y ⊔ z = x ⊔ (y ⊔ z) := by
+  sorry
 ```
 
-You can find these theorems in the Mathlib as inf_comm, inf_assoc, sup_comm, and sup_assoc, respectively.
+You can find these theorems in the Mathlib as `inf_comm`, `inf_assoc`, `sup_comm`, and `sup_assoc`, respectively.
 
 Another good exercise is to prove the *absorption laws* using only those axioms:
 
 ```
-**theorem** absorb1 : x ⊓ (x ⊔ y) = x := **by**
-sorry
-- **theorem** absorb2 : x ⊔ x ⊓ y = x := **by**
-sorry
+theorem absorb1 : x ⊓ (x ⊔ y) = x := by
+  sorry
+
+theorem absorb2 : x ⊔ x ⊓ y = x := by
+  sorry
 ```
 
-These can be found in Mathlib with the names inf_sup_self and sup_inf_self.
+These can be found in Mathlib with the names `inf_sup_self` and `sup_inf_self`.
 
-A lattice that satisfies the additional identities x ⊓ (y ⊔ z) = (x ⊓ y) ⊔ (x ⊓ z) and x ⊔ (y ⊓ z) = (x ⊔ y) ⊓ (x ⊔ z) is called a *distributive lattice*. Lean knows about these too:
-
-```
-**variable** {α : Type*} [DistribLattice α]
-**variable** (x y z : α)
-- **#check** (inf_sup_left : x ⊓ (y ⊔ z) = x ⊓ y ⊔ x ⊓ z)
-**#check** (inf_sup_right : (x ⊔ y) ⊓ z = x ⊓ z ⊔ y ⊓ z)
-**#check** (sup_inf_left : x ⊔ y ⊓ z = (x ⊔ y) ⊓ (x ⊔ z))
-**#check** (sup_inf_right : x ⊓ y ⊔ z = (x ⊔ z) ⊓ (y ⊔ z))
-```
-
-The left and right versions are easily shown to be equivalent, given the commutativity of ⊓ and ⊔. It is a good exercise to show that not every lattice is distributive by providing an explicit description of a nondistributive lattice with finitely many elements. It is also a good exercise to show that in any lattice, either distributivity law implies the other:
+A lattice that satisfies the additional identities `x ⊓ (y ⊔ z) = (x ⊓ y) ⊔ (x ⊓ z)` and `x ⊔ (y ⊓ z) = (x ⊔ y) ⊓ (x ⊔ z)` is called a *distributive lattice*. Lean knows about these too:
 
 ```
-**variable** {α : Type*} [Lattice α]
-**variable** (a b c : α)
-- **example** (h : ∀ x y z : α, x ⊓ (y ⊔ z) = x ⊓ y ⊔ x ⊓ z) : a ⊔ b ⊓ c = (a ⊔ b) ⊓ (a ⊔ c) := **by**
-sorry
-- **example** (h : ∀ x y z : α, x ⊔ y ⊓ z = (x ⊔ y) ⊓ (x ⊔ z)) : a ⊓ (b ⊔ c) = a ⊓ b ⊔ a ⊓ c := **by**
-sorry
+variable {α : Type*} [DistribLattice α]
+variable (x y z : α)
+
+#check (inf_sup_left : x ⊓ (y ⊔ z) = x ⊓ y ⊔ x ⊓ z)
+#check (inf_sup_right : (x ⊔ y) ⊓ z = x ⊓ z ⊔ y ⊓ z)
+#check (sup_inf_left : x ⊔ y ⊓ z = (x ⊔ y) ⊓ (x ⊔ z))
+#check (sup_inf_right : x ⊓ y ⊔ z = (x ⊔ z) ⊓ (y ⊔ z))
+```
+
+The left and right versions are easily shown to be equivalent, given the commutativity of `⊓` and `⊔`. It is a good exercise to show that not every lattice is distributive by providing an explicit description of a nondistributive lattice with finitely many elements. It is also a good exercise to show that in any lattice, either distributivity law implies the other:
+
+```
+variable {α : Type*} [Lattice α]
+variable (a b c : α)
+
+example (h : ∀ x y z : α, x ⊓ (y ⊔ z) = x ⊓ y ⊔ x ⊓ z) : a ⊔ b ⊓ c = (a ⊔ b) ⊓ (a ⊔ c) := by
+  sorry
+
+example (h : ∀ x y z : α, x ⊔ y ⊓ z = (x ⊔ y) ⊓ (x ⊔ z)) : a ⊓ (b ⊔ c) = a ⊓ b ⊔ a ⊓ c := by
+  sorry
 ```
 
 It is possible to combine axiomatic structures into larger ones. For example, a *strict ordered ring* consists of a commutative ring together with a partial order on the carrier satisfying additional axioms that say that the ring operations are compatible with the order:
 
 ```
-**variable** {R : Type*} [StrictOrderedRing R]
-**variable** (a b c : R)
-- **#check** (add_le_add_left : a ≤ b → ∀ c, c + a ≤ c + b)
-**#check** (mul_pos : 0 < a → 0 < b → 0 < a * b)
+variable {R : Type*} [StrictOrderedRing R]
+variable (a b c : R)
+
+#check (add_le_add_left : a ≤ b → ∀ c, c + a ≤ c + b)
+#check (mul_pos : 0 < a → 0 < b → 0 < a * b)
 ```
 
-[Chapter 3](https://leanprover-community.github.io/mathematics_in_lean/C03_Logic.html#logic) will provide the means to derive the following from mul_pos and the definition of <:
+[Chapter 3](C03_Logic.md#3-Logic) will provide the means to derive the following from `mul_pos` and the definition of `<`:
 
 ```
-**#check** (mul_nonneg : 0 ≤ a → 0 ≤ b → 0 ≤ a * b)
+#check (mul_nonneg : 0 ≤ a → 0 ≤ b → 0 ≤ a * b)
 ```
 
 It is then an extended exercise to show that many common facts used to reason about arithmetic and the ordering on the real numbers hold generically for any ordered ring. Here are a couple of examples you can try, using only properties of rings, partial orders, and the facts enumerated in the last two examples:
 ```
-**example** (h : a ≤ b) : 0 ≤ b - a := **by**
-sorry
-**example** (h: 0 ≤ b - a) : a ≤ b := **by**
-sorry
-- **example** (h : a ≤ b) (h' : 0 ≤ c) : a * c ≤ b * c := **by**
-sorry
+example (h : a ≤ b) : 0 ≤ b - a := by
+  sorry
+
+example (h: 0 ≤ b - a) : a ≤ b := by
+  sorry
+
+example (h : a ≤ b) (h' : 0 ≤ c) : a * c ≤ b * c := by
+  sorry
 ```
 
-Finally, here is one last example. A *metric space* consists of a set equipped with a notion of distance, dist x y, mapping any pair of elements to a real number. The distance function is assumed to satisfy the following axioms:
+Finally, here is one last example. A *metric space* consists of a set equipped with a notion of distance, `dist x y`, mapping any pair of elements to a real number. The distance function is assumed to satisfy the following axioms:
 
 ```
-**variable** {X : Type*} [MetricSpace X]
-**variable** (x y z : X)
-- **#check** (dist_self x : dist x x = 0)
-**#check** (dist_comm x y : dist x y = dist y x)
-**#check** (dist_triangle x y z : dist x z ≤ dist x y + dist y z)
+variable {X : Type*} [MetricSpace X]
+variable (x y z : X)
+
+#check (dist_self x : dist x x = 0)
+#check (dist_comm x y : dist x y = dist y x)
+#check (dist_triangle x y z : dist x z ≤ dist x y + dist y z)
 ```
 
 Having mastered this section, you can show that it follows from these axioms that distances are always nonnegative:
 
 ```
-**example** (x y : X) : 0 ≤ dist x y := **by**
-sorry
+example (x y : X) : 0 ≤ dist x y := by
+  sorry
 ```
 
-We recommend making use of the theorem nonneg_of_mul_nonneg_left. As you may have guessed, this theorem is called dist_nonneg in Mathlib.
+We recommend making use of the theorem `nonneg_of_mul_nonneg_left`. As you may have guessed, this theorem is called `dist_nonneg` in Mathlib.
