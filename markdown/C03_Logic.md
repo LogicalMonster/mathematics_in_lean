@@ -92,8 +92,6 @@ def FnLb (f : ℝ → ℝ) (a : ℝ) : Prop :=
 
 在下一个例子中，`fun x ↦ f x + g x` 是映射 `x` 到 `f x + g x` 的函数。从表达式 `f x + g x` 到此函数的过程在类型理论中称为 lambda 抽象。
 
-## 翻译 private_upload\default_user\2023-12-11-16-53-43\C03_Logic.md.part-1.md
-
 ```
 示例 (hfa : FnUb f a) (hgb : FnUb g b) : FnUb (fun x ↦ f x + g x) (a + b) := by
   intro x
@@ -172,8 +170,6 @@ def FnLb (f : ℝ → ℝ) (a : ℝ) : Prop :=
 示例 (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f (g x) :=
   抱歉
 ```
-
-## 翻译 private_upload\default_user\2023-12-11-16-53-43\C03_Logic.md.part-2.md
 
 以下是一些更多的例子。如果一个从$\Bbb R$到$\Bbb R$的函数$f$满足$f(-x) = f(x)$对于每一个$x$都成立，那么我们说它是*偶数*；如果$f(-x) = -f(x)$对于每一个$x$都成立，那么我们说它是*奇数*。下面的例子正式定义了这两个概念，并建立了一个关于它们的事实。你可以完成其他的证明。
 
@@ -259,8 +255,6 @@ def SetUb (s : Set α) (a : α) :=
 ```
 
 ## 3.2. 存在量词
-
-## 翻译 private_upload\default_user\2023-12-11-16-53-43\C03_Logic.md.part-3.md
 
 存在量词，可以在 VS Code 中输入 `\ex` 来表示，它用于表示“存在”这一概念。在 Lean 中，形式表达式 `∃ x : ℝ, 2 < x ∧ x < 3` 表示存在一个介于 2 和 3 之间的实数。（我们将在[第3.4节](C03_Logic.md#34-Conjunction-and-Iff)中讨论连词符号 `∧`。）证明这样的命题的典型方法是指出一个实数并展示它具有所述的性质。数字 2.5，我们可以将其输入为 `5 / 2` 或 `(5 : ℝ) / 2` ，具有所需的性质，而 `norm_num` 策略可以证明它符合描述。
 
@@ -359,8 +353,6 @@ def FnHasLb (f : ℝ → ℝ) :=
   fun ⟨a, ubfa⟩ ⟨b, ubgb⟩ ↦ ⟨a + b, fnUb_add ubfa ubgb⟩
 ```
 
-## 翻译 private_upload\default_user\2023-12-11-16-53-43\C03_Logic.md.part-4.md
-
 在假设中解包信息的任务如此重要，以至于Lean和Mathlib提供了多种方式来实现它。例如，`obtain`策略提供了建议语法：
 
 ```
@@ -435,8 +427,6 @@ def SumOfSquares (x : α) :=
 ```
 
 就像通用量词一样，如果你知道如何发现它们，你可以在各处找到存在量词。例如，可分性隐含了一个“存在”声明。
-
-## 翻译 private_upload\default_user\2023-12-11-16-53-43\C03_Logic.md.part-5.md
 
 ```
 示例 (divab : a ∣ b) (divbc : b ∣ c) : a ∣ c := by
@@ -546,8 +536,6 @@ Mathlib 提供了许多用于关联排列和否定的有用定理：
 #check (le_of_not_gt : ¬a > b → a ≤ b)
 ```
 
-## 翻译 private_upload\default_user\2023-12-11-16-53-43\C03_Logic.md.part-6.md
-
 回顾谓词 `Monotone f`，该谓词表明 `f` 是非递减的。使用一些刚刚列举的定理来证明以下的命题：
 
 ```
@@ -651,14 +639,11 @@ Mathlib 还有一个策略，`contrapose`，它将目标 `A → B` 转化为 `¬
 example (h : ¬FnHasUb f) : ∀ a, ∃ x, f x > a := by
   contrapose! h
   exact h
-```
 
-## 翻译 private_upload\default_user\2023-12-11-16-53-43\C03_Logic.md.part-7.md
-
-示例 (x : ℝ) (h : ∀ ε > 0, x ≤ ε) : x ≤ 0 :=
+example (x : ℝ) (h : ∀ ε > 0, x ≤ ε) : x ≤ 0 := by
   contrapose! h
-  使用 x / 2
-  构造器 <;> linarith
+  use x / 2
+  constructor <;> linarith
 ```
 
 我们还没有解释`构造器`命令或者在其后使用的分号，但我们将在下一节中进行说明。
@@ -757,16 +742,19 @@ example (h : ¬FnHasUb f) : ∀ a, ∃ x, f x > a := by
 
 与使用存在量化器相反，你可以通过写`h.left`和`h.right`或等价的`h.1`和`h.2`来提取假设`h : A ∧ B`的两个组件的证据。
 
-## 翻译 private_upload\default_user\2023-12-11-16-53-43\C03_Logic.md.part-8.md
-
 ```
-例子 {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x:= 由
-  介绍 h'
-  申请 h.right
-  完全 le_antisymm h.left h' 
+example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x := by
+  rcases h with ⟨h₀, h₁⟩
+  contrapose! h₁
+  exact le_antisymm h₀ h₁
 
-例子 {x y : ℝ} (h: x ≤ y ∧ x ≠ y): ¬y ≤ x :=
-  fun h' ↦ h.right(le_antisymm h.left h')
+example {x y : ℝ} : x ≤ y ∧ x ≠ y → ¬y ≤ x := by
+  rintro ⟨h₀, h₁⟩ h'
+  exact h₁ (le_antisymm h₀ h')
+
+example {x y : ℝ} : x ≤ y ∧ x ≠ y → ¬y ≤ x :=
+  fun ⟨h₀, h₁⟩ h' ↦ h₁ (le_antisymm h₀ h')
+```
 
 尝试使用这些技巧来提出以下各种证明方法：
 
@@ -859,8 +847,6 @@ pow_eq_zero h'
 
 看看你是否可以使用下面的定理 `rw` 提供一个简短的证据，证明否定是不是一个非递减的函数。(注意，`push_neg` 不会为你展开定义，所以定理的证明中需要 `rw [Monotone]`。)
 
-## 翻译 private_upload\default_user\2023-12-11-16-53-43\C03_Logic.md.part-9.md
-
 ```
 定理 not_monotone_iff {f : ℝ → ℝ} : ¬Monotone f ↔ ∃ x y, x ≤ y ∧ f x > f y := 由
   重写 [Monotone]
@@ -951,8 +937,6 @@ Lean 也支持计算机科学家的析取的模式匹配语法。现在 `cases` 
 ```
 
 名字 `inl` 和 `inr` 是 “intro left” 和 “intro right”的简称。 使用 `case` 的优势是你可以按任意顺序证明案例；Lean 使用标记来找到相关的目标。如果你不关心那个，你可以使用 `next`，或者 `match`，甚至可以使用匹配模式的 `have`.
-
-## 翻译 private_upload\default_user\2023-12-11-16-53-43\C03_Logic.md.part-10.md
 
 ```
 示例 ：x < |y| → x < y ∨ x < -y := by
@@ -1055,8 +1039,6 @@ variable (x y : R)
   sorry
 ```
 
-## 翻译 private_upload\default_user\2023-12-11-16-53-43\C03_Logic.md.part-11.md
-
 实际上，如果你仔细的话，可以在不使用乘法交换律的情况下证明第一个定理。在那种情况下，只需假设 `R` 是一个 `Ring` 而非 `CommRing`。
 
 有时在证明中我们想要根据某些叙述是否为真来进行分情况处理。对于任何命题 `P`，我们可以使用 `em P : P ∨ ¬ P`。名称 `em` 是 “excluded middle” 的简写。
@@ -1141,19 +1123,18 @@ Lean 有一个策略，`simp`，它可以经常帮助你省去手动执行如 `r
 
 对于一个更有趣的定理，让我们证明如果 `s` 收敛于 `a`，`t` 收敛于 `b`，那么 `fun n ↦ s n + t n` 收敛于 `a + b`。在开始编写正式的证明之前，有明确的纸和笔的证明是有帮助的。给定大于 `0` 的 `ε`，主要的想法是使用假设获得一个 `Ns`，使得在那个点之后，`s` 在 `a` 的 `ε / 2` 范围内，以及一个 `Nt`，使得在那个点之后，`t` 在 `b` 的 `ε / 2` 范围内。然后，无论 `n` 是否大于或等于 `Ns` 和 `Nt` 的最大值，序列 `fun n ↦ s n + t n` 都应在 `a + b` 的 `ε` 以内。下面的例子开始实现了这个策略。试着看看你能不能完成它。
 
-## 翻译 private_upload\default_user\2023-12-11-16-53-43\C03_Logic.md.part-12.md
-
 ```
-定理 convergesTo_add {s t : ℕ → ℝ} {a b : ℝ}
+theorem convergesTo_add {s t : ℕ → ℝ} {a b : ℝ}
       (cs : ConvergesTo s a) (ct : ConvergesTo t b) :
-    ConvergesTo (fun n ↦ s n + t n) (a + b) := 通过
-  intrο ε εpos
-  dsimp -- 这行代码不是必须的，但能简化一些目标。
-  有 ε2pos : 0 < ε / 2 := 通过 linarith
-  上述 cs (ε / 2) ε2pos 获得 ⟨Ns, hs⟩
-  上述 ct (ε / 2) ε2pos 获得 ⟨Nt, ht⟩
-  使用 max Ns Nt
-  抱歉
+    ConvergesTo (fun n ↦ s n + t n) (a + b) := by
+  intro ε εpos
+  dsimp -- this line is not needed but cleans up the goal a bit.
+  have ε2pos : 0 < ε / 2 := by linarith
+  rcases cs (ε / 2) ε2pos with ⟨Ns, hs⟩
+  rcases ct (ε / 2) ε2pos with ⟨Nt, ht⟩
+  use max Ns Nt
+  sorry
+```
 
 作为提示，您可以使用 `le_of_max_le_left` 和 `le_of_max_le_right`，并且 `norm_num` 可以证明 `ε / 2 + ε / 2 = ε`。此外，使用 `congr` 策略显示 `|s n + t n - (a + b)|` 等于 `|(s n - a) + (t n - b)|，`是有帮助的，因为然后您可以使用三角不等式。请注意，我们将所有变量 `s`、`t`、`a` 和 `b` 标记为隐含的，因为它们可以从假设中推断出来。
 
@@ -1236,8 +1217,6 @@ Lean 有一个策略，`simp`，它可以经常帮助你省去手动执行如 `r
 ```
 
 我们以观察我们的证明可以被一般化来结束这一部分。例如，我们使用的自然数的唯一属性是其结构具有 `min` 和 `max` 的偏序。您可以检查如果你用任何线性顺序 `α` 替换 `ℕ` ，一切仍然可行：
-
-## 翻译 private_upload\default_user\2023-12-11-16-53-43\C03_Logic.md.part-13.md
 
 ```
 变量 {α : Type*} [LinearOrder α]
