@@ -16,12 +16,18 @@ Although you can read a pdf or html version of this book online, it designed to 
 
 1. Install Lean 4 and VS Code following these [installation instructions](https://leanprover-community.github.io/get_started.html).
 
-1. 按照这些[安装指南](https://leanprover-community.github.io/get_started.html)安装Lean 4和VS Code。
 2. Make sure you have [git](https://git-scm.com/) installed.
-2. 确保你已经安装了 [git](https://git-scm.com/)。
+
 3. Follow these [instructions](https://leanprover-community.github.io/install/project.html#working-on-an-existing-project) to fetch the `mathematics_in_lean` repository and open it up in VS Code.
-3. 按照这些[说明](https://leanprover-community.github.io/install/project.html#working-on-an-existing-project)获取`mathematics_in_lean`仓库并在VS Code中打开它。
+
 4. Each section in this book has an associated Lean file with examples and exercises. You can find them in the folder `MIL`, organized by chapter. We strongly recommend making a copy of that folder and experimenting and doing the exercises in that copy. This leaves the originals intact, and it also makes it easier to update the repository as it changes (see below). You can call the copy `my_files` or whatever you want and use it to create your own Lean files as well.
+
+1. 按照这些[安装指南](https://leanprover-community.github.io/get_started.html)安装Lean 4和VS Code。
+
+2. 确保你已经安装了 [git](https://git-scm.com/)。
+
+3. 按照这些[说明](https://leanprover-community.github.io/install/project.html#working-on-an-existing-project)获取`mathematics_in_lean`仓库并在VS Code中打开它。
+
 4. 这本书的每个章节都有一个相关的Lean文件，其中包含了示例和练习。你可以在`MIL`文件夹中找到它们，按照章节进行组织。我们强烈建议复制该文件夹，并在副本中进行实验和完成练习。这样可以保持原始文件的完整性，同时也便于更新仓库（如下所述）。你可以将副本命名为`my_files`或任何你想要的名称，并用它来创建自己的Lean文件。
 
 At that point, you can open the textbook in a side panel in VS Code as follows:
