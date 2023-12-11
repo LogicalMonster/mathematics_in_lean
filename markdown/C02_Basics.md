@@ -1,8 +1,8 @@
-# 2. 基本内容
+# 2.  Basics
 
 本章旨在向您介绍 Lean 中的数学推理的基本要素: 计算，应用引理和定理，以及推理有关的通用结构。
 
-## 2.1. 计算
+## 2.1.  Calculating
 
 我们通常学习进行数学计算，而不把它们当作证明。但是，当我们验证计算中的每一步，就像 Lean 要求我们做的那样，结果就是一个证明，证明计算的左手边等于右手边。
 
@@ -77,14 +77,14 @@ example (a b c d e f : ℝ) (h : a * b = c * d) (h' : e = f) : a * (b * e) = c *
 example (a b c d e f : ℝ) (h : b * c = e * f) : a * b * c * d = a * e * f * d := by
   sorry
 
-示例 (a b c d : ℝ) (hyp : c = b * a - d) (hyp' : d = a * b) : c = 0 := by
+example (a b c d : ℝ) (hyp : c = b * a - d) (hyp' : d = a * b) : c = 0 := by
   sorry
 ```
 
 可以使用单个命令执行多个重写命令，方法是在方括号内以逗号分隔列出相关的身份。
 
 ```
-示例 (a b c d e f : ℝ) (h : a * b = c * d) (h' : e = f) : a * (b * e) = c * (d * f) := by
+example (a b c d e f : ℝ) (h : a * b = c * d) (h' : e = f) : a * (b * e) = c * (d * f) := by
   rw [h', ← mul_assoc, h, mul_assoc]
 ```
 
@@ -93,17 +93,17 @@ example (a b c d e f : ℝ) (h : b * c = e * f) : a * b * c * d = a * e * f * d 
 另一个技巧是我们可以一劳永逸地在一个例子或定理外部声明变量。Lean 然后自动包括它们。
 
 ```
-变量 (a b c d e f : ℝ)
+variable (a b c d e f : ℝ)
 
-示例 (h : a * b = c * d) (h' : e = f) : a * (b * e) = c * (d * f) := by
+example (h : a * b = c * d) (h' : e = f) : a * (b * e) = c * (d * f) := by
   rw [h', ← mul_assoc, h, mul_assoc]
 ```
 
 在上述证据开始时检查策略状态，Lean 确实包括了所有变量。我们可以通过将其放在 `section ... end` 块中来限制声明的范围。最后，回顾一下介绍，Lean 为我们提供了一个命令来确定表达式的类型：
 
 ```
-部分
-变量 (a b c : ℝ)
+section
+variable (a b c : ℝ)
 
 #check a
 #check a + b
@@ -114,7 +114,7 @@ example (a b c d e f : ℝ) (h : b * c = e * f) : a * b * c * d = a * e * f * d 
 #check mul_comm a
 #check mul_comm
 
-结束
+end
 ```
 
 `#check` 命令适用于对象和事实。对命令 `#check a` 的响应，Lean 报告说 `a` 的类型是 `ℝ`。对命令 `#check mul_comm a b` 的回应，Lean 报告说 `mul_comm a b` 是事实 `a * b = b * a` 的证明。命令 `#check (a : ℝ)` 声明了我们对 `a` 的类型是 `ℝ` 的期望，如果不是这样，Lean 会抛出一个错误。我们将在稍后解释最后三个 `#check` 命令的输出，但与此同时，你可以看一看它们，并用一些 `#check` 命令进行实验。
@@ -122,7 +122,7 @@ example (a b c d e f : ℝ) (h : b * c = e * f) : a * b * c * d = a * e * f * d 
 让我们再试些例子，定理 `two_mul a` 表示 `2 * a = a + a`。定理 `add_mul` 和 `mul_add` 表达乘法在加法上的可分配性，定理 `add_assoc` 表达了加法的结合性。使用 `#check` 命令查看精确的声明。
 
 ```
-示例：(a + b) * (a + b) = a * a + 2 * (a * b) + b * b := by
+example : (a + b) * (a + b) = a * a + 2 * (a * b) + b * b := by
   rw [mul_add, add_mul, add_mul]
   rw [← add_assoc, add_assoc (a * a)]
   rw [mul_comm b a, ← two_mul]
@@ -131,7 +131,7 @@ example (a b c d e f : ℝ) (h : b * c = e * f) : a * b * c * d = a * e * f * d 
 而我们可以通过在编辑器中逐步完成这个证明来弄清楚这个证明的内容，很难单独阅读。Lean 使用 `calc` 关键字提供了一种更结构化的写证明的方式。
 
 ```
-示例：(a + b) * (a + b) = a * a + 2 * (a * b) + b * b :=
+example : (a + b) * (a + b) = a * a + 2 * (a * b) + b * b :=
   calc
     (a + b) * (a + b) = a * a + b * a + (a * b + b * b) := by
       rw [mul_add, add_mul, add_mul]
@@ -145,7 +145,7 @@ example (a b c d e f : ℝ) (h : b * c = e * f) : a * b * c * d = a * e * f * d 
 编写 `calc` 证明的一种方法是先用 `sorry` 策略为证明，确保 Lean 接受这些表达式，然后用策略证明每个步骤。
 
 ```
-示例：(a + b) * (a + b) = a * a + 2 * (a * b) + b * b :=
+example : (a + b) * (a + b) = a * a + 2 * (a * b) + b * b :=
   calc
     (a + b) * (a + b) = a * a + b * a + (a * b + b * b) := by
       sorry
@@ -158,27 +158,27 @@ example (a b c d e f : ℝ) (h : b * c = e * f) : a * b * c * d = a * e * f * d 
 试试用一个纯 `rw` 证明和一个更结构化的 `calc` 证明证明以下身份：
 
 ```
-示例：(a + b) * (c + d) = a * c + a * d + b * c + b * d := by
+example : (a + b) * (c + d) = a * c + a * d + b * c + b * d := by
   sorry
 ```
 
 以下练习略有挑战性。你可以使用下面列出的定理。
 ```
-示例 (a b : ℝ) : (a + b) * (a - b) = a ^ 2 - b ^ 2 := by
+example (a b : ℝ) : (a + b) * (a - b) = a ^ 2 - b ^ 2 := by
   sorry
 
-#检查 pow_two a
-#检查 mul_sub a b c
-#检查 add_mul a b c
-#检查 add_sub a b c
-#检查 sub_sub a b c
-#检查 add_zero a
+#check pow_two a
+#check mul_sub a b c
+#check add_mul a b c
+#check add_sub a b c
+#check sub_sub a b c
+#check add_zero a
 ```
 
 我们也可以在上下文中的假设中进行重写。例如，`rw [mul_comm a b] at hyp` 在假设 `hyp` 中将 `a * b` 替换为 `b * a`。
 
 ```
-示例 (a b c d : ℝ) (hyp : c = d * a + b) (hyp' : b = a * d) : c = 2 * a * d := by
+example (a b c d : ℝ) (hyp : c = d * a + b) (hyp' : b = a * d) : c = 2 * a * d := by
   rw [hyp'] at hyp
   rw [mul_comm d a] at hyp
   rw [← two_mul (a * d)] at hyp
@@ -191,16 +191,16 @@ example (a b c d e f : ℝ) (h : b * c = e * f) : a * b * c * d = a * e * f * d 
 我们通过注意到 Mathlib 提供了一个有用的 `ring` 策略来结束这一节，该策略旨在证明任何交换环中的恒等式，只要它们仅源于环公理，而不使用任何局部假设。
 
 ```
-示例 : c * b * a = b * (a * c) := by
+example : c * b * a = b * (a * c) := by
   ring
 
-示例 : (a + b) * (a + b) = a * a + 2 * (a * b) + b * b := by
+example : (a + b) * (a + b) = a * a + 2 * (a * b) + b * b := by
   ring
 
-示例 : (a + b) * (a - b) = a ^ 2 - b ^ 2 := by
+example : (a + b) * (a - b) = a ^ 2 - b ^ 2 := by
   ring
 
-示例 (hyp : c = d * a + b) (hyp' : b = a * d) : c = 2 * a * d := by
+example (hyp : c = d * a + b) (hyp' : b = a * d) : c = 2 * a * d := by
   rw [hyp, hyp']
   ring
 ```
@@ -210,12 +210,12 @@ example (a b c d e f : ℝ) (h : b * c = e * f) : a * b * c * d = a * e * f * d 
 `rw` 有一个变体 `nth_rewrite`，它允许您仅替换目标中表达式的特定实例。可能的匹配从 1 开始编号，所以在以下示例中，`nth_rewrite 2 h` 将 `a + b` 的第二次出现替换为 `c`。
 
 ```
-示例 (a b c : ℕ) (h : a + b = c) : (a + b) * (a + b) = a * c + b * c := by
+example (a b c : ℕ) (h : a + b = c) : (a + b) * (a + b) = a * c + b * c := by
   nth_rw 2 [h]
   rw [add_mul]
 ```
 
-## 2.2 证明代数结构中的恒等式
+## 2.2. Proving Identities in Algebraic Structures
 
 在数学中，一个环由对象集合、操作 +、×，常数 0, 1，和操作 $x\mapsto -x$ 组成，它们满足：
 
@@ -226,17 +226,17 @@ example (a b c d e f : ℝ) (h : b * c = e * f) : a * b * c * d = a * e * f * d 
 在 Lean 中，对象的集合表示为类型 `R`。环公理如下：
 
 ```
-变量 (R : Type*) [Ring R]
+variable (R : Type*) [Ring R]
 
-#检查 （add_assoc : ∀ a b c : R, a + b + c = a + (b + c)）
-#检查 （add_comm : ∀ a b : R, a + b = b + a）
-#检查 （zero_add : ∀ a : R, 0 + a = a）
-#检查 （add_left_neg : ∀ a : R, -a + a = 0）
-#检查 （mul_assoc : ∀ a b c : R, a * b * c = a * (b * c)）
-#检查 （mul_one : ∀ a : R, a * 1 = a）
-#检查 （one_mul : ∀ a : R, 1 * a = a）
-#检查 （mul_add : ∀ a b c : R, a * (b + c) = a * b + a * c）
-#检查 （add_mul : ∀ a b c : R, (a + b) * c = a * c + b * c）
+#check (add_assoc : ∀ a b c : R, a + b + c = a + (b + c))
+#check (add_comm : ∀ a b : R, a + b = b + a)
+#check (zero_add : ∀ a : R, 0 + a = a)
+#check (add_left_neg : ∀ a : R, -a + a = 0)
+#check (mul_assoc : ∀ a b c : R, a * b * c = a * (b * c))
+#check (mul_one : ∀ a : R, a * 1 = a)
+#check (one_mul : ∀ a : R, 1 * a = a)
+#check (mul_add : ∀ a b c : R, a * (b + c) = a * b + a * c)
+#check (add_mul : ∀ a b c : R, (a + b) * c = a * c + b * c)
 ```
 
 在第一行中，方括号的含义稍后会详细介绍，但在此之前，足以说明该声明给我们提供了一种类型 `R` 和 `R` 上的环结构。然后 Lean 允许我们使用 R 元素的通用环符号，并利用有关环的定理库。
@@ -246,16 +246,16 @@ example (a b c d e f : ℝ) (h : b * c = e * f) : a * b * c * d = a * e * f * d 
 然而，并非所有有关实数的重要性质都在任意环中成立。例如，实数的乘法是可交换的，但这在一般情况下并不成立。如果您修过线性代数课程，您会认识到，对于每个 $n$，实数的 $n$ by $n$ 矩阵形成了一个环，在其中通常不满足交换性。实际上，如果我们声明 `R` 是一个交换环，那么当我们用 `R` 替换 `ℝ` 时，上一节中的所有定理都将继续成立。
 
 ```
-变量 (R : Type*) [CommRing R]
-变量 (a b c d : R)
+variable (R : Type*) [CommRing R]
+variable (a b c d : R)
 
-示例 : c * b * a = b * (a * c) := by ring
+example : c * b * a = b * (a * c) := by ring
 
-示例 : (a + b) * (a + b) = a * a + 2 * (a * b) + b * b := by ring
+example : (a + b) * (a + b) = a * a + 2 * (a * b) + b * b := by ring
 
-示例 : (a + b) * (a - b) = a ^ 2 - b ^ 2 := by ring
+example : (a + b) * (a - b) = a ^ 2 - b ^ 2 := by ring
 
-示例（hyp：c = d * a + b）（hyp'：b = a * d）：c = 2 * a * d：=
+example (hyp : c = d * a + b) (hyp' : b = a * d) : c = 2 * a * d := by
   rw [hyp, hyp']
   ring
 ```
@@ -269,17 +269,17 @@ Lean提供了类似于编程语言中使用的组织机制：当在*命名空间
 下面的例子显示，我们不需要`add_zero`或`add_right_neg`作为环的公理，因为它们可以从其他公理得出。
 
 ```
-命名空间 MyRing
-变量 {R：Type*} [Ring R]
+namespace MyRing
+variable {R : Type*} [Ring R]
 
-定理 add_zero (a:R)：a + 0 = a：=通过 rw [add_comm，zero_add]
+theorem add_zero (a : R) : a + 0 = a := by rw [add_comm, zero_add]
 
-定理 add_right_neg（a:R): a + -a = 0 :=通过 rw [add_comm，add_left_neg]
+theorem add_right_neg (a : R) : a + -a = 0 := by rw [add_comm, add_left_neg]
 
 #check MyRing.add_zero
 #check add_zero
 
-结束 MyRing
+end MyRing
 ```
 
 结果是我们可以临时重新证明库中的一个定理，然后继续使用该库版本。但不要作弊！在接下来的练习中，请注意只使用我们在本节前面证明过的关于环的一般事实。
@@ -289,24 +289,24 @@ Lean提供了类似于编程语言中使用的组织机制：当在*命名空间
 这是一个有用的定理：
 
 ```
-定理 neg_add_cancel_left (a b： R)：-a + (a + b) = b：= 通过
-  rw [← add_assoc，add_left_neg，zero_add]
+theorem neg_add_cancel_left (a b : R) : -a + (a + b) = b := by
+  rw [← add_assoc, add_left_neg, zero_add]
 ```
 
 证明配套版本：
 
 ```
-定理 add_neg_cancel_right (a b： R)：a + b + -b = a：= 通过
+theorem add_neg_cancel_right (a b : R) : a + b + -b = a := by
   sorry
 ```
 
 使用它们来证明以下内容：
 
 ```
-定理 add_left_cancel {a b c：R} (h：a + b = a + c)：b = c：= 通过
+theorem add_left_cancel {a b c : R} (h : a + b = a + c) : b = c := by
   sorry
 
-定理 add_right_cancel {a b c: R} (h：a + b = c + b)：a = c：= 通过
+theorem add_right_cancel {a b c : R} (h : a + b = c + b) : a = c := by
   sorry
 ```
 
@@ -317,9 +317,9 @@ Lean提供了类似于编程语言中使用的组织机制：当在*命名空间
 为了举例说明，让我们展示`a * 0 = 0`如何从环公理中得出。
 
 ```
-定理 mul_zero（a：R）：a * 0 = 0：= 通过
-  have h：a * 0 + a * 0 = a * 0 + 0：= 通过
-    rw [← mul_add，add_zero，add_zero]
+theorem mul_zero (a : R) : a * 0 = 0 := by
+  have h : a * 0 + a * 0 = a * 0 + 0 := by
+    rw [← mul_add, add_zero, add_zero]
   rw [add_left_cancel h]
 ```
 
@@ -330,25 +330,25 @@ Lean提供了类似于编程语言中使用的组织机制：当在*命名空间
 记住，乘法不一定是交换的，所以下面的定理也需要一些工作。
 
 ```
-定理 零乘 (a : R) : 0 * a = 0 := 由
-  抱歉
+theorem zero_mul (a : R) : 0 * a = 0 := by
+  sorry
 ```
 
 到目前为止，你应该已经能够在接下来的练习中用证明替换每个抱歉，只用我们在本节中已经建立的关于环的事实。
 
 ```
-定理 neg_eq_of_add_eq_zero {a b : R} (h : a + b = 0) : -a = b := 由
-  抱歉
+theorem neg_eq_of_add_eq_zero {a b : R} (h : a + b = 0) : -a = b := by
+  sorry
 
-定理 eq_neg_of_add_eq_zero {a b : R} (h : a + b = 0) : a = -b := 由
-  抱歉
+theorem eq_neg_of_add_eq_zero {a b : R} (h : a + b = 0) : a = -b := by
+  sorry
 
-定理 neg_zero : (-0 : R) = 0 := 由
-  应用 neg_eq_of_add_eq_zero
-  重写 [add_zero]
+theorem neg_zero : (-0 : R) = 0 := by
+  apply neg_eq_of_add_eq_zero
+  rw [add_zero]
 
-定理 neg_neg (a : R) : - -a = a := 由
-  抱歉
+theorem neg_neg (a : R) : - -a = a := by
+  sorry
 ```
 
 在第三个定理中，我们不得不使用注解`(-0 : R)`代替`0`，因为如果不指定`R`，对Lean来说很难推断出我们心中的`0`是什么，而默认情况下它会被解释为一个自然数。
@@ -356,24 +356,24 @@ Lean提供了类似于编程语言中使用的组织机制：当在*命名空间
 在Lean中，环中的减法可以被证明等于加上相加的逆。
 
 ```
-例子 (a b : R) : a - b = a + -b :=
+example (a b : R) : a - b = a + -b :=
   sub_eq_add_neg a b
 ```
 
 对于实数，就是这样*定义*的：
 
 ```
-例子 (a b : ℝ) : a - b = a + -b :=
+example (a b : ℝ) : a - b = a + -b :=
   rfl
-例子 (a b : ℝ) : a - b = a + -b := 由
+example (a b : ℝ) : a - b = a + -b := by
   rfl
 ```
 
 证明项`rfl`是“反射性”的缩写。将它作为`a - b = a + -b`的证明，会迫使Lean展开定义并认出两边是相同的。`rfl`策略也是如此。这是Lean底层逻辑中所谓的*定义性等式*的一个实例。这意味着人们不仅可以用`sub_eq_add_neg`进行重写以替换`a - b = a + -b`，而且在某些情况下，当处理实数时，你可以交替使用等式的两边。例如，你现在已有足够的信息来证明上一节中的`self_sub`定理：
 
 ```
-定理 self_sub (a : R) : a - a = 0 := 由
-  抱歉
+theorem self_sub (a : R) : a - a = 0 := by
+  sorry
 ```
 
 展示你可以用`rw`证明这一点，但是如果你将任意环`R`替换为实数，你也可以使用`apply`或`exact`来证明它。
@@ -381,49 +381,49 @@ Lean提供了类似于编程语言中使用的组织机制：当在*命名空间
 Lean知道`1 + 1 = 2`在任何环中都成立。你可以花一点努力，用这个来证明上一节的`two_mul`定理：
 
 ```
-定理 one_add_one_eq_two : 1 + 1 = (2 : R) := 由
+theorem one_add_one_eq_two : 1 + 1 = (2 : R) := by
   norm_num
 
-定理 two_mul (a : R) : 2 * a = a + a := 由
-  抱歉
+theorem two_mul (a : R) : 2 * a = a + a := by
+  sorry
 ```
 
 我们以查看我们以上所确定的有关加法和取反的事实没有需要环公理的全部强度，甚至是加法的交换性来结束这一节。一个更弱的概念，一个*群*，可以如下刻画：
 
 ```
-变量 (A : Type*) [AddGroup A]
+variable (A : Type*) [AddGroup A]
 
-#检查 (add_assoc : ∀ a b c : A, a + b + c = a + (b + c))
-#检查 (zero_add : ∀ a : A, 0 + a = a)
-#检查 (add_left_neg : ∀ a : A, -a + a = 0)
+#check (add_assoc : ∀ a b c : A, a + b + c = a + (b + c))
+#check (zero_add : ∀ a : A, 0 + a = a)
+#check (add_left_neg : ∀ a : A, -a + a = 0)
 ```
 
 当群操作是可交换的时，人们通常使用加法表示，否则使用乘法表示。所以Lean定义了一个乘性版本以及加性版本（以及他们的阿贝尔变种，`AddCommGroup`和`CommGroup`）。
 
 ```
-变量 {G : Type*} [Group G]
+variable {G : Type*} [Group G]
 
-#检查 (mul_assoc : ∀ a b c : G, a * b * c = a * (b * c))
-#检查 (one_mul : ∀ a : G, 1 * a = a)
-#检查 (mul_left_inv : ∀ a : G, a⁻¹ * a = 1)
+#check (mul_assoc : ∀ a b c : G, a * b * c = a * (b * c))
+#check (one_mul : ∀ a : G, 1 * a = a)
+#check (mul_left_inv : ∀ a : G, a⁻¹ * a = 1)
 ```
 
 如果你感到自信，试着只使用这些公理来证明下面的群的事实。你将需要在这过程中证明一些辅助性引理。我们在这一节中进行的证明提供了一些线索。
 
 ```
-定理 mul_right_inv (a : G) : a * a⁻¹ = 1 := 由
-  抱歉
+theorem mul_right_inv (a : G) : a * a⁻¹ = 1 := by
+  sorry
 
-定理 mul_one (a : G) : a * 1 = a := 由
-  抱歉
+theorem mul_one (a : G) : a * 1 = a := by
+  sorry
 
-定理 mul_inv_rev (a b : G) : (a * b)⁻¹ = b⁻¹ * a⁻¹ := 由
-  抱歉
+theorem mul_inv_rev (a b : G) : (a * b)⁻¹ = b⁻¹ * a⁻¹ := by
+  sorry
 ```
 
 显式调用这些引理是繁琐的，所以Mathlib提供了类似于ring的策略来覆盖大多数用途：group是用于非交换乘法群，abel是用于交换加法群，而noncomm_ring是用于非交换环。环和CommRing被称为代数结构，而与ring和noncomm_ring的策略的命名可能会觉得奇怪。这部分是由于历史原因，但也是为了给更常用的，处理交换环的策略带来更方便的短名称。
 
-## 2.3.  使用定理和引理
+## 2.3.  Using Theorems and Lemmas
 
 重写很适合用来证明等式，但是其他类型的定理该怎么证明呢？例如，我们如何证明一个不等式，比如当 $b\leq c$时，$a+e^{b}\leq a+e^{c}$ 总是成立的事实？我们已经看到，定理可以应用于参数和假设，并且 `apply` 和 `exact` 指令可以用来解决目标。在这一节，我们将充分利用这些工具。
 
@@ -497,7 +497,7 @@ example (h₀ : a ≤ b) (h₁ : b < c) (h₂ : c ≤ d) (h₃ : d < e) : a < e 
 `linarith` 策略就是设计来处理 *线性算法* 的。
 
 ```
-example (h : 2 * a ≤ 3 * b) (h' : 1 ≤ a) (h'' : d=2) : d + a ≤ 5 * b := by
+example (h : 2 * a ≤ 3 * b) (h' : 1 ≤ a) (h'' : d = 2) : d + a ≤ 5 * b := by
   linarith
 ```
 
@@ -511,29 +511,28 @@ example (h : 1 ≤ a) (h' : b ≤ c) : 2 + a + exp b ≤ 3 * a + exp c := by
 这里还有一些在库中可以用来建立实数上的不等式的定理。
 
 ```
-# 检查（exp_le_exp：exp a ≤ exp b ↔ a ≤ b）
-# 检查（exp_lt_exp：exp a < exp b ↔ a < b）
-# 检查（log_le_log：0 < a → 0 < b →（log a ≤ log b ↔ a ≤ b））
-# 检查（log_lt_log：0 < a → a < b → log a < log b）
-# 检查（add_le_add：a ≤ b → c ≤ d → a + c ≤ b + d）
-# 检查（add_le_add_left：a ≤ b → ∀ c, c + a ≤ c + b）
-# 检查（add_le_add_right：a ≤ b → ∀ c, a + c ≤ b + c）
-# 检查（add_lt_add_of_le_of_lt：a ≤ b → c < d → a + c < b + d）
-# 检查（add_lt_add_of_lt_of_le：a < b → c ≤ d → a + c < b + d）
-# 检查（add_lt_add_left：a < b → ∀ c, c + a < c + b）
-# 检查（add_lt_add_right：a < b → ∀ c, a + c < b + c）
-# 检查（add_nonneg：0 ≤ a → 0 ≤ b → 0 ≤ a + b）
-# 检查（add_pos：0 < a → 0 < b → 0 < a + b）
-# 检查（add_pos_of_pos_of_nonneg：0 < a → 0 ≤ b → 0 < a + b）
-# 检查（exp_pos：∀ a, 0 < exp a）
-# 检查add_le_add_left
+#check (exp_le_exp : exp a ≤ exp b ↔ a ≤ b)
+#check (exp_lt_exp : exp a < exp b ↔ a < b)
+#check (log_le_log : 0 < a → 0 < b → (log a ≤ log b ↔ a ≤ b))
+#check (log_lt_log : 0 < a → a < b → log a < log b)
+#check (add_le_add : a ≤ b → c ≤ d → a + c ≤ b + d)
+#check (add_le_add_left : a ≤ b → ∀ c, c + a ≤ c + b)
+#check (add_le_add_right : a ≤ b → ∀ c, a + c ≤ b + c)
+#check (add_lt_add_of_le_of_lt : a ≤ b → c < d → a + c < b + d)
+#check (add_lt_add_of_lt_of_le : a < b → c ≤ d → a + c < b + d)
+#check (add_lt_add_left : a < b → ∀ c, c + a < c + b)
+#check (add_lt_add_right : a < b → ∀ c, a + c < b + c)
+#check (add_nonneg : 0 ≤ a → 0 ≤ b → 0 ≤ a + b)
+#check (add_pos : 0 < a → 0 < b → 0 < a + b)
+#check (add_pos_of_pos_of_nonneg : 0 < a → 0 ≤ b → 0 < a + b)
+#check (exp_pos : ∀ a, 0 < exp a)
+#check add_le_add_left
 ```
 
 某些定理，`exp_le_exp`，`exp_lt_exp`和 `log_le_log` 使用了*双向蕴含关系*，代表着“当且仅当”。（您可以在VS Code中通过`\lr` 或 `\iff`键入。）我们将在下一章中详细讨论此关系。这样的定理可以与`rw`一起使用，以将目标改写为等价的另一个目标：
 
 ```
-示例（h：a ≤ b）：exp a ≤ exp b :=
-  通过
+example (h : a ≤ b) : exp a ≤ exp b := by
   rw [exp_le_exp]
   exact h
 ```
@@ -541,11 +540,10 @@ example (h : 1 ≤ a) (h' : b ≤ c) : 2 + a + exp b ≤ 3 * a + exp c := by
 但是，在此部分中，我们将使用这样一个事实，即如果`h：A↔B`是这样的等价关系，那么`h.mp`确定了前向方向，`A→B`，而`h.mpr`确定了相反的方向，`B→A`。在这里，mp表示`modus ponens`，mpr代表`modus ponens reverse`。您也可以如果你偏好，你也可以使用`h.1`和`h.2`分别代替`h.mp`和`h.mpr`。因此，以下证明有效：
 
 ```
-示例（h₀：a ≤ b）（h₁：c < d）：a + exp c + e < b + exp d + e :=
-  通过
-  使用add_lt_add_of_lt_of_le
-  · 应用add_lt_add_of_le_of_lt h₀
-    应用exp_lt_exp.mpr h₁
+example (h₀ : a ≤ b) (h₁ : c < d) : a + exp c + e < b + exp d + e := by
+  apply add_lt_add_of_lt_of_le
+  · apply add_lt_add_of_le_of_lt h₀
+    apply exp_lt_exp.mpr h₁
   apply le_refl
 ```
 
@@ -554,15 +552,15 @@ example (h : 1 ≤ a) (h' : b ≤ c) : 2 + a + exp b ≤ 3 * a + exp c := by
 尝试以下自己的示例。中间的例子向您展示了`norm_num`策略可以用来解决具体的数值目标。
 
 ```
-示例（h₀：d ≤ e）：c + exp（a + d）≤ c + exp（a + e）：= 对不起
+example (h₀ : d ≤ e) : c + exp (a + d) ≤ c + exp (a + e) := by sorry
 
-示例：（0：ℝ）< 1：= 通过norm_num
+example : (0 : ℝ) < 1 := by norm_num
 
-示例（h：a ≤ b）：log（1 + exp a）≤ log（1 + exp b）：=
-  要有h₀：0 < 1 + exp a：= 对不起
-  要有h₁：0 < 1 + exp b：= 对不起
-  应用（log_le_log h₀ h₁）.mpr
-  对不起
+example (h : a ≤ b) : log (1 + exp a) ≤ log (1 + exp b) := by
+  have h₀ : 0 < 1 + exp a := by sorry
+  have h₁ : 0 < 1 + exp b := by sorry
+  apply (log_le_log h₀ h₁).mpr
+  sorry
 ```
 
 从这些例子中，明显能够找到您需要的库定理是形式化的重要组成部分。您可以使用以下策略：
@@ -574,16 +572,16 @@ example (h : 1 ≤ a) (h' : b ≤ c) : 2 + a + exp b ≤ 3 * a + exp c := by
 - 您可以使用`apply?`策略，该策略试图在库中找到相关的定理。
 
 ```
-示例：0 ≤ a ^ 2 :=
-  -- 应用？
-  确切的sq_nonneg a
+example : 0 ≤ a ^ 2 := by
+  -- apply?
+  exact sq_nonneg a
 ```
 
 在此示例中尝试`apply?`，删除`exact`命令，然后取消注释上一行。使用这些技巧，看看你能否找到需要做下一个示例的内容：
 
 ```
-示例（h：a ≤ b）：c - exp b ≤ c - exp a :=
-  对不起
+example (h : a ≤ b) : c - exp b ≤ c - exp a := by
+  sorry
 ```
 
 使用相同的技巧，确认`linarith`而不是`apply?`也可以完成任务。
@@ -607,26 +605,26 @@ Mathlib 倾向在二元操作符如`*`与`^`两侧添加空格，但在这个例
 
 事实上，在上述证明中唯一的机智之处在于找出假设`h`。一旦我们有它，第二个计算仅包含线性算术，而`linarith`可以处理它：
 ```
-示例：2 * a * b ≤ a ^ 2 + b ^ 2 := 由
-  构造 h : 0 ≤ a ^ 2 - 2 * a * b + b ^ 2
+example : 2 * a * b ≤ a ^ 2 + b ^ 2 := by
+  have h : 0 ≤ a ^ 2 - 2 * a * b + b ^ 2
   calc
-    a ^ 2 - 2 * a * b + b ^ 2 = (a - b) ^ 2 := 由 ring 算法结论
-    _ ≥ 0 := 通过应用 pow_two_nonneg 得出
+    a ^ 2 - 2 * a * b + b ^ 2 = (a - b) ^ 2 := by ring
+    _ ≥ 0 := by apply pow_two_nonneg
   linarith
 ```
 
 太棒了！我们挑战你使用这些思想来证明以下定理。你可以使用定理`abs_le'.mpr`。你还需要`constructor`策略将连接到两个目标；请参见[第3.4节](C03_Logic.md#34-Conjunction-and-Iff)。
 
 ```
-示例：|a * b| ≤ (a ^ 2 + b ^ 2) / 2 := 由
-  对不起
+example : |a * b| ≤ (a ^ 2 + b ^ 2) / 2 := by
+  sorry
 
 #check abs_le'.mpr
 ```
 
 如果你成功解决了这个问题，恭喜！你正走在成为大师级博物馆者的道路上。
 
-## 2.4.  更多使用 apply 和 rw 的例子
+## 2.4.  More examples using apply and rw
 
 实数上的`min`函数由以下三个事实唯一地表征：
 
@@ -645,16 +643,16 @@ Mathlib 倾向在二元操作符如`*`与`^`两侧添加空格，但在这个例
 使用定理`le_antisymm`，我们可以证明如果两个实数都小于或等于另一个，那么它们就相等。使用上述的事实和这一事实，我们可以证明`min`是可交换的：
 
 ```
-示例：min a b = min b a := 由
-  应用 le_antisymm
-  · 展示 min a b ≤ min b a
-    应用 le_min
-    · 应用 min_le_right
-    应用 min_le_left
-  · 展示 min b a ≤ min a b
-    应用 le_min
-    · 应用 min_le_right
-    应用 min_le_left
+example : min a b = min b a := by
+  apply le_antisymm
+  · show min a b ≤ min b a
+    apply le_min
+    · apply min_le_right
+    apply min_le_left
+  · show min b a ≤ min a b
+    apply le_min
+    · apply min_le_right
+    apply min_le_left
 ```
 
 在这里，我们使用了点来分隔不同目标的证明，我们的用法并不一致：在外层，我们为两个目标使用点和缩进，而对于嵌套的证明，我们只在单一目标存在时使用点。这两种规定都是合理和有用的。我们还使用`show`策略来组织证明并指示在每个块中正在证明什么。无需`show`命令，证明仍然有效，但使用它们使得证明更容易阅读和维护。
@@ -662,15 +660,15 @@ Mathlib 倾向在二元操作符如`*`与`^`两侧添加空格，但在这个例
 重复的证明可能会让你感到困扰。预示你将来会学到的技能，我们注意到避免重复的一个方式是陈述一个局部引理然后使用它：
 
 ```
-示例：min a b = min b a := 由
-  具有 h : ∀ x y : ℝ, min x y ≤ min y x ：由
-    引入 x y
-    应用 le_min
-    应用 min_le_right
-    应用 min_le_left
-  应用 le_antisymm
-  应用 h
-  应用 h
+example : min a b = min b a := by
+  have h : ∀ x y : ℝ, min x y ≤ min y x := by
+    intro x y
+    apply le_min
+    apply min_le_right
+    apply min_le_left
+  apply le_antisymm
+  apply h
+  apply h
 ```
 
 我们会在[第3.1节](C03_Logic.md#31-Implication-and-the-Universal-Quantifier)更多地讨论全称量词，但是这里足够说出假设`h`，
@@ -679,21 +677,21 @@ Mathlib 倾向在二元操作符如`*`与`^`两侧添加空格，但在这个例
 另一种解决方案是使用`repeat`策略，它可以尽可能多地应用策略（或块）。
 
 ```
-**示例**：min a b = min b a := **通过**
-应用 le_antisymm
-重复
-应用 le_min
-应用 min_le_right
-应用 min_le_left
+example : min a b = min b a := by
+  apply le_antisymm
+  repeat
+    apply le_min
+    apply min_le_right
+    apply min_le_left
 ```
 
 无论是否使用这些技巧，我们都鼓励你证明以下内容：
 
 ```
-示例：max a b = max b a := 通过
-对不起
-示例：min (min a b) c = min a (min b c) := 通过
-对不起
+example : max a b = max b a := by
+  sorry
+example : min (min a b) c = min a (min b c) := by
+  sorry
 ```
 
 当然，我们也欢迎你证明`max`的结合性。
@@ -703,24 +701,24 @@ Mathlib 倾向在二元操作符如`*`与`^`两侧添加空格，但在这个例
 这是其中一个例子：
 
 ```
-定理 aux：min a b + c ≤ min (a + c) (b + c) := 通过
-对不起
-示例：min a b + c = min (a + c) (b + c) := 通过
-对不起
+theorem aux : min a b + c ≤ min (a + c) (b + c) := by
+  sorry
+example : min a b + c = min (a + c) (b + c) := by
+  sorry
 ```
 很明显，`aux`提供了证明等式所需的两个不等式之一，但将适合的值应用于它也能得到另一个方向。作为提示，你可以使用定理`add_neg_cancel_right`和`linarith`策略。
 
 Lean的命名规则在库的三角不等式名称中得以体现：
 
 ```
-#检查(abs_add: ∀ a b: ℝ，| a + b | ≤ | a | + | b |)
+#check (abs_add : ∀ a b : ℝ, |a + b| ≤ |a| + |b|)
 ```
 
 用它来证明以下变体：
 ```
-示例：| a |-| b | ≤ | a - b |=
-对不起
-结束
+example : |a| - |b| ≤ |a - b| :=
+  sorry
+end
 ```
 
 看看你能否在三行或更少的行数内做到这一点。您可以使用定理`sub_add_cancel`。
@@ -728,53 +726,56 @@ Lean的命名规则在库的三角不等式名称中得以体现：
 我们将在接下来的几节中使用的另一个重要的关系是自然数上的可分性关系，`x ∣ y`。小心：可分性符号*不是*你键盘上的普通条。相反，它是通过在VS Code中输入`\ |`而获得的unicode字符。按惯例，Mathlib在定理名称中使用`dvd`来指代它。
 
 ```
-示例(h0：x ∣ y)(h1：y ∣ z)：x ∣ z =
-  dvd_trans h0 h1
-示例：x ∣ y * x * z := 通过
+example (h₀ : x ∣ y) (h₁ : y ∣ z) : x ∣ z :=
+  dvd_trans h₀ h₁
+
+example : x ∣ y * x * z := by
   apply dvd_mul_of_dvd_left
   apply dvd_mul_left
-示例：x ∣ x ^ 2 := 通过
-  apply dvd_mul_left
+
+example : x ∣ x ^ 2 := by
+   apply dvd_mul_left
 ```
 
 在最后一个例子中，指数是一个自然数，并且应用 `dvd_mul_left`使 Lean 将 `x^2`的定义扩展为`x * x^1`。看看你能否猜到你需要证明下面的定理的名字：
 
 ```
-示例(h：x ∣ w)：x ∣ y * (x * z) + x ^ 2 + w ^ 2 := 通过
-对不起
-结束
+example (h : x ∣ w) : x ∣ y * (x * z) + x ^ 2 + w ^ 2 := by
+  sorry
+end
 ```
 
 与可分性相比，*最大公约数*，`gcd`，和最小公倍数，`lcm`，类似于`min`和`max`。由于每个数都可以除以`0`，`0`正是在可分性方面的最大元素：
 
 ```
-变量(m n：ℕ)
-#检查(Nat.gcd_zero_right n：Nat.gcd n 0 = n)
-#检查(Nat.gcd_zero_left n：Nat.gcd 0 n = n)
-#检查(Nat.lcm_zero_right n：Nat.lcm n 0 = 0)
-#检查(Nat.lcm_zero_left n：Nat.lcm 0 n = 0)
+variable (m n : ℕ)
+
+#check (Nat.gcd_zero_right n : Nat.gcd n 0 = n)
+#check (Nat.gcd_zero_left n : Nat.gcd 0 n = n)
+#check (Nat.lcm_zero_right n : Nat.lcm n 0 = 0)
+#check (Nat.lcm_zero_left n : Nat.lcm 0 n = 0)
 ```
 
 看看你能否猜到你将需要证明以下内容的定理名称：
 
 ```
-示例：Nat.gcd m n = Nat.gcd n m := 通过
-对不起
+example : Nat.gcd m n = Nat.gcd n m := by
+  sorry
 ```
 
 提示：你可以使用`dvd_antisymm`，但如果你这样做，Lean会抱怨表达式在通用定理和`Nat.dvd_antisymm`版本之间的模糊，后者是专门针对自然数的。你可以使用`_root_.dvd_antisymm`来指定通用的一个；两者均可工作。
 
-## 2.5. 关于代数结构的证明
+## 2.5.  Proving Facts about Algebraic Structures
 
 在[2.2节](C02_Basics.md#22-Proving-Identities-in-Algebraic-Structures)中，我们看到，许多关于实数的常见恒等式在更通用的代数结构类，比如交换环，中也成立。我们可以使用任何我们想要描述的代数结构的公理，而不仅仅是等式。例如，*偏序*由一个具有二元关系的集合组成，该二元关系是自反的和传递的，例如实数上的`≤`。Lean知道关于偏序的信息：
 
 ```
-变量{α：Type*} [PartialOrder α]
-变量(x y z：α)
+variable {α : Type*} [PartialOrder α]
+variable (x y z : α)
 
-#检查 x ≤ y
-#检查 (le_refl x : x ≤ x)
-#检查 (le_trans : x ≤ y → y ≤ z → x ≤ z)
+#check x ≤ y
+#check (le_refl x : x ≤ x)
+#check (le_trans : x ≤ y → y ≤ z → x ≤ z)
 ```
 
 在此，我们应用的是Mathlib的惯例，使用像`α`、`β`和`γ`（输入`\a`、`\b`和`\g`）的字母代表任意类型。 库通常会使用像`R`和`G`这样的字母来表示像环和群这样的代数结构的携带，但是当与之关联的结构很少或者没有时，通常使用希腊字母代表类型。
@@ -782,14 +783,14 @@ Lean的命名规则在库的三角不等式名称中得以体现：
 与任何偏序`≤`相关联的还有一个*严格偏序*`<`，它的作用有点类似实数上的`<`。说`x`在此顺序下小于`y`等价于说它小于或等于`y`且不等于`y`。
 
 ```
-#检查 x < y
-#检查 (lt_irrefl x : ¬x < x)
-#检查 (lt_trans : x < y → y < z → x < z)
-#检查 (lt_of_le_of_lt : x ≤ y → y < z → x < z)
-#检查 (lt_of_lt_of_le : x < y → y ≤ z → x < z)
+#check x < y
+#check (lt_irrefl x : ¬x < x)
+#check (lt_trans : x < y → y < z → x < z)
+#check (lt_of_le_of_lt : x ≤ y → y < z → x < z)
+#check (lt_of_lt_of_le : x < y → y ≤ z → x < z)
 
-示例：x < y ↔ x ≤ y ∧ x ≠ y :=
-   lt_iff_le_and_ne
+example : x < y ↔ x ≤ y ∧ x ≠ y :=
+  lt_iff_le_and_ne
 ```
 
 在此示例中，符号`∧`表示“和”，符号`¬`表示“非”，`x ≠ y`缩写为`¬（x = y）`。在[第三章](C03_Logic.md#3-Logic)，你将学习如何使用这些逻辑连接词*证明*`<`具有所示的属性。
@@ -797,17 +798,17 @@ Lean的命名规则在库的三角不等式名称中得以体现：
 *格*是扩展了偏序并且具有与实数上的`min`和`max`相类似的操作`⊓`和`⊔`的结构：
 
 ```
-变量 {α：Type*} [Lattice α]
-变量(x y z：α)
+variable {α : Type*} [Lattice α]
+variable (x y z : α)
 
-#检查 x ⊓ y
-#检查 (inf_le_left：x ⊓ y ≤ x)
-#检查 (inf_le_right：x ⊓ y ≤ y)
-#检查 (le_inf：z ≤ x → z ≤ y → z ≤ x ⊓ y)
-#检查 x ⊔ y
-#检查 (le_sup_left：x ≤ x ⊔ y)
-#检查 (le_sup_right：y ≤ x ⊔ y)
-#检查 (sup_le：x ≤ z → y ≤ z → x ⊔ y ≤ z)
+#check x ⊓ y
+#check (inf_le_left : x ⊓ y ≤ x)
+#check (inf_le_right : x ⊓ y ≤ y)
+#check (le_inf : z ≤ x → z ≤ y → z ≤ x ⊓ y)
+#check x ⊔ y
+#check (le_sup_left : x ≤ x ⊔ y)
+#check (le_sup_right : y ≤ x ⊔ y)
+#check (sup_le : x ≤ z → y ≤ z → x ⊔ y ≤ z)
 ```
 
 `⊓`和`⊔`的特性使我们称它们为*最大下界*和*最小上界*。您可以在VS代码中使用`\glb`和`\lub`输入它们。这些符号也经常被称为*infimum*和*supremum*，Mathlib在定理名中也引用它们作为`inf`和`sup`。为了进一步复杂化，他们也经常被称为*meet*和*join*。因此，如果您使用梯度，您必须记住以下的对应关系：
@@ -827,16 +828,16 @@ Lean的命名规则在库的三角不等式名称中得以体现：
 您可以检查，像`min` / `max`和`gcd` / `lcm`，你可以仅使用他们的特性公理，加上`le_refl` 和 `le_trans`，来证明infimum 和 supremum 的交换性和结合性。
 
 ```
-示例: x ⊓ y = y ⊓ x := by
+example : x ⊓ y = y ⊓ x := by
   sorry
 
-示例: x ⊓ y ⊓ z = x ⊓ (y ⊓ z) := by
+example : x ⊓ y ⊓ z = x ⊓ (y ⊓ z) := by
   sorry
 
-示例: x ⊔ y = y ⊔ x := by
+example : x ⊔ y = y ⊔ x := by
   sorry
 
-示例: x ⊔ y ⊔ z = x ⊔ (y ⊔ z) := by
+example : x ⊔ y ⊔ z = x ⊔ (y ⊔ z) := by
   sorry
 ```
 
@@ -845,10 +846,10 @@ Lean的命名规则在库的三角不等式名称中得以体现：
 另一个好的练习是仅使用公理来证明*吸收定律*：
 
 ```
-定理 absorb1 : x ⊓ (x ⊔ y) = x := by
+theorem absorb1 : x ⊓ (x ⊔ y) = x := by
   sorry
 
-定理 absorb2 : x ⊔ x ⊓ y = x := by
+theorem absorb2 : x ⊔ x ⊓ y = x := by
   sorry
 ```
 
@@ -857,8 +858,8 @@ Lean的命名规则在库的三角不等式名称中得以体现：
 满足附加等式`x ⊓ (y ⊔ z) = (x ⊓ y) ⊔ (x ⊓ z)` 和 `x ⊔ (y ⊓ z) = (x ⊔ y) ⊓ (x ⊔ z)`的格被称为*分布格*。Lean也知道这些：
 
 ```
-变量 {α：Type*} [DistribLattice α]
-变量(x y z：α)
+variable {α : Type*} [DistribLattice α]
+variable (x y z : α)
 
 #check (inf_sup_left : x ⊓ (y ⊔ z) = x ⊓ y ⊔ x ⊓ z)
 #check (inf_sup_right : (x ⊔ y) ⊓ z = x ⊓ z ⊔ y ⊓ z)
@@ -869,18 +870,20 @@ Lean的命名规则在库的三角不等式名称中得以体现：
 左版本和右版本在`⊓`和`⊔`的交换性下可以很容易地证明是等价的。提供一个具有有限多个元素的非分布格的明确描述，以展示不是所有的格都是分布的，这是一个很好的练习。此外，展示在任何格中，分配律的任一方都暗示了另一方，也是一个很好的练习：
 
 ```
-variable {α : 类型*} [Lattice α]
+variable {α : Type*} [Lattice α]
 variable (a b c : α)
 
-example (h : ∀ x y z : α, x ⊓ (y ⊔ z) = x ⊓ y ⊔ x ⊓ z) : a ⊔ b ⊓ c = (a ⊔ b) ⊓ (a ⊔ c) := by 这里省略了代码
+example (h : ∀ x y z : α, x ⊓ (y ⊔ z) = x ⊓ y ⊔ x ⊓ z) : a ⊔ b ⊓ c = (a ⊔ b) ⊓ (a ⊔ c) := by
+  sorry
 
-example (h : ∀ x y z : α, x ⊔ y ⊓ z = (x ⊔ y) ⊓ (x ⊔ z)) : a ⊓ (b ⊔ c) = a ⊓ b ⊔ a ⊓ c := by 这里省略了代码
+example (h : ∀ x y z : α, x ⊔ y ⊓ z = (x ⊔ y) ⊓ (x ⊔ z)) : a ⊓ (b ⊔ c) = a ⊓ b ⊔ a ⊓ c := by
+  sorry
 ```
 
 将公理结构组合成更大的结构是可能的。例如，一个 *严格有序环* 是一个具有部分序的交换环，满足额外的公理，这些公理表明环运算与序兼容：
 
 ```
-variable {R : 类型*} [严格有序环 R]
+variable {R : Type*} [StrictOrderedRing R]
 variable (a b c : R)
 
 #check (add_le_add_left : a ≤ b → ∀ c, c + a ≤ c + b)
@@ -895,17 +898,20 @@ variable (a b c : R)
 
 然后，一个扩展的练习是证明许多用来推理算术和实数上的序的常用事实，对于任何有序环都通用。这里有几个你可以尝试的例子，只使用环、部分序和最后两个例子中列举的事实：
 ```
-example (h : a ≤ b) : 0 ≤ b - a := by 这里省略了代码
+example (h : a ≤ b) : 0 ≤ b - a := by
+  sorry
 
-example (h: 0 ≤ b - a) : a ≤ b := by 这里省略了代码
+example (h: 0 ≤ b - a) : a ≤ b := by
+  sorry
 
-example (h : a ≤ b) (h' : 0 ≤ c) : a * c ≤ b * c := by 这里省略了代码
+example (h : a ≤ b) (h' : 0 ≤ c) : a * c ≤ b * c := by
+  sorry
 ```
 
 最后，这是最后一个例子。一个 *度量空间* 是一个带有距离概念的集合，`dist x y`将任何一对元素映射到一个实数。距离函数被假设满足以下公理：
 
 ```
-variable {X : 类型*} [度量空间 X]
+variable {X : Type*} [MetricSpace X]
 variable (x y z : X)
 
 #check (dist_self x : dist x x = 0)
@@ -916,7 +922,8 @@ variable (x y z : X)
 掌握了本节后，你可以证明从这些公理中可以得出距离总是非负的：
 
 ```
-example (x y : X) : 0 ≤ dist x y := by 这里省略了代码
+example (x y : X) : 0 ≤ dist x y := by
+  sorry
 ```
 
 我们建议利用定理 `nonneg_of_mul_nonneg_left`。你可能已经猜到，这个定理在 Mathlib 中被称为 `dist_nonneg`。
