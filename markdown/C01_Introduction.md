@@ -22,6 +22,7 @@ Although you can read a pdf or html version of this book online, it designed to 
 
 4. Each section in this book has an associated Lean file with examples and exercises. You can find them in the folder `MIL`, organized by chapter. We strongly recommend making a copy of that folder and experimenting and doing the exercises in that copy. This leaves the originals intact, and it also makes it easier to update the repository as it changes (see below). You can call the copy `my_files` or whatever you want and use it to create your own Lean files as well.
 
+
 1. 按照这些[安装指南](https://leanprover-community.github.io/get_started.html)安装Lean 4和VS Code。
 
 2. 确保你已经安装了 [git](https://git-scm.com/)。
