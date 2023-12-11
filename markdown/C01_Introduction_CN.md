@@ -184,4 +184,4 @@ So here is your mission, should you choose to accept it: dive in, try the exerci
 
 *致谢。*我们感谢Gabriel Ebner为在VS Code中运行此教程设置的基础设施，也感谢Scott Morrison和Mario Carneiro帮助我们将其从Lean 4移植过来。我们还要感谢Julian Berman、Alex Best、Bulwi Cha、Bryan Gin-ge Chen、Mauricio Collaris、Johan Commelin、Mark Czubin、Denis Gorbachev、Winston de Greef, Mathieu Guay-Paquet, Julian Külshammer, Martin C. Martin, Giovanni Mascellani, Isaiah Mindich, Hunter Monroe, Pietro Monticone, Oliver Nash, Bartosz Piotrowski，Nicolas Rolland，Guilherme Silva，Floris van Doorn以及Eric Wieser提供的帮助和修正。 我们的工作部分得到了Hoskinson Formal Mathematics Center的支持。
 
-# test
+# 3.1. Implication and the Universal Quantifier
