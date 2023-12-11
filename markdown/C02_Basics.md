@@ -590,20 +590,17 @@ example (h : 1 ≤ a) (h' : b ≤ c) : 2 + a + exp b ≤ 3 * a + exp c := by
 
 这是不等式的另一个例子：
 ```
-示例：2 * a * b ≤ a ^ 2 + b ^ 2 :=
-  有h：0 ≤ a ^ 2 - 2 * a * b + b ^ 2
-  计算表达式
-    a ^ 2 - 2 * a * b + b ^ 2 = （a - b）^ 2：= 通过环
-    _ ≥ 0：= 通过应用pow_two_nonneg
-```
+example : 2 * a * b ≤ a ^ 2 + b ^ 2 := by
+  have h : 0 ≤ a ^ 2 - 2 * a * b + b ^ 2
+  calc
+    a ^ 2 - 2 * a * b + b ^ 2 = (a - b) ^ 2 := by ring
+    _ ≥ 0 := by apply pow_two_nonneg
 
-## 翻译 private_upload\default_user\2023-12-11-16-36-12\C02_Basics.md.part-7.md
-
-calc
-    2 * a * b = 2 * a * b + 0 := 由 ring 算法结论
+  calc
+    2 * a * b = 2 * a * b + 0 := by ring
     _ ≤ 2 * a * b + (a ^ 2 - 2 * a * b + b ^ 2) :=
-      使用 add_le_add (le_refl _) h
-　　_ = a ^ 2 + b ^ 2 := 由 ring 算法结论
+      add_le_add (le_refl _) h
+    _ = a ^ 2 + b ^ 2 := by ring
 ```
 
 Mathlib 倾向在二元操作符如`*`与`^`两侧添加空格，但在这个例子中，更紧凑的格式增加了可读性。有一些值得注意的事情。首先，表达式`s ≥ t`在定义上等同于`t ≤ s`。原则上，这意味着我们应该能够互换使用它们。但是，Lean 的一些自动化操作不会识别这种等价，因此 Mathlib 倾向于更多地使用`≤` 而不是 `≥`。其次，我们广泛使用了`ring`策略，它真是节省了很多时间！最后，注意在第二个`calc`证明的第二行，我们可以简单地写出证明项`add_le_add (le_refl _) h`，而不是写作`by exact add_le_add (le_refl _) h`。
