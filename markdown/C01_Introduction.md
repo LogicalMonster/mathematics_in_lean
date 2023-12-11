@@ -66,7 +66,7 @@ Put simply, Lean is a tool for building complex expressions in a formal language
 
 Every expression has a *type*, and you can use the *#check* command to print it. Some expressions have types like *ℕ* or *ℕ → ℕ*. These are mathematical objects.
 
-每个表达式都有一个*类型*，你可以使用*#check*命令来打印它。一些表达式的类型像是*ℕ*或者是*ℕ → ℕ*。这些都是数学对象。
+每个表达式都有一个*类型*，你可以使用*#check* 命令来打印它。一些表达式的类型像是*ℕ*或者是*ℕ → ℕ*。这些都是数学对象。
 
 ```
   #check 2 + 2
