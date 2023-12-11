@@ -2,7 +2,7 @@
 
 This chapter is designed to introduce you to the nuts and bolts of mathematical reasoning in Lean: calculating, applying lemmas and theorems, and reasoning about generic structures.
 
-## 2.1. Calculating
+## 2.1.  Calculating
 
 We generally learn to carry out mathematical calculations without thinking of them as proofs. But when we justify each step in a calculation, as Lean requires us to do, the net result is a proof that the left-hand side of the calculation is equal to the right-hand side.
 
@@ -216,7 +216,7 @@ example (a b c : ℕ) (h : a + b = c) : (a + b) * (a + b) = a * c + b * c := by
   rw [add_mul]
 ```
 
-## 2.2. Proving Identities in Algebraic Structures
+## 2.2.  Proving Identities in Algebraic Structures
 
 Mathematically, a ring consists of a collection of objects, $R$, operations $+ \times$, and constants $0$ and $1$, and an operation $x\mapsto −x$ such that:
 
@@ -424,7 +424,7 @@ theorem mul_inv_rev (a b : G) : (a * b)⁻¹ = b⁻¹ * a⁻¹ := by
 
 Explicitly invoking those lemmas is tedious, so Mathlib provides tactics similar to ring in order to cover most uses: group is for non-commutative multiplicative groups, abel for abelian additive groups, and noncomm_ring for non-commutative rings. It may seem odd that the algebraic structures are called Ring and CommRing while the tactics are named noncomm_ring and ring. This is partly for historical reasons, but also for the convenience of using a shorter name for the tactic that deals with commutative rings, since it is used more often.
 
-## 2.3. Using Theorems and Lemmas
+## 2.3.  Using Theorems and Lemmas
 
 Rewriting is great for proving equations, but what about other sorts of theorems? For example, how can we prove an inequality, like the fact that $a+e^{b}\leq a+e^{c}$ holds whenever  $b\leq c$? We have already seen that theorems can be applied to arguments and hypotheses, and that the `apply` and `exact` tactics can be used to solve goals. In this section, we will make good use of these tools.
 
@@ -625,7 +625,7 @@ example : |a * b| ≤ (a ^ 2 + b ^ 2) / 2 := by
 
 If you managed to solve this, congratulations! You are well on your way to becoming a master formalizer.
 
-## 2.4. More examples using apply and rw
+## 2.4.  More examples using apply and rw
 
 The `min` function on the real numbers is uniquely characterized by the following three facts:
 
@@ -766,7 +766,7 @@ example : Nat.gcd m n = Nat.gcd n m := by
 
 Hint: you can use `dvd_antisymm`, but if you do, Lean will complain that the expression is ambiguous between the generic theorem and the version `Nat.dvd_antisymm`, the one specifically for the natural numbers. You can use `_root_.dvd_antisymm` to specify the generic one; either one will work.
 
-## 2.5. Proving Facts about Algebraic Structures
+## 2.5.  Proving Facts about Algebraic Structures
 
 In [Section 2.2](C02_Basics.md#22-Proving-Identities-in-Algebraic-Structures), we saw that many common identities governing the real numbers hold in more general classes of algebraic structures, such as commutative rings. We can use any axioms we want to describe an algebraic structure, not just equations. For example, a *partial order* consists of a set with a binary relation that is reflexive and transitive, like `≤` on the real numbers. Lean knows about partial orders:
 
