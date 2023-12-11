@@ -1,6 +1,6 @@
 # 2.  Basics
 
-This [chapter](C03_Logic.md#test) is designed to introduce you to the nuts and bolts of mathematical reasoning in Lean: calculating, applying lemmas and theorems, and reasoning about generic structures.
+This [chapter](C01_Introduction_CN.md#test) is designed to introduce you to the nuts and bolts of mathematical reasoning in Lean: calculating, applying lemmas and theorems, and reasoning about generic structures.
 
 ## 2.1.  Calculating
 
