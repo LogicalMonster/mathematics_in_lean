@@ -1,6 +1,6 @@
 # 2.  Basics
 
-This [chapter](C01_Introduction_CN.md#31-Implication-and-the-Universal-Quantifier) is designed to introduce you to the nuts and bolts of mathematical reasoning in Lean: calculating, applying lemmas and theorems, and reasoning about generic structures.
+This chapter is designed to introduce you to the nuts and bolts of mathematical reasoning in Lean: calculating, applying lemmas and theorems, and reasoning about generic structures.
 
 ## 2.1.  Calculating
 
@@ -772,7 +772,7 @@ There is a variation of `rw` called `nth_rewrite` that allows you to replace
 
 ## 2.5.  Proving Facts about Algebraic Structures
 
-  In [Section 2.2](https://leanprover-community.github.io/mathematics_in_lean/C02_Basics.html#proving-identities-in-algebraic-structures), we saw that many common identities governing the real numbers hold in more general classes of algebraic structures, such as commutative rings. We can use any axioms we want to describe an algebraic structure, not just equations. For example, a *partial order* consists of a set with a binary relation that is reflexive and transitive, like ≤ on the real numbers. Lean knows about partial orders:
+  In [Section 2.2](C02_Basics.md#22-Proving-Identities-in-Algebraic-Structures), we saw that many common identities governing the real numbers hold in more general classes of algebraic structures, such as commutative rings. We can use any axioms we want to describe an algebraic structure, not just equations. For example, a *partial order* consists of a set with a binary relation that is reflexive and transitive, like ≤ on the real numbers. Lean knows about partial orders:
 
   ```
     **variable** {α : Type*} [PartialOrder α]
