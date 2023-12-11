@@ -15,6 +15,7 @@ Although you can read a pdf or html version of this book online, it designed to 
 尽管你可以在线阅读这本书的pdf或html版本，但它是设计为在VS Code编辑器内部交互式运行Lean并进行阅读的。开始如下：
 
 	1. Install Lean 4 and VS Code following these [installation instructions](https://leanprover-community.github.io/get_started.html).
+ 
 	1. 按照这些[安装指南](https://leanprover-community.github.io/get_started.html)安装Lean 4和VS Code。
 	2. Make sure you have [git](https://git-scm.com/) installed.
 	2. 确保你已经安装了 [git](https://git-scm.com/)。
