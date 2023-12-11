@@ -76,11 +76,7 @@ example (a b c d e f : ℝ) (h : a * b = c * d) (h' : e = f) : a * (b * e) = c *
 ```
 example (a b c d e f : ℝ) (h : b * c = e * f) : a * b * c * d = a * e * f * d := by
   sorry
-```
 
-## 翻译 private_upload\default_user\2023-12-11-16-36-12\C02_Basics.md.part-1.md
-
-```
 示例 (a b c d : ℝ) (hyp : c = b * a - d) (hyp' : d = a * b) : c = 0 := by
   sorry
 ```
@@ -171,9 +167,6 @@ example (a b c d e f : ℝ) (h : b * c = e * f) : a * b * c * d = a * e * f * d 
 示例 (a b : ℝ) : (a + b) * (a - b) = a ^ 2 - b ^ 2 := by
   sorry
 
-## 翻译 private_upload\default_user\2023-12-11-16-36-12\C02_Basics.md.part-2.md
-
-```
 #检查 pow_two a
 #检查 mul_sub a b c
 #检查 add_mul a b c
@@ -261,9 +254,6 @@ example (a b c d e f : ℝ) (h : b * c = e * f) : a * b * c * d = a * e * f * d 
 示例 : (a + b) * (a + b) = a * a + 2 * (a * b) + b * b := by ring
 
 示例 : (a + b) * (a - b) = a ^ 2 - b ^ 2 := by ring
-```
-
-## 翻译 private_upload\default_user\2023-12-11-16-36-12\C02_Basics.md.part-3.md
 
 示例（hyp：c = d * a + b）（hyp'：b = a * d）：c = 2 * a * d：=
   rw [hyp, hyp']
@@ -338,8 +328,6 @@ Lean提供了类似于编程语言中使用的组织机制：当在*命名空间
 我们也可以很好地关闭证明以`apply add_left_cancel h`或`exact add_left_cancel h`。`exact`策略接收一个证明项作为参数，该证明项完全证明了当前目标，而没有创建任何新的目标。`apply`策略是一种变体，其参数不一定是完整的证明。缺失的部分要么由Lean自动推断出来，要么成为需要证明的新目标。虽然`exact`策略在技术上是多余的，因为它的功能比`apply`少，但它使证明脚本对人类读者稍微清晰一些，且在库演变时更容易维护。
 
 记住，乘法不一定是交换的，所以下面的定理也需要一些工作。
-
-## 翻译 private_upload\default_user\2023-12-11-16-36-12\C02_Basics.md.part-4.md
 
 ```
 定理 零乘 (a : R) : 0 * a = 0 := 由
@@ -435,8 +423,6 @@ Lean知道`1 + 1 = 2`在任何环中都成立。你可以花一点努力，用�
 
 显式调用这些引理是繁琐的，所以Mathlib提供了类似于ring的策略来覆盖大多数用途：group是用于非交换乘法群，abel是用于交换加法群，而noncomm_ring是用于非交换环。环和CommRing被称为代数结构，而与ring和noncomm_ring的策略的命名可能会觉得奇怪。这部分是由于历史原因，但也是为了给更常用的，处理交换环的策略带来更方便的短名称。
 
-## 翻译 private_upload\default_user\2023-12-11-16-36-12\C02_Basics.md.part-5.md
-
 ## 2.3.  使用定理和引理
 
 重写很适合用来证明等式，但是其他类型的定理该怎么证明呢？例如，我们如何证明一个不等式，比如当 $b\leq c$时，$a+e^{b}\leq a+e^{c}$ 总是成立的事实？我们已经看到，定理可以应用于参数和假设，并且 `apply` 和 `exact` 指令可以用来解决目标。在这一节，我们将充分利用这些工具。
@@ -524,8 +510,6 @@ example (h : 1 ≤ a) (h' : b ≤ c) : 2 + a + exp b ≤ 3 * a + exp c := by
 
 这里还有一些在库中可以用来建立实数上的不等式的定理。
 
-## 翻译 private_upload\default_user\2023-12-11-16-36-12\C02_Basics.md.part-6.md
-
 ```
 # 检查（exp_le_exp：exp a ≤ exp b ↔ a ≤ b）
 # 检查（exp_lt_exp：exp a < exp b ↔ a < b）
@@ -543,6 +527,7 @@ example (h : 1 ≤ a) (h' : b ≤ c) : 2 + a + exp b ≤ 3 * a + exp c := by
 # 检查（add_pos_of_pos_of_nonneg：0 < a → 0 ≤ b → 0 < a + b）
 # 检查（exp_pos：∀ a, 0 < exp a）
 # 检查add_le_add_left
+```
 
 某些定理，`exp_le_exp`，`exp_lt_exp`和 `log_le_log` 使用了*双向蕴含关系*，代表着“当且仅当”。（您可以在VS Code中通过`\lr` 或 `\iff`键入。）我们将在下一章中详细讨论此关系。这样的定理可以与`rw`一起使用，以将目标改写为等价的另一个目标：
 
@@ -696,8 +681,6 @@ Mathlib 倾向在二元操作符如`*`与`^`两侧添加空格，但在这个例
 
 另一种解决方案是使用`repeat`策略，它可以尽可能多地应用策略（或块）。
 
-## 翻译 private_upload\default_user\2023-12-11-16-36-12\C02_Basics.md.part-8.md
-
 ```
 **示例**：min a b = min b a := **通过**
 应用 le_antisymm
@@ -791,11 +774,7 @@ Lean的命名规则在库的三角不等式名称中得以体现：
 ```
 变量{α：Type*} [PartialOrder α]
 变量(x y z：α)
-```
 
-## 翻译 private_upload\default_user\2023-12-11-16-36-12\C02_Basics.md.part-9.md
-
-```
 #检查 x ≤ y
 #检查 (le_refl x : x ≤ x)
 #检查 (le_trans : x ≤ y → y ≤ z → x ≤ z)
@@ -883,9 +862,6 @@ Lean的命名规则在库的三角不等式名称中得以体现：
 ```
 变量 {α：Type*} [DistribLattice α]
 变量(x y z：α)
-```
-
-## 翻译 private_upload\default_user\2023-12-11-16-36-12\C02_Basics.md.part-10.md
 
 #check (inf_sup_left : x ⊓ (y ⊔ z) = x ⊓ y ⊔ x ⊓ z)
 #check (inf_sup_right : (x ⊔ y) ⊓ z = x ⊓ z ⊔ y ⊓ z)
@@ -947,5 +923,3 @@ example (x y : X) : 0 ≤ dist x y := by 这里省略了代码
 ```
 
 我们建议利用定理 `nonneg_of_mul_nonneg_left`。你可能已经猜到，这个定理在 Mathlib 中被称为 `dist_nonneg`。
-
-
