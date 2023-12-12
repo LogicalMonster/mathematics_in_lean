@@ -623,7 +623,7 @@ example : |a * b| ≤ (a ^ 2 + b ^ 2) / 2 := by
 #check abs_le'.mpr
 ```
 
-如果你成功解决了这个问题，恭喜！你正走在成为大师级博物馆者的道路上。
+如果你成功解决了这个问题，恭喜！你正走在成为大师级formalizer的道路上。
 
 ## 2.4.  More examples using apply and rw
 
