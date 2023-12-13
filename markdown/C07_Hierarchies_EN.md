@@ -1,6 +1,6 @@
 # 7.  Hierarchies
 
-We have seen in [Chapter 6](C06_Structures.html#structures) how to define the class of groups and build instances of this class, and then how to build an instance of the commutative ring class. But of course there is a hierarchy here: a commutative ring is in particular an additive group. In this chapter we will study how to build such hierarchies. They appear in all branches of mathematics but in this chapter the emphasis will be on algebraic examples.
+We have seen in [Chapter 6](C06_Structures.md#6-Structures) how to define the class of groups and build instances of this class, and then how to build an instance of the commutative ring class. But of course there is a hierarchy here: a commutative ring is in particular an additive group. In this chapter we will study how to build such hierarchies. They appear in all branches of mathematics but in this chapter the emphasis will be on algebraic examples.
 
 It may seem premature to discuss how to build hierarchies before more discussions about using existing hierarchies. But some understanding of the technology underlying hierarchies is required to use them. So you should probably still read this chapter, but without trying too hard to remember everything on your first read, then read the following chapters and come back here for a second reading.
 
@@ -42,7 +42,7 @@ Another remark is that all this will work only when Lean knows what is `α`. In 
 example (α : Type) [One₁ α] := (One₁.one : α)
 ```
 
-You may have already encountered that issue when playing with limits of sequences in [Section 3.6](C03_Logic.html#sequences-and-convergence) if you tried to state for instance that `0 < 1` without telling Lean whether you meant this inequality to be about natural numbers or real numbers.
+You may have already encountered that issue when playing with limits of sequences in [Section 3.6](C03_Logic.md#36-Sequences-and-Convergence) if you tried to state for instance that `0 < 1` without telling Lean whether you meant this inequality to be about natural numbers or real numbers.
 
 Our next task is to assign a notation to `One₁.one`. Since we don’t want collisions with the builtin notation for `1`, we will use `𝟙`. This is achieved by the following command where the first line tells Lean to use the documentation of `One₁.one` as documentation for the symbol `𝟙`.
 
