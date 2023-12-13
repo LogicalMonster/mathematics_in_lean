@@ -73,7 +73,7 @@ class Semigroup₁ (α : Type) where
   dia_assoc : ∀ a b c : α, a ⋄ b ⋄ c = a ⋄ (b ⋄ c)
 ```
 
-注意，在声明 dia_assoc 时，先前定义的字段 toDia₁ 是在本地上下文中的，因此可以在 Lean 搜索 Dia₁ α 的实例以找到 a ⋄ b 时使用。然而，这个 toDia₁ 字段并没有成为类型类实例数据库的一部分。因此，执行 `example {α : Type} [Semigroup₁ α] (a b : α) : α := a ⋄ b` 将失败，错误信息为`无法合成实例 Dia₁ α`。
+注意，在声明 dia_assoc 时，先前定义的字段 toDia₁ 是在本地上下文中的，因此可以在 Lean 搜索 Dia₁ α 的实例以找到 a ⋄ b 时使用。然而，这个 toDia₁ 字段并没有成为类型类实例数据库的一部分。因此，执行 `example {α : Type} [Semigroup₁ α] (a b : α) : α := a ⋄ b` 将失败，错误信息为`failed to synthesize instance Dia₁ α`。
 
 我们可以通过稍后添加 `instance` 属性来修复这个问题。
 
@@ -93,7 +93,7 @@ class Semigroup₂ (α : Type) extends Dia₁ α where
 example {α : Type} [Semigroup₂ α] (a b : α) : α := a ⋄ b
 ```
 
-注意这个语法也在`structure`命令中可用，尽管在这种情况下，它只解决了写成如toDia₁这样的字段的难题，因为在那种情况下没有实例要定义。
+注意这个语法也在`structure`命令中可用，尽管在这种情况下，它只解决了写成如*toDia₁*这样的字段的难题，因为在那种情况下没有实例要定义。
 
 我们现在试图结合一个钻石操作和一个突出的操作，用公理说明这个元素在两边都是中性的。
 
@@ -105,7 +105,7 @@ class DiaOneClass₁ (α : Type) extends One₁ α, Dia₁ α where
   dia_one : ∀ a : α, a ⋄ 𝟙 = a
 ```
 
-在下一个例子中，我们告诉 Lean `α`有一个`DiaOneClass₁`结构，并声明一个使用Dia₁实例和One₁实例的属性。为了看到 Lean 如何找到这些实例，我们设置了一个 tracing 选项，其结果可以在info视图中看到。这个结果默认是相当简洁的，但可以通过点击结束与黑箭头的线条进行扩展。它包括失败的尝试，其中 Lean 在有足够的类型信息才能成功之前尝试去找实例。成功的尝试确实涉及到由`extends`语法生成的实例。
+在下一个例子中，我们告诉 Lean `α`有一个`DiaOneClass₁`结构，并声明一个使用*Dia₁*实例和*One₁*实例的属性。为了看到 Lean 如何找到这些实例，我们设置了一个追踪选项，其结果可以在info视图中看到。这个结果默认是相当简洁的，但可以通过点击结束与黑箭头的线条进行扩展。它包括失败的尝试，其中 Lean 在有足够的类型信息才能成功之前尝试去找实例。成功的尝试确实涉及到由`extends`语法生成的实例。
 
 ```
 set_option trace.Meta.synthInstance true in
@@ -147,7 +147,7 @@ example {α : Type} [Monoid₁ α] :
 #check Monoid₁.mk
 ```
 
-所以我们看到`Monoid₁`如我们所料地接受`Semigroup₁ α`参数，但然后它不会接受即将重叠的`DiaOneClass₁ α`参数，而是将它拆开并只包含非重叠的部分。而且它还自动生成了一个实例`Monoid₁.toDiaOneClass₁`，它并*不是*一个字段，但具有预期的签名，从最终用户的角度来看，恢复了两个扩展的类`Semigroup₁`和`DiaOneClass₁`之间的对称性。
+所以我们看到`Monoid₁`如我们所料地接受`Semigroup₁ α`参数，但然后它不会接受即将重叠的`DiaOneClass₁ α`参数，而是将它拆开并只包含非重叠的部分。而且它还自动生成了一个实例`Monoid₁.toDiaOneClass₁`，它并*不是*一个field，但具有预期的signature，从end-user的角度来看，恢复了两个扩展的类`Semigroup₁`和`DiaOneClass₁`之间的对称性。
 
 ```
 #check Monoid₁.toSemigroup₁
