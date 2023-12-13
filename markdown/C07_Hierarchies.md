@@ -8,7 +8,7 @@
 
 ## 7.1.  Basics
 
-在所有Lean层次结构的底部，我们都可以找到携带数据的类。以下类记录了给定类型'α'具有一个称为'one'的特殊元素。在这个阶段，它没有任何属性。
+在所有Lean层次结构的底部，我们都可以找到携带数据的类。以下类记录了给定类型`α`具有一个称为`one`的特殊元素。在这个阶段，它没有任何属性。
 
 ```
 class One₁ (α : Type) where
@@ -47,7 +47,7 @@ example (α : Type) [One₁ α] := (One₁.one : α)
 我们接下来的任务是给 `One₁.one` 赋予一个符号。由于我们不希望与 `1` 的内建符号发生冲突，我们将使用 `𝟙`。这可以通过下面的命令实现，其中第一行告诉Lean使用 `One₁.one` 的文档作为符号 `𝟙` 的文档。
 
 ```
-@[inherit\_doc]
+@[inherit_doc]
 notation "𝟙" => One₁.one
 
 example {α : Type} [One₁ α] : α := 𝟙
@@ -64,16 +64,16 @@ class Dia₁ (α : Type) where
 infixl:70 " ⋄ "   => Dia₁.dia
 ```
 
-在 `One₁` 的例子中，这个操作在这个阶段完全没有任何属性。现在让我们定义一个半群结构的类，其操作由 `⋄` 表示。现在，我们通过手动定义一个具有两个字段的结构来定义它，一个是 `Dia₁` 的实例，另一个是一些 `Prop` 值字段 `dia\_assoc`，它断言了 `⋄` 的结合性。
+在 `One₁` 的例子中，这个操作在这个阶段完全没有任何属性。现在让我们定义一个半群结构的类，其操作由 `⋄` 表示。现在，我们通过手动定义一个具有两个字段的结构来定义它，一个是 `Dia₁` 的实例，另一个是一些 `Prop` 值字段 `dia_assoc`，它断言了 `⋄` 的结合性。
 
 ```
 class Semigroup₁ (α : Type) where
   toDia₁ : Dia₁ α
   /-- Diamond is associative -/
-  dia\_assoc : ∀ a b c : α, a ⋄ b ⋄ c = a ⋄ (b ⋄ c)
+  dia_assoc : ∀ a b c : α, a ⋄ b ⋄ c = a ⋄ (b ⋄ c)
 ```
 
-注意，在声明 dia\_assoc 时，先前定义的字段 toDia₁ 是在本地上下文中的，因此可以在 Lean 搜索 Dia₁ α 的实例以找到 a ⋄ b 时使用。然而，这个 toDia₁ 字段并没有成为类型类实例数据库的一部分。因此，执行 `example {α : Type} [Semigroup₁ α] (a b : α) : α := a ⋄ b` 将失败，错误信息为`无法合成实例 Dia₁ α`。
+注意，在声明 dia_assoc 时，先前定义的字段 toDia₁ 是在本地上下文中的，因此可以在 Lean 搜索 Dia₁ α 的实例以找到 a ⋄ b 时使用。然而，这个 toDia₁ 字段并没有成为类型类实例数据库的一部分。因此，执行 `example {α : Type} [Semigroup₁ α] (a b : α) : α := a ⋄ b` 将失败，错误信息为`无法合成实例 Dia₁ α`。
 
 我们可以通过稍后添加 `instance` 属性来修复这个问题。
 
@@ -88,7 +88,7 @@ example {α : Type} [Semigroup₁ α] (a b : α) : α := a ⋄ b
 ```
 class Semigroup₂ (α : Type) extends Dia₁ α where
   /-- Diamond is associative -/
-  dia\_assoc : ∀ a b c : α, a ⋄ b ⋄ c = a ⋄ (b ⋄ c)
+  dia_assoc : ∀ a b c : α, a ⋄ b ⋄ c = a ⋄ (b ⋄ c)
 
 example {α : Type} [Semigroup₂ α] (a b : α) : α := a ⋄ b
 ```
@@ -100,15 +100,15 @@ example {α : Type} [Semigroup₂ α] (a b : α) : α := a ⋄ b
 ```
 class DiaOneClass₁ (α : Type) extends One₁ α, Dia₁ α where
   /-- One is a left neutral element for diamond. -/
-  one\_dia : ∀ a : α, 𝟙 ⋄ a = a
+  one_dia : ∀ a : α, 𝟙 ⋄ a = a
   /-- One is a right neutral element for diamond -/
-  dia\_one : ∀ a : α, a ⋄ 𝟙 = a
+  dia_one : ∀ a : α, a ⋄ 𝟙 = a
 ```
 
 在下一个例子中，我们告诉 Lean `α`有一个`DiaOneClass₁`结构，并声明一个使用Dia₁实例和One₁实例的属性。为了看到 Lean 如何找到这些实例，我们设置了一个 tracing 选项，其结果可以在info视图中看到。这个结果默认是相当简洁的，但可以通过点击结束与黑箭头的线条进行扩展。它包括失败的尝试，其中 Lean 在有足够的类型信息才能成功之前尝试去找实例。成功的尝试确实涉及到由`extends`语法生成的实例。
 
 ```
-set\_option trace.Meta.synthInstance true in
+set_option trace.Meta.synthInstance true in
 example {α : Type} [DiaOneClass₁ α] (a b : α) : Prop := a ⋄ b = 𝟙
 ```
 
@@ -143,7 +143,7 @@ example {α : Type} [Monoid₁ α] :
 /- Monoid₂.mk {α : Type} (toSemigroup₁ : Semigroup₁ α) (toDiaOneClass₁ : DiaOneClass₁ α) : Monoid₂ α -/
 #check Monoid₂.mk
 
-/- Monoid₁.mk {α : Type} [toSemigroup₁ : Semigroup₁ α] [toOne₁ : One₁ α] (one\_dia : ∀ (a : α), 𝟙 ⋄ a = a) (dia\_one : ∀ (a : α), a ⋄ 𝟙 = a) : Monoid₁ α -/
+/- Monoid₁.mk {α : Type} [toSemigroup₁ : Semigroup₁ α] [toOne₁ : One₁ α] (one_dia : ∀ (a : α), 𝟙 ⋄ a = a) (dia_one : ∀ (a : α), a ⋄ 𝟙 = a) : Monoid₁ α -/
 #check Monoid₁.mk
 ```
 
@@ -161,130 +161,130 @@ class Inv₁ (α : Type) where
   /-- The inversion function -/
   inv : α → α
 
-@[inherit\_doc]
+@[inherit_doc]
 postfix:max "⁻¹" => Inv₁.inv
 
 class Group₁ (G : Type) extends Monoid₁ G, Inv G where
-  inv\_dia : ∀ a : G, a⁻¹ ⋄ a = 𝟙
+  inv_dia : ∀ a : G, a⁻¹ ⋄ a = 𝟙
 ```
 
 上述定义可能看起来过于弱，我们只要求 `a⁻¹` 是 `a`的左逆元。但另一边是自动的。为了证明这一点，我们需要一个初步的引理。
 
 ```
-lemma left\_inv\_eq\_right\_inv₁ {M : Type} [Monoid₁ M] {a b c : M} (hba : b ⋄ a = 𝟙) (hac : a ⋄ c = 𝟙) : b = c := by
-  rw [← DiaOneClass₁.one\_dia c, ← hba, Semigroup₁.dia\_assoc, hac, DiaOneClass₁.dia\_one b]
+lemma left_inv_eq_right_inv₁ {M : Type} [Monoid₁ M] {a b c : M} (hba : b ⋄ a = 𝟙) (hac : a ⋄ c = 𝟙) : b = c := by
+  rw [← DiaOneClass₁.one_dia c, ← hba, Semigroup₁.dia_assoc, hac, DiaOneClass₁.dia_one b]
 ```
 
 在这个引理中，给出全名是非常烦人的，尤其是需要知道哪部分的层次结构提供了这些事实。解决这个问题的一种方法是使用`export`命令将这些事实作为根名称空间中的引理进行复制。
 
 ```
-export DiaOneClass₁ (one\_dia dia\_one)
-export Semigroup₁ (dia\_assoc)
-export Group₁ (inv\_dia)
+export DiaOneClass₁ (one_dia dia_one)
+export Semigroup₁ (dia_assoc)
+export Group₁ (inv_dia)
 ```
 
 我们可以将上述证明重写为：
 
 ```
 example {M : Type} [Monoid₁ M] {a b c : M} (hba : b ⋄ a = 𝟙) (hac : a ⋄ c = 𝟙) : b = c := by
-  rw [← one\_dia c, ← hba, dia\_assoc, hac, dia\_one b]
+  rw [← one_dia c, ← hba, dia_assoc, hac, dia_one b]
 ```
 
 现在轮到你来证明我们的代数结构的相关事宜。
 
 ```
-lemma inv\_eq\_of\_dia [Group₁ G] {a b : G} (h : a ⋄ b = 𝟙) : a⁻¹ = b :=
+lemma inv_eq_of_dia [Group₁ G] {a b : G} (h : a ⋄ b = 𝟙) : a⁻¹ = b :=
   sorry
 
-lemma dia\_inv [Group₁ G] (a : G) : a ⋄ a⁻¹ = 𝟙 :=
+lemma dia_inv [Group₁ G] (a : G) : a ⋄ a⁻¹ = 𝟙 :=
   sorry
 ```
 
-在这个阶段，我们希望继续定义环，但存在一个严重的问题。一个类型的环结构包含一个加法群结构和一个乘法幺半群结构，以及它们之间的一些属性。但到目前为止，我们为所有的操作硬编码了一个符号 `⋄`。更基本地，类型类系统假设每个类型只有每个类型类的一个实例。有各种各样的方法可以解决这个问题。令人惊讶的是，Mathlib使用了一个简单的想法来为加法和乘法理论复制所有东西，它们用一些生成代码的属性来实现。结构和类在加法和乘法记号中都有定义，有一个属性 `to\_additive` 将它们链接起来。在半群的多重继承的情况下，也需要标记自动生成的"对称恢复"实例。这有点技术性；你不需要理解细节。重要的一点是，引理只在乘法记号中陈述并用属性 `to\_additive` 标记，生成加法版本作为 `left\_inv\_eq\_right\_inv'`，其自动生成的加法版本为 `left\_neg\_eq\_right\_neg'`。为了检查这个加法版本的名字，我们在 `left\_inv\_eq\_right\_inv'` 的顶部使用了 `whatsnew in` 命令。
+在这个阶段，我们希望继续定义环，但存在一个严重的问题。一个类型的环结构包含一个加法群结构和一个乘法幺半群结构，以及它们之间的一些属性。但到目前为止，我们为所有的操作硬编码了一个符号 `⋄`。更基本地，类型类系统假设每个类型只有每个类型类的一个实例。有各种各样的方法可以解决这个问题。令人惊讶的是，Mathlib使用了一个简单的想法来为加法和乘法理论复制所有东西，它们用一些生成代码的属性来实现。结构和类在加法和乘法记号中都有定义，有一个属性 `to_additive` 将它们链接起来。在半群的多重继承的情况下，也需要标记自动生成的"对称恢复"实例。这有点技术性；你不需要理解细节。重要的一点是，引理只在乘法记号中陈述并用属性 `to_additive` 标记，生成加法版本作为 `left_inv_eq_right_inv'`，其自动生成的加法版本为 `left_neg_eq_right_neg'`。为了检查这个加法版本的名字，我们在 `left_inv_eq_right_inv'` 的顶部使用了 `whatsnew in` 命令。
 
 ```
 class AddSemigroup₃ (α : Type) extends Add α where
 /-- Addition is associative -/
-  add\_assoc₃ : ∀ a b c : α, a + b + c = a + (b + c)
+  add_assoc₃ : ∀ a b c : α, a + b + c = a + (b + c)
 
-@[to\_additive AddSemigroup₃]
+@[to_additive AddSemigroup₃]
 class Semigroup₃ (α : Type) extends Mul α where
 /-- Multiplication is associative -/
-  mul\_assoc₃ : ∀ a b c : α, a * b * c = a * (b * c)
+  mul_assoc₃ : ∀ a b c : α, a * b * c = a * (b * c)
 
 class AddMonoid₃ (α : Type) extends AddSemigroup₃ α, AddZeroClass α
 
-@[to\_additive AddMonoid₃]
+@[to_additive AddMonoid₃]
 class Monoid₃ (α : Type) extends Semigroup₃ α, MulOneClass α
 
-attribute [to\_additive existing] Monoid₃.toMulOneClass
+attribute [to_additive existing] Monoid₃.toMulOneClass
 
-export Semigroup₃ (mul\_assoc₃)
-export AddSemigroup₃ (add\_assoc₃)
+export Semigroup₃ (mul_assoc₃)
+export AddSemigroup₃ (add_assoc₃)
 
 whatsnew in
-@[to\_additive]
-lemma left\_inv\_eq\_right\_inv' {M : Type} [Monoid₃ M] {a b c : M} (hba : b * a = 1) (hac : a * c = 1) : b = c := by
-  rw [← one\_mul c, ← hba, mul\_assoc₃, hac, mul\_one b]
+@[to_additive]
+lemma left_inv_eq_right_inv' {M : Type} [Monoid₃ M] {a b c : M} (hba : b * a = 1) (hac : a * c = 1) : b = c := by
+  rw [← one_mul c, ← hba, mul_assoc₃, hac, mul_one b]
 
-#check left\_neg\_eq\_right\_neg'
+#check left_neg_eq_right_neg'
 ```
 
 有了这项技术，我们可以轻松地定义交换半群、幺半群和群，然后定义环。
 
 ```
 class AddCommSemigroup₃ (α : Type) extends AddSemigroup₃ α where
-  add\_comm : ∀ a b : α, a + b = b + a
+  add_comm : ∀ a b : α, a + b = b + a
 
-@[to\_additive AddCommSemigroup₃]
+@[to_additive AddCommSemigroup₃]
 class CommSemigroup₃ (α : Type) extends Semigroup₃ α where
-  mul\_comm : ∀ a b : α, a * b = b * a
+  mul_comm : ∀ a b : α, a * b = b * a
 
 class AddCommMonoid₃ (α : Type) extends AddMonoid₃ α, AddCommSemigroup₃ α
 
-@[to\_additive AddCommMonoid₃]
+@[to_additive AddCommMonoid₃]
 class CommMonoid₃ (α : Type) extends Monoid₃ α, CommSemigroup₃ α
 
 class AddGroup₃ (G : Type) extends AddMonoid₃ G, Neg G where
-  neg\_add : ∀ a : G, -a + a = 0
+  neg_add : ∀ a : G, -a + a = 0
 
-@[to\_additive AddGroup₃]
+@[to_additive AddGroup₃]
 class Group₃ (G : Type) extends Monoid₃ G, Inv G where
-  inv\_mul : ∀ a : G, a⁻¹ * a = 1
+  inv_mul : ∀ a : G, a⁻¹ * a = 1
 ```
 
 我们应当记住在适当的时候为引理标记 `simp`。
 
 ```
-attribute [simp] Group₃.inv\_mul AddGroup₃.neg\_add
+attribute [simp] Group₃.inv_mul AddGroup₃.neg_add
 ```
 
-然后我们需要重复我们自己一些，因为我们切换到标准记号，但至少 `to\_additive` 做了从乘法记号转换到加法记号的工作。
+然后我们需要重复我们自己一些，因为我们切换到标准记号，但至少 `to_additive` 做了从乘法记号转换到加法记号的工作。
 
 ```
-@[to\_additive]
-lemma inv\_eq\_of\_mul [Group₃ G] {a b : G} (h : a * b = 1) : a⁻¹ = b :=
+@[to_additive]
+lemma inv_eq_of_mul [Group₃ G] {a b : G} (h : a * b = 1) : a⁻¹ = b :=
   sorry
 ```
 
-注意，`to\_additive` 可以被要求为引理标记 `simp` 并将该属性传播到加法版本，如下所示。
+注意，`to_additive` 可以被要求为引理标记 `simp` 并将该属性传播到加法版本，如下所示。
 
 ```
-@[to\_additive (attr := simp)]
-lemma Group₃.mul\_inv {G : Type} [Group₃ G] {a : G} : a * a⁻¹ = 1 := by
+@[to_additive (attr := simp)]
+lemma Group₃.mul_inv {G : Type} [Group₃ G] {a : G} : a * a⁻¹ = 1 := by
   sorry
 
-@[to\_additive]
-lemma mul\_left\_cancel₃ {G : Type} [Group₃ G] {a b c : G} (h : a * b = a * c) : b = c := by
+@[to_additive]
+lemma mul_left_cancel₃ {G : Type} [Group₃ G] {a b c : G} (h : a * b = a * c) : b = c := by
   sorry
 
-@[to\_additive]
-lemma mul\_right\_cancel₃ {G : Type} [Group₃ G] {a b c : G} (h : b*a = c*a) : b = c := by
+@[to_additive]
+lemma mul_right_cancel₃ {G : Type} [Group₃ G] {a b c : G} (h : b*a = c*a) : b = c := by
   sorry
 
 class AddCommGroup₃ (G : Type) extends AddGroup₃ G, AddCommMonoid₃ G
 
-@[to\_additive AddCommGroup₃]
+@[to_additive AddCommGroup₃]
 class CommGroup₃ (G : Type) extends Group₃ G, CommMonoid₃ G
 ```
 
@@ -293,13 +293,13 @@ class CommGroup₃ (G : Type) extends Group₃ G, CommMonoid₃ G
 ```
 class Ring₃ (R : Type) extends AddGroup₃ R, Monoid₃ R, MulZeroClass R where
   /-- Multiplication is left distributive over addition -/
-  left\_distrib : ∀ a b c : R, a * (b + c) = a * b + a * c
+  left_distrib : ∀ a b c : R, a * (b + c) = a * b + a * c
   /-- Multiplication is right distributive over addition -/
-  right\_distrib : ∀ a b c : R, (a + b) * c = a * c + b * c
+  right_distrib : ∀ a b c : R, (a + b) * c = a * c + b * c
 
 instance {R : Type} [Ring₃ R] : AddCommGroup₃ R :=
 { Ring₃.toAddGroup₃ with
-  add\_comm := by
+  add_comm := by
     sorry }
 ```
 
@@ -308,21 +308,21 @@ instance {R : Type} [Ring₃ R] : AddCommGroup₃ R :=
 ```
 instance : Ring₃ ℤ where
   add := (· + ·)
-  add\_assoc₃ := add\_assoc
+  add_assoc₃ := add_assoc
   zero := 0
-  zero\_add := by simp
-  add\_zero := by simp
+  zero_add := by simp
+  add_zero := by simp
   neg := (- ·)
-  neg\_add := by simp
+  neg_add := by simp
   mul := (· * ·)
-  mul\_assoc₃ := mul\_assoc
+  mul_assoc₃ := mul_assoc
   one := 1
-  one\_mul := by simp
-  mul\_one := by simp
-  zero\_mul := by simp
-  mul\_zero := by simp
-  left\_distrib := Int.mul\_add
-  right\_distrib := Int.add\_mul
+  one_mul := by simp
+  mul_one := by simp
+  zero_mul := by simp
+  mul_zero := by simp
+  left_distrib := Int.mul_add
+  right_distrib := Int.add_mul
 ```
 
 作为一个练习，你现在可以为顺序关系设置一个简单的层级，包括一个有序的可交换幺半群的类，它们具有一个偏序和一个可交换幺半群的结构，使得 `∀ a b : α, a ≤ b → ∀ c : α, c * a ≤ c * b`。当然，你需要添加字段并可能为下面的类添加 `extends` 条款。
@@ -332,7 +332,7 @@ class LE₁ (α : Type) where
   /-- The Less-or-Equal relation. -/
   le : α → α → Prop
 
-@[inherit\_doc] infix:50 " ≤₁ " => LE₁.le
+@[inherit_doc] infix:50 " ≤₁ " => LE₁.le
 
 class Preorder₁ (α : Type)
 
@@ -359,34 +359,34 @@ infixr:73 " • " => SMul₃.smul
 
 ```
 class Module₁ (R : Type) [Ring₃ R] (M : Type) [AddCommGroup₃ M] extends SMul₃ R M where
-  zero\_smul : ∀ m : M, (0 : R) • m = 0
-  one\_smul : ∀ m : M, (1 : R) • m = m
-  mul\_smul : ∀ (a b : R) (m : M), (a * b) • m = a • b • m
-  add\_smul : ∀ (a b : R) (m : M), (a + b) • m = a • m + b • m
-  smul\_add : ∀ (a : R) (m n : M), a • (m + n) = a • m + a • n
+  zero_smul : ∀ m : M, (0 : R) • m = 0
+  one_smul : ∀ m : M, (1 : R) • m = m
+  mul_smul : ∀ (a b : R) (m : M), (a * b) • m = a • b • m
+  add_smul : ∀ (a b : R) (m : M), (a + b) • m = a • m + b • m
+  smul_add : ∀ (a : R) (m n : M), a • (m + n) = a • m + a • n
 ```
 
 这里有一些有趣的地方。虽然 `R` 上的环结构在这个定义中是一个参数并不奇怪，你可能预期 `AddCommGroup₃ M` 应该是 `extends` 子句的一部分，就像 `SMul₃ R M` 一样。试图这样做会导致一个神秘的错误消息：`找不到模块₁的实例化顺序.toAddCommGroup₃ 与类型 (R : Type) → [inst : Ring₃ R] → {M : Type} → [self : Module₁ R M] → AddCommGroup₃ M 所有剩余的参数都有元变量: Ring₃ ?R @Module₁ ?R ?inst✝ M`。为了理解这条消息，你需要记住 `extends` 子句将导致一个标记为实例的字段 `Module₃.toAddCommGroup₃。这个实例将具有错误消息中出现的签名：`(R : Type) → [inst : Ring₃ R] → {M : Type} → [self : Module₁ R M] → AddCommGroup₃ M`。有了这样的实例在类型类数据库，每次 Lean 搜索一些类型 `M` 的 `AddCommGroup₃ M` 实例时，都需要寻找一个完全未指定的类型 `R` 和一个 `Ring₃ R` 实例，然后开始主线任务——寻找一个 `Module₁ R M` 实例。这两个分线任务由错误消息中提到的元变量表示，用 `?R` 和 `?inst✝` 在那里表示。这样的 `Module₃.toAddCommGroup₃` 实例将是实例解析过程的巨大陷阱，然后 `类` 命令就拒绝设置它。
 
-那么 `extends SMul₃ R M` 呢？那个创建了一个字段 `Module₁.toSMul₃ : {R : Type} →  [inst : Ring₃ R] → {M : Type} → [inst\_1 : AddCommGroup₃ M] → [self : Module₁ R M] → SMul₃ R M` 其最终结果 `SMul₃ R M` 提到了 `R` 和 `M`，所以这个字段可以安全地用作实例。规则很容易记：在 `extends` 子句中出现的每个类都应提到参数中出现的每个类型。
+那么 `extends SMul₃ R M` 呢？那个创建了一个字段 `Module₁.toSMul₃ : {R : Type} →  [inst : Ring₃ R] → {M : Type} → [inst_1 : AddCommGroup₃ M] → [self : Module₁ R M] → SMul₃ R M` 其最终结果 `SMul₃ R M` 提到了 `R` 和 `M`，所以这个字段可以安全地用作实例。规则很容易记：在 `extends` 子句中出现的每个类都应提到参数中出现的每个类型。
 
 让我们创建我们的第一个模实例：环是自己的模，用它的乘法作为标量乘法。
 
 ```
 instance selfModule (R : Type) [Ring₃ R] : Module₁ R R where
   smul := fun r s ↦ r*s
-  zero\_smul := zero\_mul
-  one\_smul := one\_mul
-  mul\_smul := mul\_assoc₃
-  add\_smul := Ring₃.right\_distrib
-  smul\_add := Ring₃.left\_distrib
+  zero_smul := zero_mul
+  one_smul := one_mul
+  mul_smul := mul_assoc₃
+  add_smul := Ring₃.right_distrib
+  smul_add := Ring₃.left_distrib
 ```
 
 作为第二个例子，每一个阿贝尔群都是 `ℤ` 上的模（这正是通过允许非可逆标量来推广向量空间理论的原因之一）。首先可以定义任何 equipped with a 零和加法的类型对自然数的标量乘法：`n • a` is defined as `a + ⋯ + a` 其中 `a` 出现了 `n` times。然后这个被扩展到整数上的标量乘法，通过确保 `(-1) • a = -a`。
 
 ```
 def nsmul₁ [Zero M] [Add M] : ℕ → M → M
-  | 0, \_ => 0
+  | 0, _ => 0
   | n + 1, a => a + nsmul₁ n a
 
 def zsmul₁ {M : Type*} [Zero M] [Add M] [Neg M] : ℤ → M → M
@@ -399,11 +399,11 @@ def zsmul₁ {M : Type*} [Zero M] [Add M] [Neg M] : ℤ → M → M
 ```
 instance abGrpModule (A : Type) [AddCommGroup₃ A] : Module₁ ℤ A where
   smul := zsmul₁
-  zero\_smul := sorry
-  one\_smul := sorry
-  mul\_smul := sorry
-  add\_smul := sorry
-  smul\_add := sorry
+  zero_smul := sorry
+  one_smul := sorry
+  mul_smul := sorry
+  add_smul := sorry
+  smul_add := sorry
 ```
 
 一个更重要的问题是，我们现在有两种模块结构在环`ℤ`上对`ℤ`本身。：`abGrpModule ℤ`，因为`ℤ`是一个阿贝尔群，和 `selfModule ℤ`，因为 `ℤ` 是一个环。这两种模块结构对应于相同的阿贝尔群结构，但他们是否有相同的标量乘法并不明显。它们实际上是有的，但这并不是定义就确定的，需要证明。这对类型类的实例解析过程来说是个非常糟糕的消息，会导致使用该层次结构的用户遇到非常令人沮丧的失败。当直接要求找到一个实例时，Lean会选取一个，我们可以使用以下命令查看选取的是哪一个：
@@ -425,9 +425,9 @@ class AddMonoid₄ (M : Type) extends AddSemigroup₃ M, AddZeroClass M where
   /-- Multiplication by a natural number. -/
   nsmul : ℕ → M → M := nsmul₁
   /-- Multiplication by `(0 : ℕ)` gives `0`. -/
-  nsmul\_zero : ∀ x, nsmul 0 x = 0 := by intros; rfl
+  nsmul_zero : ∀ x, nsmul 0 x = 0 := by intros; rfl
   /-- Multiplication by `(n + 1 : ℕ)` behaves as expected. -/
-  nsmul\_succ : ∀ (n : ℕ) (x), nsmul (n + 1) x = x + nsmul n x := by intros; rfl
+  nsmul_succ : ∀ (n : ℕ) (x), nsmul (n + 1) x = x + nsmul n x := by intros; rfl
 
 instance mySMul {M : Type} [AddMonoid₄ M] : SMul ℕ M := ⟨AddMonoid₄.nsmul⟩
 ```
@@ -437,10 +437,10 @@ instance mySMul {M : Type} [AddMonoid₄ M] : SMul ℕ M := ⟨AddMonoid₄.nsmu
 ```
 instance (M N : Type) [AddMonoid₄ M] [AddMonoid₄ N] : AddMonoid₄ (M × N) where
   add := fun p q ↦ (p.1 + q.1, p.2 + q.2)
-  add\_assoc₃ := fun a b c ↦ by ext <;> apply add\_assoc₃
+  add_assoc₃ := fun a b c ↦ by ext <;> apply add_assoc₃
   zero := (0, 0)
-  zero\_add := fun a ↦ by ext <;> apply zero\_add
-  add\_zero := fun a ↦ by ext <;> apply add\_zero
+  zero_add := fun a ↦ by ext <;> apply zero_add
+  add_zero := fun a ↦ by ext <;> apply add_zero
 ```
 
 现在让我们处理`ℤ`的特殊情况，我们希望用`ℕ`向`ℤ`的转换和`ℤ`上的乘法来构建`nsmul`。尤其注意到，与上面的默认值相比，证明字段包含更多的工作。
@@ -448,14 +448,14 @@ instance (M N : Type) [AddMonoid₄ M] [AddMonoid₄ N] : AddMonoid₄ (M × N) 
 ```
 instance : AddMonoid₄ ℤ where
   add := (· + ·)
-  add\_assoc₃ := Int.add\_assoc
+  add_assoc₃ := Int.add_assoc
   zero := 0
-  zero\_add := Int.zero\_add
-  add\_zero := Int.add\_zero
+  zero_add := Int.zero_add
+  add_zero := Int.add_zero
   nsmul := fun n m ↦ (n : ℤ) * m
-  nsmul\_zero := Int.zero\_mul
-  nsmul\_succ := fun n m ↦ show (n + 1 : ℤ) * m = m + n * m
-    by rw [Int.add\_mul, Int.add\_comm, Int.one\_mul]
+  nsmul_zero := Int.zero_mul
+  nsmul_succ := fun n m ↦ show (n + 1 : ℤ) * m = m + n * m
+    by rw [Int.add_mul, Int.add_comm, Int.one_mul]
 ```
 
 我们来检查我们是否解决了问题。因为 Lean 已经有了一个定义，它描述了一个自然数和一个整数的标量乘法，我们想确保我们的实例被使用，所以我们不会使用 `•` 符号，而是调用 `SMul.mul` 并显式地提供我们上面定义的实例。
@@ -481,8 +481,8 @@ def isMonoidHom₁ [Monoid G] [Monoid H] (f : G → H) : Prop :=
 
 ```
 structure isMonoidHom₂ [Monoid G] [Monoid H] (f : G → H) : Prop where
-  map\_one : f 1 = 1
-  map\_mul : ∀ g g', f (g * g') = f g * f g'
+  map_one : f 1 = 1
+  map_mul : ∀ g g', f (g * g') = f g * f g'
 ```
 
 到了这里，甚至可能需要将其设为一个类，并使用类型类实例解析程序来自动从较简单函数的实例中推断出 `isMonoidHom₂`。例如，单对构成的单蝼构成是一个单蝼形态，这似乎是一个有用的实例。然而，这样的实例对于解析过程来说会很棘手，因为它需要到处追查 `g ∘ f`。看到它在 `g (f x)` 中失败会非常令人沮丧。更通俗的说，一定要记住，在给定表达式中识别哪个函数被应用是个非常棘手的问题，称为“高阶统一问题”。因此，Mathlib 并没有使用这个类的方法。
@@ -490,7 +490,7 @@ structure isMonoidHom₂ [Monoid G] [Monoid H] (f : G → H) : Prop where
 一个更基本的问题是：我们是否应使用上述（使用 `def` 或 `structure`）的谓词，或使用将函数和谓词捆绑的结构。这在一定程度上是一个心理问题。考虑一个在单对之间的函数，而这个函数并不是单蝼形态，这是极其罕见的。这真的让人觉得“单蝼形态”不是你可以赋予裸函数的形容词，它是一个名词。另一方面，人们可能会反驳，拓扑空间之间的连续函数实际上是一个恰好是连续的函数。这就是为什么 Mathlib 有一个 `Continuous` 谓词的原因。例如，你可以写:
 
 ```
-example : Continuous (id : ℝ → ℝ) := continuous\_id
+example : Continuous (id : ℝ → ℝ) := continuous_id
 ```
 
 我们仍然有捆绑连续函数，这在例如给连续函数的空间添加拓扑时非常方便，但是它们并不是处理连续性的主要工具。
@@ -501,14 +501,14 @@ example : Continuous (id : ℝ → ℝ) := continuous\_id
 @[ext]
 structure MonoidHom₁ (G H : Type) [Monoid G] [Monoid H]  where
   toFun : G → H
-  map\_one : toFun 1 = 1
-  map\_mul : ∀ g g', toFun (g * g') = toFun g * toFun g'
+  map_one : toFun 1 = 1
+  map_mul : ∀ g g', toFun (g * g') = toFun g * toFun g'
 ```
 
 当然，我们不想到处都键入 `toFun`，所以我们使用 `CoeFun` 类型类注册了一个强制的使用。它的第一个参数是我们想要强制转换为函数的类型。第二个参数描述了目标函数类型。在我们的情况下，对于每一个 `f : MonoidHom₁ G H`，它总是 `G → H`。我们还将 `MonoidHom₁.toFun` 标记为 `coe` 属性，以确保它在策略状态中几乎无形地显示，只需通过 `↑` 前缀即可。
 
 ```
-instance [Monoid G] [Monoid H] : CoeFun (MonoidHom₁ G H) (fun \_ ↦ G → H) where
+instance [Monoid G] [Monoid H] : CoeFun (MonoidHom₁ G H) (fun _ ↦ G → H) where
   coe := MonoidHom₁.toFun
 
 attribute [coe] MonoidHom₁.toFun
@@ -517,7 +517,7 @@ attribute [coe] MonoidHom₁.toFun
 让我们检查一下，我们确实可以将一个捆起来的单蝼形态应用到一个元素上。
 
 ```
-example [Monoid G] [Monoid H] (f : MonoidHom₁ G H) : f 1 = 1 :=  f.map\_one
+example [Monoid G] [Monoid H] (f : MonoidHom₁ G H) : f 1 = 1 :=  f.map_one
 ```
 
 我们可以对其它类型的形态做同样的事情，直到我们遇到环形态。
@@ -526,10 +526,10 @@ example [Monoid G] [Monoid H] (f : MonoidHom₁ G H) : f 1 = 1 :=  f.map\_one
 @[ext]
 structure AddMonoidHom₁ (G H : Type) [AddMonoid G] [AddMonoid H]  where
   toFun : G → H
-  map\_zero : toFun 0 = 0
-  map\_add : ∀ g g', toFun (g + g') = toFun g + toFun g'
+  map_zero : toFun 0 = 0
+  map_add : ∀ g g', toFun (g + g') = toFun g + toFun g'
 
-instance [AddMonoid G] [AddMonoid H] : CoeFun (AddMonoidHom₁ G H) (fun \_ ↦ G → H) where
+instance [AddMonoid G] [AddMonoid H] : CoeFun (AddMonoidHom₁ G H) (fun _ ↦ G → H) where
   coe := AddMonoidHom₁.toFun
 
 attribute [coe] AddMonoidHom₁.toFun
@@ -538,34 +538,34 @@ attribute [coe] AddMonoidHom₁.toFun
 structure RingHom₁ (R S : Type) [Ring R] [Ring S] extends MonoidHom₁ R S, AddMonoidHom₁ R S
 ```
 
-这种方法存在一些问题。一个较小的问题是我们不太确定在哪里添加 `coe` 属性，因为 `RingHom₁.toFun` 并不存在，相关的函数是 `MonoidHom₁.toFun ∘ RingHom₁.toMonoidHom₁`，这不是可以被添加属性标记的声明（但我们仍然可以定义一个 `CoeFun  (RingHom₁ R S) (fun \_ ↦ R → S)` 实例）。一个更重要的问题是关于单蝼形态的引理不能直接应用于环形态。这留下了两个替代方案，要么在每次我们想要应用单蝼形态引理时都使用 `RingHom₁.toMonoidHom₁` 来琢磨，要么为环形态重述每一个这样的引理。两者都不吸引人，因此 Mathlib 在这里使用了一个新的层次结构技巧。这个想法是为至少是单蝼形态的对象定义一个类型类，并实例化该类为单蝼形态和环形态，然后使用它来陈述每一个引理。在下面的定义中，`F` 可以是 `MonoidHom₁ M N`，或者如果 `M` 和 `N` 有一个环的结构，它可以是 `RingHom₁ M N`。
+这种方法存在一些问题。一个较小的问题是我们不太确定在哪里添加 `coe` 属性，因为 `RingHom₁.toFun` 并不存在，相关的函数是 `MonoidHom₁.toFun ∘ RingHom₁.toMonoidHom₁`，这不是可以被添加属性标记的声明（但我们仍然可以定义一个 `CoeFun  (RingHom₁ R S) (fun _ ↦ R → S)` 实例）。一个更重要的问题是关于单蝼形态的引理不能直接应用于环形态。这留下了两个替代方案，要么在每次我们想要应用单蝼形态引理时都使用 `RingHom₁.toMonoidHom₁` 来琢磨，要么为环形态重述每一个这样的引理。两者都不吸引人，因此 Mathlib 在这里使用了一个新的层次结构技巧。这个想法是为至少是单蝼形态的对象定义一个类型类，并实例化该类为单蝼形态和环形态，然后使用它来陈述每一个引理。在下面的定义中，`F` 可以是 `MonoidHom₁ M N`，或者如果 `M` 和 `N` 有一个环的结构，它可以是 `RingHom₁ M N`。
 
 ```
 class MonoidHomClass₁ (F : Type) (M N : Type) [Monoid M] [Monoid N] where
   toFun : F → M → N
-  map\_one : ∀ f : F, toFun f 1 = 1
-  map\_mul : ∀ f g g', toFun f (g * g') = toFun f g * toFun f g'
+  map_one : ∀ f : F, toFun f 1 = 1
+  map_mul : ∀ f g g', toFun f (g * g') = toFun f g * toFun f g'
 ```
 
 然而，上述实施方案存在一个问题。我们还没有注册一个强制到函数实例。让我们尝试现在做。
 
 
 ```
-def badInst [Monoid M] [Monoid N] [MonoidHomClass₁ F M N] : CoeFun F (fun \_ ↦ M → N) where
+def badInst [Monoid M] [Monoid N] [MonoidHomClass₁ F M N] : CoeFun F (fun _ ↦ M → N) where
   coe := MonoidHomClass₁.toFun
 ```
 
-使其成为实例将是不利的。当面对如 `f x` 这样的东西时，`f` 的类型不是函数类型，Lean 将尝试找到一个 `CoeFun` 实例来强制将 `f` 转换为函数。上述函数的类型为：`{M N F : Type} → [Monoid M] → [Monoid N] → [MonoidHomClass₁ F M N] → CoeFun F (fun x ↦ M → N)` 所以，在试图应用它时，Lean 不会清楚未知类型 `M`，`N` 和 `F` 应该以哪种顺序推断。这是一种不好的实例，略有不同于我们已经看到的，但归结到的问题一样：不了解 `M` ，Lean 将不得不在未知类型上搜索一个幺半群实例，因此无望尝试数据库中的*每个*幺半群实例。如果你好奇这样的实例的效果，你可以在上述声明顶部键入 `set\_option synthInstance.checkSynthOrder false in`，用 `instance` 替换 `def badInst`，并在这个文件中寻找随机的失败。
+使其成为实例将是不利的。当面对如 `f x` 这样的东西时，`f` 的类型不是函数类型，Lean 将尝试找到一个 `CoeFun` 实例来强制将 `f` 转换为函数。上述函数的类型为：`{M N F : Type} → [Monoid M] → [Monoid N] → [MonoidHomClass₁ F M N] → CoeFun F (fun x ↦ M → N)` 所以，在试图应用它时，Lean 不会清楚未知类型 `M`，`N` 和 `F` 应该以哪种顺序推断。这是一种不好的实例，略有不同于我们已经看到的，但归结到的问题一样：不了解 `M` ，Lean 将不得不在未知类型上搜索一个幺半群实例，因此无望尝试数据库中的*每个*幺半群实例。如果你好奇这样的实例的效果，你可以在上述声明顶部键入 `set_option synthInstance.checkSynthOrder false in`，用 `instance` 替换 `def badInst`，并在这个文件中寻找随机的失败。
 
 这里的解决方案很简单，我们需要告诉 Lean 首先搜索什么是 `F`，然后推导 `M` 和 `N`。这是通过 `outParam` 函数完成的。这个函数被定义为恒等函数，但仍被类型类机器识别，并触发了期望的行为。因此，我们可以重新定义我们的类，注意 `outParam` 函数：
 
 ```
 class MonoidHomClass₂ (F : Type) (M N : outParam Type) [Monoid M] [Monoid N] where
   toFun : F → M → N
-  map\_one : ∀ f : F, toFun f 1 = 1
-  map\_mul : ∀ f g g', toFun f (g * g') = toFun f g * toFun f g'
+  map_one : ∀ f : F, toFun f 1 = 1
+  map_mul : ∀ f g g', toFun f (g * g') = toFun f g * toFun f g'
 
-instance [Monoid M] [Monoid N] [MonoidHomClass₂ F M N] : CoeFun F (fun \_ ↦ M → N) where
+instance [Monoid M] [Monoid N] [MonoidHomClass₂ F M N] : CoeFun F (fun _ ↦ M → N) where
   coe := MonoidHomClass₂.toFun
 
 attribute [coe] MonoidHomClass₂.toFun
@@ -576,27 +576,27 @@ attribute [coe] MonoidHomClass₂.toFun
 ```
 instance (M N : Type) [Monoid M] [Monoid N] : MonoidHomClass₂ (MonoidHom₁ M N) M N where
   toFun := MonoidHom₁.toFun
-  map\_one := fun f ↦ f.map\_one
-  map\_mul := fun f ↦ f.map\_mul
+  map_one := fun f ↦ f.map_one
+  map_mul := fun f ↦ f.map_mul
 
 instance (R S : Type) [Ring R] [Ring S] : MonoidHomClass₂ (RingHom₁ R S) R S where
   toFun := fun f ↦ f.toMonoidHom₁.toFun
-  map\_one := fun f ↦ f.toMonoidHom₁.map\_one
-  map\_mul := fun f ↦ f.toMonoidHom₁.map\_mul
+  map_one := fun f ↦ f.toMonoidHom₁.map_one
+  map_mul := fun f ↦ f.toMonoidHom₁.map_mul
 ```
 
 如承诺的，假设 `f : F` 具有 `MonoidHomClass₁ F`实例，我们证明的每个引理都同时适用于群乘射和环乘射。让我们看一个例子引理并检查它是否适用于两种情况。
 
 ```
-lemma map\_inv\_of\_inv [Monoid M] [Monoid N] [MonoidHomClass₂ F M N] (f : F) {m m' : M} (h : m*m' = 1) :
+lemma map_inv_of_inv [Monoid M] [Monoid N] [MonoidHomClass₂ F M N] (f : F) {m m' : M} (h : m*m' = 1) :
     f m * f m' = 1 := by
-  rw [← MonoidHomClass₂.map\_mul, h, MonoidHomClass₂.map\_one]
+  rw [← MonoidHomClass₂.map_mul, h, MonoidHomClass₂.map_one]
 
 example [Monoid M] [Monoid N] (f : MonoidHom₁ M N) {m m' : M} (h : m*m' = 1) : f m * f m' = 1 :=
-map\_inv\_of\_inv f h
+map_inv_of_inv f h
 
 example [Ring R] [Ring S] (f : RingHom₁ R S) {r r' : R} (h : r*r' = 1) : f r * f r' = 1 :=
-map\_inv\_of\_inv f h
+map_inv_of_inv f h
 ```
 
 乍一看，我们似乎回到了我们旧的坏主意，使 `MonoidHom₁` 成为一个类。但是我们并没有。所有事情都向上转移到了一个抽象层次。类型类解析过程不会寻找函数，它将寻找 `MonoidHom₁` 或 `RingHom₁`。
@@ -605,15 +605,15 @@ map\_inv\_of\_inv f h
 
 ```
 class MonoidHomClass₃ (F : Type) (M N : outParam Type) [Monoid M] [Monoid N] extends
-    FunLike F M (fun \_ ↦ N) where
-  map\_one : ∀ f : F, f 1 = 1
-  map\_mul : ∀ (f : F) g g', f (g * g') = f g * f g'
+    FunLike F M (fun _ ↦ N) where
+  map_one : ∀ f : F, f 1 = 1
+  map_mul : ∀ (f : F) g g', f (g * g') = f g * f g'
 
 instance (M N : Type) [Monoid M] [Monoid N] : MonoidHomClass₃ (MonoidHom₁ M N) M N where
   coe := MonoidHom₁.toFun
-  coe\_injective' := MonoidHom₁.ext
-  map\_one := MonoidHom₁.map\_one
-  map\_mul := MonoidHom₁.map\_mul
+  coe_injective' := MonoidHom₁.ext
+  map_one := MonoidHom₁.map_one
+  map_mul := MonoidHom₁.map_mul
 ```
 
 当然，映射的层次结构并未在此结束。我们可以继续去定义一个扩展 `MonoidHomClass₃` 的类 `RingHomClass₃` 并在 `RingHom` 上实例化它，然后在 `AlgebraHom` 上再做一次 （代数是带有一些额外结构的环）。但我们已经介绍了 Mathlib 用于映射的主要形式化思想，您应该已经准备好理解 Mathlib 如何定义映射。
@@ -624,7 +624,7 @@ instance (M N : Type) [Monoid M] [Monoid N] : MonoidHomClass₃ (MonoidHom₁ M 
 @[ext]
 structure OrderPresHom (α β : Type) [LE α] [LE β] where
   toFun : α → β
-  le\_of\_le : ∀ a a', a ≤ a' → toFun a ≤ toFun a'
+  le_of_le : ∀ a a', a ≤ a' → toFun a ≤ toFun a'
 
 @[ext]
 structure OrderPresMonoidHom (M N : Type) [Monoid M] [LE M] [Monoid N] [LE N] extends
@@ -652,20 +652,20 @@ structure Submonoid₁ (M : Type) [Monoid M] where
   /-- The carrier of a submonoid. -/
   carrier : Set M
   /-- The product of two elements of a submonoid belongs to the submonoid. -/
-  mul\_mem {a b} : a ∈ carrier → b ∈ carrier → a * b ∈ carrier
+  mul_mem {a b} : a ∈ carrier → b ∈ carrier → a * b ∈ carrier
   /-- The unit element belongs to the submonoid. -/
-  one\_mem : 1 ∈ carrier
+  one_mem : 1 ∈ carrier
 
 /-- Submonoids in `M` can be seen as sets in `M`. -/
 instance [Monoid M] : SetLike (Submonoid₁ M) M where
   coe := Submonoid₁.carrier
-  coe\_injective' := Submonoid₁.ext
+  coe_injective' := Submonoid₁.ext
 ```
 
 配备了上述的`SetLike`实例，我们已经可以自然地陈述一个子群`N`包含`1`，而无需使用`N.carrier`。我们也可以安静地将`N`视为`M`中的一个集合，并在映射下取其直接图像。
 
 ```
-example [Monoid M] (N : Submonoid₁ M) : 1 ∈ N := N.one\_mem
+example [Monoid M] (N : Submonoid₁ M) : 1 ∈ N := N.one_mem
 
 example [Monoid M] (N : Submonoid₁ M) (α : Type) (f : M → α) := f '' N
 ```
@@ -680,34 +680,34 @@ example [Monoid M] (N : Submonoid₁ M) (x : N) : (x : M) ∈ N := x.property
 
 ```
 instance SubMonoid₁Monoid [Monoid M] (N : Submonoid₁ M) : Monoid N where
-  mul := fun x y ↦ ⟨x*y, N.mul\_mem x.property y.property⟩
-  mul\_assoc := fun x y z ↦ SetCoe.ext (mul\_assoc (x : M) y z)
-  one := ⟨1, N.one\_mem⟩
-  one\_mul := fun x ↦ SetCoe.ext (one\_mul (x : M))
-  mul\_one := fun x ↦ SetCoe.ext (mul\_one (x : M))
+  mul := fun x y ↦ ⟨x*y, N.mul_mem x.property y.property⟩
+  mul_assoc := fun x y z ↦ SetCoe.ext (mul_assoc (x : M) y z)
+  one := ⟨1, N.one_mem⟩
+  one_mul := fun x ↦ SetCoe.ext (one_mul (x : M))
+  mul_one := fun x ↦ SetCoe.ext (mul_one (x : M))
 ```
 
 注意，在上述实例中，我们可以使用解构绑定器替代使用到`M`的强制转换和调用`property`字段。
 
 ```
 example [Monoid M] (N : Submonoid₁ M) : Monoid N where
-  mul := fun ⟨x, hx⟩ ⟨y, hy⟩ ↦ ⟨x*y, N.mul\_mem hx hy⟩
-  mul\_assoc := fun ⟨x, \_⟩ ⟨y, \_⟩ ⟨z, \_⟩ ↦ SetCoe.ext (mul\_assoc x y z)
-  one := ⟨1, N.one\_mem⟩
-  one\_mul := fun ⟨x, \_⟩ ↦ SetCoe.ext (one\_mul x)
-  mul\_one := fun ⟨x, \_⟩ ↦ SetCoe.ext (mul\_one x)
+  mul := fun ⟨x, hx⟩ ⟨y, hy⟩ ↦ ⟨x*y, N.mul_mem hx hy⟩
+  mul_assoc := fun ⟨x, _⟩ ⟨y, _⟩ ⟨z, _⟩ ↦ SetCoe.ext (mul_assoc x y z)
+  one := ⟨1, N.one_mem⟩
+  one_mul := fun ⟨x, _⟩ ↦ SetCoe.ext (one_mul x)
+  mul_one := fun ⟨x, _⟩ ↦ SetCoe.ext (mul_one x)
 ```
 
 为了将关于子群的引理应用于子群或子环，我们需要一个类，就像变换一样。请注意，此类接受一个`SetLike`实例作为参数，所以它不需要一个携带者字段，并可以在其字段中使用成员标记。
 
 ```
 class SubmonoidClass₁ (S : Type) (M : Type) [Monoid M] [SetLike S M] : Prop where
-  mul\_mem : ∀ (s : S) {a b : M}, a ∈ s → b ∈ s → a * b ∈ s
-  one\_mem : ∀ s : S, 1 ∈ s
+  mul_mem : ∀ (s : S) {a b : M}, a ∈ s → b ∈ s → a * b ∈ s
+  one_mem : ∀ s : S, 1 ∈ s
 
 instance [Monoid M] : SubmonoidClass₁ (Submonoid₁ M) M where
-  mul\_mem := Submonoid₁.mul\_mem
-  one\_mem := Submonoid₁.one\_mem
+  mul_mem := Submonoid₁.mul_mem
+  one_mem := Submonoid₁.one_mem
 ```
 
 作为练习，你应该定义一个 `子群₁` 结构，为其赋予一个 `集合样` 实例和一个 `子单群类₁` 实例，将一个 `群` 实例放在与 `子群₁` 关联的子类型上，并定义一个 `子群类₁` 类。
@@ -718,8 +718,8 @@ instance [Monoid M] : SubmonoidClass₁ (Submonoid₁ M) M where
 instance [Monoid M] : Inf (Submonoid₁ M) :=
   ⟨fun S₁ S₂ ↦
     { carrier := S₁ ∩ S₂
-      one\_mem := ⟨S₁.one\_mem, S₂.one\_mem⟩
-      mul\_mem := fun ⟨hx, hx'⟩ ⟨hy, hy'⟩ ↦ ⟨S₁.mul\_mem hx hy, S₂.mul\_mem hx' hy'⟩ }⟩
+      one_mem := ⟨S₁.one_mem, S₂.one_mem⟩
+      mul_mem := fun ⟨hx, hx'⟩ ⟨hy, hy'⟩ ↦ ⟨S₁.mul_mem hx hy, S₂.mul_mem hx' hy'⟩ }⟩
 ```
 
 这允许我们得到两个子单群的交集作为一个子单群。
@@ -738,7 +738,7 @@ example [Monoid M] (N P : Submonoid₁ M) : Submonoid₁ M := N ⊓ P
 def Submonoid.Setoid [CommMonoid M] (N : Submonoid M) : Setoid M  where
   r := fun x y ↦ ∃ w ∈ N, ∃ z ∈ N, x*w = y*z
   iseqv := {
-    refl := fun x ↦ ⟨1, N.one\_mem, 1, N.one\_mem, rfl⟩
+    refl := fun x ↦ ⟨1, N.one_mem, 1, N.one_mem, rfl⟩
     symm := fun ⟨w, hw, z, hz, h⟩ ↦ ⟨z, hz, w, hw, h.symm⟩
     trans := by
       sorry
@@ -753,11 +753,11 @@ instance [CommMonoid M] (N : Submonoid M) : Monoid (M ⧸ N) where
   mul := Quotient.map₂' (· * ·) (by
       sorry
         )
-  mul\_assoc := by
+  mul_assoc := by
       sorry
   one := QuotientMonoid.mk N 1
-  one\_mul := by
+  one_mul := by
       sorry
-  mul\_one := by
+  mul_one := by
       sorry
 ```
