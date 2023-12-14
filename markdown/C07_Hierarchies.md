@@ -73,7 +73,7 @@ class Semigroup₁ (α : Type) where
   dia_assoc : ∀ a b c : α, a ⋄ b ⋄ c = a ⋄ (b ⋄ c)
 ```
 
-注意，在声明 dia_assoc 时，先前定义的字段 toDia₁ 是在本地上下文中的，因此可以在 Lean 搜索 Dia₁ α 的实例以找到 a ⋄ b 时使用。然而，这个 toDia₁ 字段并没有成为类型类实例数据库的一部分。因此，执行 `example {α : Type} [Semigroup₁ α] (a b : α) : α := a ⋄ b` 将失败，错误信息为`failed to synthesize instance Dia₁ α`。
+注意，在声明 dia_assoc 时，先前定义的字段 toDia₁ 是在本地上下文中的，因此可以在 Lean 搜索 Dia₁ α 的实例以找到 a ⋄ b 时使用。然而，这个 toDia₁ 字段并没有成为类型类实例数据库的一部分。因此，执行 `example {α : Type} [Semigroup₁ α] (a b : α) : α := a ⋄ b` 将失败，错误信息为`无法合成实例 Dia₁ α`。
 
 我们可以通过稍后添加 `instance` 属性来修复这个问题。
 
@@ -93,7 +93,7 @@ class Semigroup₂ (α : Type) extends Dia₁ α where
 example {α : Type} [Semigroup₂ α] (a b : α) : α := a ⋄ b
 ```
 
-注意这个语法也在`structure`命令中可用，尽管在这种情况下，它只解决了写成如*toDia₁*这样的字段的难题，因为在那种情况下没有实例要定义。
+注意这个语法也在`structure`命令中可用，尽管在这种情况下，它只解决了写成如toDia₁这样的字段的难题，因为在那种情况下没有实例要定义。
 
 我们现在试图结合一个钻石操作和一个突出的操作，用公理说明这个元素在两边都是中性的。
 
@@ -105,7 +105,7 @@ class DiaOneClass₁ (α : Type) extends One₁ α, Dia₁ α where
   dia_one : ∀ a : α, a ⋄ 𝟙 = a
 ```
 
-在下一个例子中，我们告诉 Lean `α`有一个`DiaOneClass₁`结构，并声明一个使用*Dia₁*实例和*One₁*实例的属性。为了看到 Lean 如何找到这些实例，我们设置了一个追踪选项，其结果可以在info视图中看到。这个结果默认是相当简洁的，但可以通过点击结束与黑箭头的线条进行扩展。它包括失败的尝试，其中 Lean 在有足够的类型信息才能成功之前尝试去找实例。成功的尝试确实涉及到由`extends`语法生成的实例。
+在下一个例子中，我们告诉 Lean `α`有一个`DiaOneClass₁`结构，并声明一个使用Dia₁实例和One₁实例的属性。为了看到 Lean 如何找到这些实例，我们设置了一个 tracing 选项，其结果可以在info视图中看到。这个结果默认是相当简洁的，但可以通过点击结束与黑箭头的线条进行扩展。它包括失败的尝试，其中 Lean 在有足够的类型信息才能成功之前尝试去找实例。成功的尝试确实涉及到由`extends`语法生成的实例。
 
 ```
 set_option trace.Meta.synthInstance true in
@@ -147,7 +147,7 @@ example {α : Type} [Monoid₁ α] :
 #check Monoid₁.mk
 ```
 
-所以我们看到`Monoid₁`如我们所料地接受`Semigroup₁ α`参数，但然后它不会接受即将重叠的`DiaOneClass₁ α`参数，而是将它拆开并只包含非重叠的部分。而且它还自动生成了一个实例`Monoid₁.toDiaOneClass₁`，它并*不是*一个field，但具有预期的signature，从end-user的角度来看，恢复了两个扩展的类`Semigroup₁`和`DiaOneClass₁`之间的对称性。
+所以我们看到`Monoid₁`如我们所料地接受`Semigroup₁ α`参数，但然后它不会接受即将重叠的`DiaOneClass₁ α`参数，而是将它拆开并只包含非重叠的部分。而且它还自动生成了一个实例`Monoid₁.toDiaOneClass₁`，它并*不是*一个字段，但具有预期的签名，从最终用户的角度来看，恢复了两个扩展的类`Semigroup₁`和`DiaOneClass₁`之间的对称性。
 
 ```
 #check Monoid₁.toSemigroup₁
@@ -366,7 +366,7 @@ class Module₁ (R : Type) [Ring₃ R] (M : Type) [AddCommGroup₃ M] extends SM
   smul_add : ∀ (a : R) (m n : M), a • (m + n) = a • m + a • n
 ```
 
-这里有一些有趣的地方。虽然 `R` 上的环结构在这个定义中是一个参数并不奇怪，你可能预期 `AddCommGroup₃ M` 应该是 `extends` 子句的一部分，就像 `SMul₃ R M` 一样。试图这样做会导致一个神秘的错误消息：`找不到模块₁的实例化顺序.toAddCommGroup₃ 与类型 (R : Type) → [inst : Ring₃ R] → {M : Type} → [self : Module₁ R M] → AddCommGroup₃ M 所有剩余的参数都有元变量: Ring₃ ?R @Module₁ ?R ?inst✝ M`。为了理解这条消息，你需要记住 `extends` 子句将导致一个标记为实例的字段 `Module₃.toAddCommGroup₃。这个实例将具有错误消息中出现的签名：`(R : Type) → [inst : Ring₃ R] → {M : Type} → [self : Module₁ R M] → AddCommGroup₃ M`。有了这样的实例在类型类数据库，每次 Lean 搜索一些类型 `M` 的 `AddCommGroup₃ M` 实例时，都需要寻找一个完全未指定的类型 `R` 和一个 `Ring₃ R` 实例，然后开始主线任务——寻找一个 `Module₁ R M` 实例。这两个分线任务由错误消息中提到的元变量表示，用 `?R` 和 `?inst✝` 在那里表示。这样的 `Module₃.toAddCommGroup₃` 实例将是实例解析过程的巨大陷阱，然后 `类` 命令就拒绝设置它。
+这里有一些有趣的地方。虽然 `R` 上的环结构在这个定义中是一个参数并不奇怪，你可能预期 `AddCommGroup₃ M` 应该是 `extends` 子句的一部分，就像 `SMul₃ R M` 一样。试图这样做会导致一个神秘的错误消息：`cannot find synthesization order for instance Module₁.toAddCommGroup₃ with type (R : Type) → [inst : Ring₃ R] → {M : Type} → [self : Module₁ R M] → AddCommGroup₃ M all remaining arguments have metavariables: Ring₃ ?R @Module₁ ?R ?inst✝ M`。为了理解这条信息，你需要记住，这样的一个 `extends` 子句将导致一个字段 `Module₃.toAddCommGroup₃` 被标记为一个实例。这个实例将会有一个在错误消息中出现的签名：`(R : Type) → [inst : Ring₃ R] → {M : Type} → [self : Module₁ R M] → AddCommGroup₃ M`。有了这样一个实例在类型类数据库中，每当 Lean 需要寻找某个 `M` 的 `AddCommGroup₃ M` 实例时，它需要先寻找一个完全未指定的类型 `R` 以及一个 `Ring₃ R` 实例，然后再开始主要的任务，寻找一个 `Module₁ R M` 实例。这两个侧任务由错误消息中提到的元变量所代表，分别用 `?R` 和 `?inst✝` 表示。这样的一个 `Module₃.toAddCommGroup₃` 实例将会对实例解析程序构成一个巨大的陷阱，因此 `class` 命令拒绝设置它。
 
 那么 `extends SMul₃ R M` 呢？那个创建了一个字段 `Module₁.toSMul₃ : {R : Type} →  [inst : Ring₃ R] → {M : Type} → [inst_1 : AddCommGroup₃ M] → [self : Module₁ R M] → SMul₃ R M` 其最终结果 `SMul₃ R M` 提到了 `R` 和 `M`，所以这个字段可以安全地用作实例。规则很容易记：在 `extends` 子句中出现的每个类都应提到参数中出现的每个类型。
 
@@ -382,7 +382,7 @@ instance selfModule (R : Type) [Ring₃ R] : Module₁ R R where
   smul_add := Ring₃.left_distrib
 ```
 
-作为第二个例子，每一个阿贝尔群都是 `ℤ` 上的模（这正是通过允许非可逆标量来推广向量空间理论的原因之一）。首先可以定义任何 equipped with a 零和加法的类型对自然数的标量乘法：`n • a` is defined as `a + ⋯ + a` 其中 `a` 出现了 `n` times。然后这个被扩展到整数上的标量乘法，通过确保 `(-1) • a = -a`。
+作为第二个例子，每一个阿贝尔群都是 `ℤ` 上的模（这正是通过允许非可逆标量来推广向量空间理论的原因之一）。首先，对于任何配备了零和加法的类型，我们可以定义自然数的标量乘法：`n • a` 定义为 `a + ⋯ + a`，其中`a`出现`n`次。然后这个被扩展到整数上的标量乘法，通过确保 `(-1) • a = -a`。
 
 ```
 def nsmul₁ [Zero M] [Add M] : ℕ → M → M
