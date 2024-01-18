@@ -514,13 +514,13 @@ instance [Monoid G] [Monoid H] : CoeFun (MonoidHom₁ G H) (fun _ ↦ G → H) w
 attribute [coe] MonoidHom₁.toFun
 ```
 
-让我们检查一下，我们确实可以将一个捆起来的单蝼形态应用到一个元素上。
+让我们检查一下，我们确实可以将一个捆起来的monoid态射应用到一个元素上。
 
 ```
 example [Monoid G] [Monoid H] (f : MonoidHom₁ G H) : f 1 = 1 :=  f.map_one
 ```
 
-我们可以对其它类型的形态做同样的事情，直到我们遇到环形态。
+我们可以对其它类型的态射做同样的事情，直到我们遇到环态射。
 
 ```
 @[ext]
@@ -538,7 +538,7 @@ attribute [coe] AddMonoidHom₁.toFun
 structure RingHom₁ (R S : Type) [Ring R] [Ring S] extends MonoidHom₁ R S, AddMonoidHom₁ R S
 ```
 
-这种方法存在一些问题。一个较小的问题是我们不太确定在哪里添加 `coe` 属性，因为 `RingHom₁.toFun` 并不存在，相关的函数是 `MonoidHom₁.toFun ∘ RingHom₁.toMonoidHom₁`，这不是可以被添加属性标记的声明（但我们仍然可以定义一个 `CoeFun  (RingHom₁ R S) (fun _ ↦ R → S)` 实例）。一个更重要的问题是关于单蝼形态的引理不能直接应用于环形态。这留下了两个替代方案，要么在每次我们想要应用单蝼形态引理时都使用 `RingHom₁.toMonoidHom₁` 来琢磨，要么为环形态重述每一个这样的引理。两者都不吸引人，因此 Mathlib 在这里使用了一个新的层次结构技巧。这个想法是为至少是单蝼形态的对象定义一个类型类，并实例化该类为单蝼形态和环形态，然后使用它来陈述每一个引理。在下面的定义中，`F` 可以是 `MonoidHom₁ M N`，或者如果 `M` 和 `N` 有一个环的结构，它可以是 `RingHom₁ M N`。
+这种方法存在一些问题。一个较小的问题是我们不太确定在哪里添加 `coe` 属性，因为 `RingHom₁.toFun` 并不存在，相关的函数是 `MonoidHom₁.toFun ∘ RingHom₁.toMonoidHom₁`，这不是可以被添加属性标记的声明（但我们仍然可以定义一个 `CoeFun  (RingHom₁ R S) (fun _ ↦ R → S)` 实例）。一个更重要的问题是关于monoid态射的引理不能直接应用于环态射。这留下了两个替代方案，要么在每次我们想要应用monoid态射引理时都使用 `RingHom₁.toMonoidHom₁` 来琢磨，要么为环态射重述每一个这样的引理。两者都不吸引人，因此 Mathlib 在这里使用了一个新的层次结构技巧。这个想法是为至少是monoid态射的对象定义一个类型类，并实例化该类为monoid态射和环态射，然后使用它来陈述每一个引理。在下面的定义中，`F` 可以是 `MonoidHom₁ M N`，或者如果 `M` 和 `N` 有一个环的结构，它可以是 `RingHom₁ M N`。
 
 ```
 class MonoidHomClass₁ (F : Type) (M N : Type) [Monoid M] [Monoid N] where
